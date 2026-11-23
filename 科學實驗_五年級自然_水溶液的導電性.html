@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>國小五年級自然科學｜水溶液的導電性互動實驗室（翰林版）</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Noto Sans TC 字體 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* 全域視覺風格與自適應無障礙設計 */
+    :root {
+      --bg-sky: #eef6ff;
+      --card-border: #fef08a;
+      --primary-amber: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+      background: linear-gradient(135deg, #fefce8 0%, #fff7ed 45%, #eff6ff 100%);
+      color: #1e293b;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    button:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 3px solid #f59e0b;
+      outline-offset: 2px;
+    }
+
+    /* 左右雙欄自適應佈局 */
+    .lab-main-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 1024px) {
+      .lab-main-grid {
+        grid-template-columns: 340px 1fr;
+        align-items: stretch;
+        min-height: 560px;
+        height: 580px;
+      }
+      .block-a-panel,
+      .block-b-panel {
+        height: 100%;
+        min-height: 560px;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .lab-main-grid {
+        grid-template-columns: 360px 1fr;
+        height: 580px;
+      }
+    }
+
+    /* 美化圓潤側邊捲軸 */
+    .custom-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: #fcd34d #fef3c7;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #fef3c7;
+      border-radius: 999px;
+      margin: 3px 0;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #f59e0b, #d97706);
+      border-radius: 999px;
+      border: 2px solid #fef3c7;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #d97706, #b45309);
+    }
+
+    /* 實驗舞台網格背景 */
+    .lab-stage-bg {
+      background-color: #fffdf5;
+      background-image:
+        linear-gradient(to right, rgba(245, 158, 11, 0.15) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(245, 158, 11, 0.15) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* 電流通路流動動畫 */
+    @keyframes wireCurrentFlow {
+      0% { stroke-dashoffset: 40; }
+      100% { stroke-dashoffset: 0; }
+    }
+
+    .animate-current-flow {
+      stroke-dasharray: 8 6;
+      animation: wireCurrentFlow 0.6s linear infinite;
+    }
+
+    /* LED 燈泡發光脈動與光暈動畫 */
+    @keyframes bulbGlowPulse {
+      0%, 100% {
+        filter: drop-shadow(0 0 12px #fbbf24) drop-shadow(0 0 28px #f59e0b);
+        transform: scale(1);
+      }
+      50% {
+        filter: drop-shadow(0 0 20px #fde047) drop-shadow(0 0 45px #eab308);
+        transform: scale(1.05);
+      }
+    }
+
+    .animate-bulb-glow {
+      animation: bulbGlowPulse 1.2s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    /* 電極棒升降過渡 */
+    .probes-assembly {
+      transition: transform 0.45s cubic-bezier(0.34, 1.3, 0.64, 1);
+    }
+
+    /* 輕微晃動提示（選錯器材時） */
+    @keyframes gentleShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    .animate-shake {
+      animation: gentleShake 0.4s ease-in-out;
+    }
+
+    /* 電解微氣泡冒出動畫 */
+    @keyframes electrolysisBubble {
+      0% { transform: translateY(0) scale(0.4); opacity: 0.9; }
+      100% { transform: translateY(-38px) scale(1.1); opacity: 0; }
+    }
+
+    .bubble-particle {
+      animation: electrolysisBubble 0.8s ease-out infinite;
+    }
+  </style>
+</head>
+<body class="p-2 sm:p-4 lg:p-5">
+
+  <div class="max-w-[1360px] mx-auto space-y-3 sm:space-y-4">
+
+    <!-- ======================================================================
+         頂部導覽列（標題、大廳連結、切換其他實驗室連結、音效開關）
+         ====================================================================== -->
+    <header class="bg-white/95 backdrop-blur border-2 border-amber-200 rounded-3xl shadow-sm px-3.5 py-3 sm:px-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      <!-- 標題與單元標註 -->
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center text-2xl shadow-sm shrink-0 text-white font-bold">
+          ⚡
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <h1 class="text-lg sm:text-2xl font-black text-slate-800 tracking-tight">
+              國小五年級自然科學｜水溶液的導電性互動實驗室
+            </h1>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-bold bg-amber-100 text-amber-900 border border-amber-300">
+              翰林版單元
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
+            挑選器材組裝電路，檢驗純水、自來水與各類水溶液是否能形成通路導電！
+          </p>
+        </div>
+      </div>
+
+      <!-- 右側快速導航與功能鍵 -->
+      <div class="flex flex-wrap items-center gap-2">
+        <a
+          href="index.html"
+          class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all flex items-center gap-1.5 shadow-xs"
+          title="回到國小自然科學實驗室大廳"
+        >
+          <span>🏠</span>
+          <span>實驗大廳</span>
+        </a>
+
+        <a
+          href="aqueous_acid_base_lab.html"
+          class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 transition-all flex items-center gap-1.5 shadow-xs"
+          title="切換至酸鹼指示劑實驗"
+        >
+          <span>🧪</span>
+          <span>指示劑實驗</span>
+        </a>
+
+        <a
+          href="aqueous_mixing_lab.html"
+          class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-all flex items-center gap-1.5 shadow-xs"
+          title="切換至水溶液混合中和實驗"
+        >
+          <span>⚗️</span>
+          <span>混合中和實驗</span>
+        </a>
+
+        <!-- 音效開關 -->
+        <button
+          type="button"
+          id="sound-toggle-btn"
+          onclick="toggleSound()"
+          aria-label="切換音效"
+          class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
+        >
+          <span id="sound-icon">🔊</span>
+          <span id="sound-label">音效開</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 通關成就橫幅 -->
+    <div
+      id="mastery-banner"
+      class="hidden bg-gradient-to-r from-amber-400 via-yellow-300 to-emerald-400 border-2 border-amber-500 rounded-3xl p-4 shadow-md text-slate-900 flex flex-col sm:flex-row items-center justify-between gap-3"
+    >
+      <div class="flex items-center gap-3">
+        <span class="text-4xl animate-bounce">🏆</span>
+        <div>
+          <h2 class="text-lg sm:text-xl font-black text-slate-900">
+            🎉 恭喜達成「電路與水溶液大師」成就！
+          </h2>
+          <p class="text-sm sm:text-base font-bold text-slate-800">
+            你已成功完成所有水溶液的導電性檢測，並掌握了純水與自來水的安全關鍵！
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        onclick="openResetAllModal()"
+        class="px-4 py-2 rounded-xl bg-white/95 hover:bg-white text-slate-800 font-bold text-base shadow border border-slate-300 shrink-0 cursor-pointer"
+      >
+        🔄 重新挑戰
+      </button>
+    </div>
+
+    <!-- ======================================================================
+         第一階段：挑選實驗器材（前置準備專區）
+         ====================================================================== -->
+    <section
+      id="stage-equipment-selection"
+      class="bg-white rounded-3xl border-2 border-amber-200 shadow-sm p-4 sm:p-5 space-y-4"
+    >
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-100 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="px-3 py-1 rounded-full text-xs sm:text-sm font-black bg-amber-500 text-white shadow-xs">
+            階段一：前置準備
+          </span>
+          <h2 class="text-base sm:text-lg font-black text-slate-800">
+            🧰 小小檢驗員出任務：挑選導電實驗必備器材
+          </h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs sm:text-sm font-bold text-slate-600">
+            必備器材進度：<strong id="equip-progress-text" class="text-amber-700 text-base">0 / 4</strong>
+          </span>
+          <button
+            type="button"
+            onclick="skipEquipmentSelection()"
+            class="text-xs font-bold text-blue-600 hover:text-blue-800 underline underline-offset-2 px-1 cursor-pointer"
+          >
+            ⚡ 跳過挑選，直接測試
+          </button>
+        </div>
+      </div>
+
+      <!-- 說明引導 -->
+      <p class="text-xs sm:text-sm font-bold text-slate-600 bg-amber-50/70 rounded-2xl p-2.5 border border-amber-200">
+        👉 想檢驗哪種水溶液能讓電路形成通路導電，請點選下方<strong>正確的 4 樣必備器材</strong>加入實驗桌！（點到用不到的物件會有溫馨提示喔！）
+      </p>
+
+      <!-- 器材清單網格（包含必備器材 4 項 + 干擾物件 4 項） -->
+      <div id="equipment-shelf" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+        <!-- 由 JavaScript 動態生成 8 種器材卡片 -->
+      </div>
+
+      <!-- 已放入實驗桌的器材清單 -->
+      <div class="bg-slate-50 rounded-2xl p-3 border border-slate-200">
+        <div class="text-xs font-black text-slate-600 mb-1.5 flex items-center gap-1.5">
+          <span>🔬</span>
+          <span>實驗桌上已準備的器材：</span>
+        </div>
+        <div id="selected-tray" class="flex flex-wrap items-center gap-2 min-h-[36px]">
+          <span class="text-xs text-slate-400 font-medium">尚未挑選器材，請點選上方物品...</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         第二階段：導電性主實驗（雙欄自適應：A 水溶液清單 + B 檢測電路舞台）
+         ====================================================================== -->
+    <main id="stage-main-test" class="lab-main-grid">
+
+      <!-- ====================================================================
+           A 區塊（左側：水溶液樣本與操作控制）
+           ==================================================================== -->
+      <section
+        aria-label="水溶液選擇與控制"
+        class="block-a-panel bg-white rounded-3xl border-2 border-amber-200 shadow-sm p-3.5 sm:p-4 flex flex-col overflow-hidden"
+      >
+        <!-- 頂部按鈕列：清潔電極棒 & 重設本實驗 -->
+        <div class="grid grid-cols-2 gap-2 mb-2.5 shrink-0">
+          <button
+            type="button"
+            onclick="cleanElectrodes()"
+            class="px-2.5 py-2.5 rounded-2xl text-xs sm:text-sm font-black bg-sky-50 hover:bg-sky-100 text-sky-800 border-2 border-sky-200 transition-all flex items-center justify-center gap-1 shadow-xs cursor-pointer"
+            title="實驗必備科學素養：更換水溶液前需清洗電極棒，避免殘留雜質干擾"
+          >
+            <span>🧻</span>
+            <span>純水清洗電極棒</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="resetCurrentTest()"
+            class="px-2.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border-2 border-rose-200 transition-all flex items-center justify-center gap-1 shadow-xs cursor-pointer"
+          >
+            <span>🔄</span>
+            <span>重置檢測台</span>
+          </button>
+        </div>
+
+        <!-- 導電性測試完成進度條 -->
+        <div class="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-2xl p-2.5 border border-amber-200 mb-2.5 shrink-0">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs sm:text-sm font-extrabold text-slate-800 flex items-center gap-1.5">
+              <span>⭐</span>
+              <span>檢驗完成度：<span id="test-progress-count" class="text-amber-700 text-base font-black">0 / 7</span></span>
+            </span>
+            <span class="text-[11px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
+              共 7 種水溶液
+            </span>
+          </div>
+          <div class="w-full h-2.5 bg-white rounded-full overflow-hidden border border-amber-200 p-0.5">
+            <div
+              id="test-progress-bar"
+              class="h-full rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 transition-all duration-500"
+              style="width: 0%"
+            ></div>
+          </div>
+        </div>
+
+        <!-- 水溶液清單標題提示 -->
+        <div class="flex items-center justify-between px-1 mb-1.5 shrink-0">
+          <span class="text-xs sm:text-sm font-bold text-slate-700">🧪 選擇要檢驗的水溶液：</span>
+          <span class="text-[11px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+            對照組：純水 vs 自來水
+          </span>
+        </div>
+
+        <!-- 七種水溶液清單 -->
+        <div
+          id="solution-list"
+          class="flex-1 overflow-y-auto custom-scrollbar pr-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2 max-h-[260px] sm:max-h-[220px] lg:max-h-none"
+        >
+          <!-- 由 JS 動態生成 -->
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           B 區塊（右側：電路檢驗主舞台）
+           ==================================================================== -->
+      <section
+        aria-label="導電檢測主舞台"
+        class="block-b-panel bg-white rounded-3xl border-2 border-amber-200 shadow-sm flex flex-col overflow-hidden relative min-h-[480px] sm:min-h-[560px]"
+      >
+        <!-- 頂部動態指引列 -->
+        <div
+          id="step-guide-bar"
+          class="bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-500 text-white px-3.5 py-2.5 sm:px-5 flex items-center justify-between gap-2 shrink-0 shadow-xs"
+        >
+          <div class="flex items-center gap-2">
+            <span id="step-guide-badge" class="px-2.5 py-0.5 rounded-lg bg-white text-amber-900 font-black text-xs sm:text-sm shrink-0">
+              步驟 1
+            </span>
+            <p id="step-guide-text" class="text-sm sm:text-base font-bold leading-snug">
+              👉 請在左側點選一種水溶液，放入檢測電極棒觀察燈泡反應！
+            </p>
+          </div>
+          <span id="circuit-status-pill" class="hidden sm:inline-flex items-center px-2.5 py-1 rounded-full bg-white/20 text-white text-xs sm:text-sm font-bold shrink-0">
+            電路狀態：斷路中
+          </span>
+        </div>
+
+        <!-- 舞台主畫面區 -->
+        <div class="flex-1 lab-stage-bg relative flex flex-col justify-between p-3.5 sm:p-5 overflow-hidden select-none gap-3">
+          
+          <!-- 上方：電路控制與電極棒升降控制鈕 -->
+          <div class="flex items-center justify-between gap-3 bg-white/95 backdrop-blur rounded-2xl px-4 py-2.5 border-2 border-amber-200 shadow-sm shrink-0">
+            <div class="flex items-center gap-2.5">
+              <span class="w-3.5 h-3.5 rounded-full bg-amber-400 animate-ping"></span>
+              <span id="current-solution-title" class="text-sm sm:text-base font-black text-slate-800">
+                目前檢測杯：尚未選擇水溶液
+              </span>
+            </div>
+
+            <!-- 放入 / 拿出電極棒操作大按鈕 -->
+            <button
+              type="button"
+              id="btn-toggle-probes"
+              onclick="toggleProbes()"
+              class="px-5 py-2.5 rounded-2xl font-black text-sm sm:text-base bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white shadow-md active:scale-95 transition-all flex items-center gap-2 cursor-pointer shrink-0"
+            >
+              <span id="btn-probe-icon" class="text-lg">⚡</span>
+              <span id="btn-probe-text">放入正負電極棒測試</span>
+            </button>
+          </div>
+
+          <!-- 中央：擬真電路實驗視覺設備（充分布滿空間，大尺寸電池組 + LED燈泡 + 智慧貼合導線 + 大燒杯） -->
+          <div class="flex-1 flex flex-col justify-center items-center relative min-h-[300px] sm:min-h-[340px] w-full px-2 py-1">
+            <div class="relative w-full max-w-[560px] h-[300px] sm:h-[330px]">
+              <svg id="circuit-stage-svg" viewBox="0 0 540 320" class="w-full h-full overflow-visible">
+                <defs>
+                  <!-- LED 發光徑向漸層 -->
+                  <radialGradient id="bulb-glow-grad" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#fef08a" stop-opacity="1" />
+                    <stop offset="45%" stop-color="#facc15" stop-opacity="0.85" />
+                    <stop offset="85%" stop-color="#f59e0b" stop-opacity="0.3" />
+                    <stop offset="100%" stop-color="#d97706" stop-opacity="0" />
+                  </radialGradient>
+                  <!-- 燒杯液體裁切（配合 540x320 畫布） -->
+                  <clipPath id="beaker-liquid-clip">
+                    <rect x="180" y="170" width="180" height="120" rx="12" />
+                  </clipPath>
+                </defs>
+
+                <!-- 1. 電池座（3V 直流電組） -->
+                <g id="battery-pack" transform="translate(30, 30)">
+                  <rect x="0" y="0" width="115" height="52" rx="8" fill="#1e293b" stroke="#0f172a" stroke-width="2.5" />
+                  <!-- 電池 1 號與 2 號外殼 -->
+                  <rect x="8" y="8" width="46" height="36" rx="4" fill="#0284c7" />
+                  <rect x="54" y="18" width="4" height="16" rx="2" fill="#cbd5e1" />
+                  <rect x="58" y="8" width="46" height="36" rx="4" fill="#0369a1" />
+                  <rect x="104" y="18" width="4" height="16" rx="2" fill="#cbd5e1" />
+                  <text x="31" y="30" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="900">3V 電池組</text>
+                  <!-- 電池正負極標記 -->
+                  <text x="122" y="32" text-anchor="middle" fill="#ef4444" font-size="18" font-weight="900">＋</text>
+                  <text x="-10" y="32" text-anchor="middle" fill="#3b82f6" font-size="20" font-weight="900">－</text>
+                </g>
+
+                <!-- 2. LED 指示燈模組（右側高亮指示模組） -->
+                <g id="led-module" transform="translate(385, 20)">
+                  <!-- 燈座基座 -->
+                  <rect x="10" y="44" width="60" height="26" rx="6" fill="#475569" stroke="#1e293b" stroke-width="2.5" />
+                  <text x="40" y="61" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="800">LED指示燈</text>
+
+                  <!-- 燈泡組件 -->
+                  <g id="bulb-light-group">
+                    <!-- 發光時外圈大光暈 -->
+                    <circle id="bulb-glow-circle" cx="40" cy="24" r="42" fill="url(#bulb-glow-grad)" class="hidden" />
+                    <!-- 玻璃燈罩 -->
+                    <path
+                      id="bulb-glass"
+                      d="M 26 44 C 18 32, 22 10, 40 10 C 58 10, 62 32, 54 44 Z"
+                      fill="#e2e8f0"
+                      stroke="#334155"
+                      stroke-width="2.5"
+                    />
+                    <!-- 內部燈絲 -->
+                    <path d="M 34 42 L 40 24 L 46 42" fill="none" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" />
+                  </g>
+                </g>
+
+                <!-- 3. 電路導線（頂部固定正極導線、左側負極導線、右側正極回流導線） -->
+                <!-- 電池(+) 到 LED(+) 頂部紅色導線 -->
+                <path
+                  id="wire-batt-to-led"
+                  d="M 145 56 L 405 56"
+                  fill="none"
+                  stroke="#ef4444"
+                  stroke-width="4.5"
+                  stroke-linecap="round"
+                />
+
+                <!-- 電池(-) 到 檢測棒(-) 藍色導線（動態依電極升降即時接合） -->
+                <path
+                  id="wire-batt-to-probe"
+                  d="M 30 56 L 12 56 L 12 135 L 235 135 L 235 145"
+                  fill="none"
+                  stroke="#2563eb"
+                  stroke-width="4.5"
+                  stroke-linecap="round"
+                />
+
+                <!-- LED(-) 到 檢測棒(+) 紅色導線（動態依電極升降即時接合） -->
+                <path
+                  id="wire-led-to-probe"
+                  d="M 445 66 L 445 135 L 305 135 L 305 145"
+                  fill="none"
+                  stroke="#dc2626"
+                  stroke-width="4.5"
+                  stroke-linecap="round"
+                />
+
+                <!-- 電流通路流動視覺層（通電時點亮高頻流動） -->
+                <path
+                  id="current-flow-overlay"
+                  d="M 145 56 L 405 56 M 445 66 L 445 135 L 305 135 L 305 145 M 235 145 L 235 135 L 12 135 L 12 56 L 30 56"
+                  fill="none"
+                  stroke="#fbbf24"
+                  stroke-width="3.5"
+                  stroke-linecap="round"
+                  class="hidden"
+                />
+
+                <!-- 4. 盛裝水溶液之透明玻璃大燒杯 -->
+                <g id="beaker-container">
+                  <!-- 燒杯液體主體 -->
+                  <g clip-path="url(#beaker-liquid-clip)">
+                    <rect id="beaker-liquid-rect" x="180" y="188" width="180" height="105" fill="#e0f2fe" class="transition-all duration-300" />
+                    <!-- 液面橢圓 -->
+                    <ellipse id="beaker-liquid-surface" cx="270" cy="188" rx="85" ry="9" fill="#bae6fd" class="transition-all duration-300" />
+                    <!-- 電解氣泡粒子容器 -->
+                    <g id="electrolysis-bubbles" class="hidden"></g>
+                  </g>
+
+                  <!-- 玻璃燒杯厚外壁輪廓 -->
+                  <path
+                    d="M 175 160 L 185 166 L 185 288 C 185 298, 355 298, 355 288 L 355 166 L 365 160"
+                    fill="rgba(255, 255, 255, 0.28)"
+                    stroke="#475569"
+                    stroke-width="3.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <!-- 燒杯刻度線與數值 -->
+                  <line x1="192" y1="205" x2="212" y2="205" stroke="#64748b" stroke-width="2.5" />
+                  <text x="218" y="210" fill="#64748b" font-size="11" font-weight="900">200 ml</text>
+                  <line x1="192" y1="235" x2="206" y2="235" stroke="#64748b" stroke-width="2" />
+                  <text x="212" y="240" fill="#64748b" font-size="10" font-weight="bold">150 ml</text>
+                  <line x1="192" y1="265" x2="212" y2="265" stroke="#64748b" stroke-width="2.5" />
+                  <text x="218" y="270" fill="#64748b" font-size="11" font-weight="900">100 ml</text>
+                  <!-- 玻璃高光反光條 -->
+                  <line x1="344" y1="178" x2="344" y2="280" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" opacity="0.8" />
+                </g>
+
+                <!-- 5. 可升降之正負極電極檢測棒組合（附帶頂部導線接頭） -->
+                <g id="probes-group" class="probes-assembly" transform="translate(0, 0)">
+                  <!-- 橫向絕緣固定夾具 -->
+                  <rect x="215" y="132" width="110" height="15" rx="5" fill="#334155" stroke="#0f172a" stroke-width="2" />
+                  <text x="270" y="143" text-anchor="middle" fill="#cbd5e1" font-size="9" font-weight="900">電極固定座</text>
+                  
+                  <!-- 負極棒（左側藍色接頭） -->
+                  <g transform="translate(228, 138)">
+                    <rect x="0" y="0" width="14" height="10" rx="3" fill="#2563eb" stroke="#1d4ed8" stroke-width="1.5" />
+                    <!-- 碳黑導電電極棒主體 -->
+                    <rect x="3" y="10" width="8" height="85" rx="3" fill="#1e293b" stroke="#0f172a" stroke-width="1.5" />
+                    <text x="7" y="-5" text-anchor="middle" fill="#2563eb" font-size="13" font-weight="900">－</text>
+                  </g>
+
+                  <!-- 正極棒（右側紅色接頭） -->
+                  <g transform="translate(298, 138)">
+                    <rect x="0" y="0" width="14" height="10" rx="3" fill="#ef4444" stroke="#b91c1c" stroke-width="1.5" />
+                    <!-- 碳黑導電電極棒主體 -->
+                    <rect x="3" y="10" width="8" height="85" rx="3" fill="#1e293b" stroke="#0f172a" stroke-width="1.5" />
+                    <text x="7" y="-5" text-anchor="middle" fill="#ef4444" font-size="13" font-weight="900">＋</text>
+                  </g>
+                </g>
+              </svg>
+            </div>
+
+            <!-- 即時檢測科學觀察結論標籤（放大字體與留白） -->
+            <div id="conductivity-result-callout" class="mt-2 text-center text-sm sm:text-base font-black text-slate-700 bg-amber-50/95 border-2 border-amber-300 rounded-2xl py-2 px-4 min-h-[42px] flex items-center justify-center shadow-xs">
+              💡 提示：點擊上方「放入正負電極棒測試」，觀察電路與燈泡是否形成通路！
+            </div>
+          </div>
+
+          <!-- 下方：實驗觀察紀錄表（整合記錄 7 種水溶液之發光與導電結果） -->
+          <div class="bg-white/95 rounded-2xl border-2 border-slate-200 p-2.5 sm:p-3 shrink-0 overflow-x-auto shadow-xs">
+            <div class="flex items-center justify-between mb-2 px-1">
+              <span class="text-sm font-black text-slate-800 flex items-center gap-1.5">
+                <span>📋</span>
+                <span>水溶液導電性實驗觀察紀錄表：</span>
+              </span>
+              <span class="text-xs font-bold text-slate-500">
+                自動同步實驗結果
+              </span>
+            </div>
+
+            <!-- 紀錄表格 -->
+            <table class="w-full text-left text-xs sm:text-sm border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                  <th class="py-1.5 px-2.5 font-black">水溶液名稱</th>
+                  <th class="py-1.5 px-2.5 font-black">燈泡反應</th>
+                  <th class="py-1.5 px-2.5 font-black">是否導電</th>
+                  <th class="py-1.5 px-2.5 font-black hidden sm:table-cell">科學原理解析與生活備註</th>
+                </tr>
+              </thead>
+              <tbody id="observation-table-body" class="divide-y divide-slate-100 text-slate-700">
+                <!-- 由 JS 動態渲染 7 種水溶液檢測紀錄 -->
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <!-- ======================================================================
+         C 區塊（下方：自主推論判斷 & 翰林版 8 題「考考你」）
+         ====================================================================== -->
+    <section aria-label="評量與考考你挑戰" class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+
+      <!-- 左半部：🔍 導電性自主判斷任務 -->
+      <div class="bg-white rounded-3xl border-2 border-amber-200 shadow-sm p-4 sm:p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <h2 class="text-base sm:text-lg font-black text-slate-800 flex items-center gap-2">
+              <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-base sm:text-lg">🔍</span>
+              <span>實驗自主判斷（通關任務）</span>
+            </h2>
+            <span id="judge-status-pill" class="px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-bold bg-slate-100 text-slate-600">
+              尚未選擇水溶液
+            </span>
+          </div>
+
+          <!-- 題目敘述 -->
+          <p id="judge-question-text" class="text-xs sm:text-sm font-bold text-slate-700 bg-amber-50/60 rounded-2xl p-3 border border-amber-200">
+            請先在上方選擇一種水溶液，放入電極棒觀察燈泡是否發亮，再來判斷此水溶液是否導電！
+          </p>
+
+          <!-- 兩個大作答按鈕：會導電 vs 不導電 -->
+          <div class="grid grid-cols-2 gap-3 mt-3">
+            <button
+              type="button"
+              onclick="submitConductivityJudgment(true)"
+              class="py-3 px-3 rounded-2xl text-sm sm:text-base font-black bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 border-2 border-emerald-300 shadow-xs cursor-pointer flex items-center justify-center gap-2 transition-all"
+            >
+              <span class="text-xl">💡</span>
+              <span>會導電（通路）</span>
+            </button>
+
+            <button
+              type="button"
+              onclick="submitConductivityJudgment(false)"
+              class="py-3 px-3 rounded-2xl text-sm sm:text-base font-black bg-rose-50 hover:bg-rose-100 active:scale-95 text-rose-800 border-2 border-rose-300 shadow-xs cursor-pointer flex items-center justify-center gap-2 transition-all"
+            >
+              <span class="text-xl">⚪</span>
+              <span>不導電（斷路）</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 判斷回饋框 -->
+        <div
+          id="judge-feedback-box"
+          class="mt-3 rounded-2xl p-3 bg-slate-50 border border-slate-200 text-slate-600 text-xs sm:text-sm font-medium min-h-[64px] flex items-center"
+        >
+          <span>✨ 觀察燈泡是否發亮後點擊上方按鈕，這裡會立即顯示科學原理與安全提醒！</span>
+        </div>
+      </div>
+
+      <!-- 右半部：🎓 翰林版「考考你」觀念挑戰（8 題精選） -->
+      <div class="bg-white rounded-3xl border-2 border-yellow-200 shadow-sm p-4 sm:p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <h2 class="text-base sm:text-lg font-black text-slate-800 flex items-center gap-2">
+              <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-yellow-100 text-yellow-800 flex items-center justify-center text-base sm:text-lg">🎓</span>
+              <span>翰林版「考考你」水溶液導電挑戰</span>
+            </h2>
+            <div class="flex items-center gap-2">
+              <span id="quiz-progress-badge" class="px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-extrabold bg-amber-100 text-amber-900">
+                第 1 / 8 題
+              </span>
+              <span id="quiz-score-badge" class="px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-extrabold bg-emerald-100 text-emerald-800">
+                答對：0 題
+              </span>
+            </div>
+          </div>
+
+          <!-- 題幹 -->
+          <p id="quiz-question-text" class="text-xs sm:text-sm font-bold text-slate-800 bg-yellow-50/60 rounded-2xl p-2.5 border border-yellow-200 leading-relaxed">
+            載入題目中...
+          </p>
+
+          <!-- 三個大選項 -->
+          <div id="quiz-options-container" class="space-y-1.5 mt-2">
+            <!-- 由 JS 動態生成 -->
+          </div>
+        </div>
+
+        <!-- 回饋與下一題 -->
+        <div class="mt-2.5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-slate-50 rounded-2xl p-2 border border-slate-200 min-h-[58px]">
+          <p id="quiz-feedback-text" class="text-xs sm:text-sm font-bold text-slate-600 flex-1">
+            👆 請點選上方答案！
+          </p>
+          <button
+            type="button"
+            id="quiz-next-btn"
+            onclick="nextQuizQuestion()"
+            class="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black bg-amber-600 hover:bg-amber-700 text-white shadow transition-all shrink-0 flex items-center justify-center gap-1 cursor-pointer"
+          >
+            <span>下一題</span>
+            <span>➡️</span>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- 重設確認 Modal -->
+  <div
+    id="reset-all-modal"
+    role="dialog"
+    aria-modal="true"
+    class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4"
+  >
+    <div class="bg-white rounded-3xl border-2 border-slate-200 max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl shrink-0">
+          🔄
+        </div>
+        <h3 class="text-xl font-black text-slate-800">
+          確定要重設全部進度嗎？
+        </h3>
+      </div>
+      <p class="text-sm sm:text-base text-slate-600 font-medium leading-relaxed">
+        重設後將清除器材挑選狀態、導電紀錄表與「考考你」題庫分數。
+      </p>
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <button
+          type="button"
+          onclick="closeResetAllModal()"
+          class="px-4 py-2 rounded-2xl text-base font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer"
+        >
+          取消
+        </button>
+        <button
+          type="button"
+          onclick="confirmResetAll()"
+          class="px-5 py-2 rounded-2xl text-base font-black bg-rose-600 hover:bg-rose-700 text-white shadow cursor-pointer"
+        >
+          確定重設
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 輕量 Toast -->
+  <div
+    id="toast-banner"
+    class="pointer-events-none fixed bottom-5 left-1/2 -translate-x-1/2 z-40 opacity-0 transition-all duration-300 bg-slate-900/90 text-white px-5 py-2 rounded-full text-xs sm:text-sm font-bold shadow-lg"
+  >
+    狀態提示
+  </div>
+
+  <script>
+    /* ========================================================================
+       一、 階段一：器材資料庫（必備 4 項 + 干擾物件 4 項）
+       ======================================================================== */
+    const EQUIPMENTS = [
+      {
+        id: 'beaker',
+        name: '玻璃燒杯',
+        icon: '🥛',
+        isEssential: true,
+        desc: '必備器材：用來盛裝待測水溶液的透明容器。',
+        failHint: ''
+      },
+      {
+        id: 'solutions',
+        name: '各類水溶液',
+        icon: '🧪',
+        isEssential: true,
+        desc: '必備器材：包含純水、自來水、食鹽水、糖水等檢測樣本。',
+        failHint: ''
+      },
+      {
+        id: 'battery_set',
+        name: '電池組與導線電極',
+        icon: '🔋',
+        isEssential: true,
+        desc: '必備器材：提供電力並引出正負極電極檢測棒。',
+        failHint: ''
+      },
+      {
+        id: 'led_bulb',
+        name: 'LED燈泡指示模組',
+        icon: '💡',
+        isEssential: true,
+        desc: '必備器材：用來即時觀察電路是否形成通路發光。',
+        failHint: ''
+      },
+      {
+        id: 'thermometer',
+        name: '實驗溫度計',
+        icon: '🌡️',
+        isEssential: false,
+        desc: '干擾器材：測量水溫用。',
+        failHint: '💡 溫度計是用來測量液體冷熱溫度的喔！本實驗檢驗水溶液能否導電，暫時不需要測溫～'
+      },
+      {
+        id: 'magnifier',
+        name: '手持放大鏡',
+        icon: '🔍',
+        isEssential: false,
+        desc: '干擾器材：觀察微小外觀用。',
+        failHint: '💡 放大鏡是用來觀察細小紋理的！導電實驗觀察燈泡亮滅即可，不需要用到放大鏡喔～'
+      },
+      {
+        id: 'magnet',
+        name: '條形磁鐵',
+        icon: '🧲',
+        isEssential: false,
+        desc: '干擾器材：測試磁性用。',
+        failHint: '💡 磁鐵是用來檢驗物體是否具有磁性！本次是電路導電測試，不需要磁鐵喔～'
+      },
+      {
+        id: 'alcohol_lamp',
+        name: '酒精燈',
+        icon: '🔥',
+        isEssential: false,
+        desc: '干擾器材：加熱蒸發用。',
+        failHint: '💡 酒精燈是用於加熱或結晶實驗！導電實驗請勿點火加熱，要注意安全喔～'
+      }
+    ];
+
+    /* ========================================================================
+       二、 階段二：水溶液導電資料庫（科學邏輯、對照組純水 vs 自來水）
+       ======================================================================== */
+    const SOLUTIONS = [
+      {
+        id: 'pure_water',
+        name: '純水 (蒸餾水)',
+        conductive: false,
+        liquidColor: '#f0f9ff',
+        liquidSurface: '#e0f2fe',
+        bubbleIntensity: 0,
+        tag: '關鍵對照組',
+        scientificNote: '純水幾乎不含帶電游離離子，因此【不導電（燈泡不亮）】！',
+        safetyTip: '科學常識：純水本身導電性極弱；但日常自來水含有雜質礦物質，故可導電。'
+      },
+      {
+        id: 'tap_water',
+        name: '自來水 (生活水)',
+        conductive: true,
+        liquidColor: '#e0f2fe',
+        liquidSurface: '#bae6fd',
+        bubbleIntensity: 1,
+        tag: '生活安全對照',
+        scientificNote: '自來水中溶解有微量礦物質與雜質離子，因此【能導電（燈泡發亮）】！',
+        safetyTip: '⚠️ 用電安全第一原則：手濕絕對不可觸碰電器或插座，以防觸電危險！'
+      },
+      {
+        id: 'salt_water',
+        name: '食鹽水',
+        conductive: true,
+        liquidColor: '#e0f7fa',
+        liquidSurface: '#b2ebf2',
+        bubbleIntensity: 3,
+        tag: '強電解質',
+        scientificNote: '食鹽（氯化鈉）溶於水會解離出大量帶電的鈉離子與氯離子，【極易導電，燈泡很亮】！',
+        safetyTip: '人體汗水也含有鹽分，因此流汗或手濕時導電性更強，更要注意電器安全。'
+      },
+      {
+        id: 'sugar_water',
+        name: '糖水',
+        conductive: false,
+        liquidColor: '#fefce8',
+        liquidSurface: '#fef9c3',
+        bubbleIntensity: 0,
+        tag: '分子不解離',
+        scientificNote: '蔗糖溶於水以不帶電的分子形態存在，無法解離出離子，因此【不導電（燈泡不亮）】！',
+        safetyTip: '並非所有能溶於水的物質都能導電，只有能解離出離子的物質（電解質）才會導電。'
+      },
+      {
+        id: 'baking_soda',
+        name: '小蘇打水',
+        conductive: true,
+        liquidColor: '#f1f5f9',
+        liquidSurface: '#e2e8f0',
+        bubbleIntensity: 2,
+        tag: '弱鹼電解質',
+        scientificNote: '碳酸氫鈉溶於水會解離出碳酸氫根離子與鈉離子，【能導電（燈泡發亮）】！',
+        safetyTip: '弱鹼性生活溶液同樣具備導電離子。'
+      },
+      {
+        id: 'lemon',
+        name: '檸檬汁',
+        conductive: true,
+        liquidColor: '#fef9c3',
+        liquidSurface: '#fef08a',
+        bubbleIntensity: 3,
+        tag: '酸性電解質',
+        scientificNote: '檸檬酸溶於水能解離出帶電的氫離子與檸檬酸根離子，【能導電（燈泡發亮）】！',
+        safetyTip: '酸性天然果汁大多具有導電性，水果電池也是利用此原理！'
+      },
+      {
+        id: 'vinegar',
+        name: '白醋',
+        conductive: true,
+        liquidColor: '#fffbeb',
+        liquidSurface: '#fef3c7',
+        bubbleIntensity: 2,
+        tag: '酸性電解質',
+        scientificNote: '醋酸溶於水解離出氫離子與醋酸根離子，【能導電（燈泡發亮）】！',
+        safetyTip: '常見的調味酸性水溶液都是能導電的電解質溶液。'
+      }
+    ];
+
+    /* 翰林版 8 題「考考你」水溶液導電性題庫 */
+    const QUIZ_QUESTIONS = [
+      {
+        question: '實驗中分別檢測「純水（蒸餾水）」與「自來水」的導電性，會觀察到什麼現象？',
+        options: [
+          '純水不導電（燈泡不亮），自來水會導電（燈泡發亮）',
+          '純水會導電，自來水不會導電',
+          '兩種水都絕對不會導電'
+        ],
+        answer: 0,
+        explanation: '純水幾乎沒有帶電離子所以不導電；自來水因溶解了微量礦物質與雜質，因此能導電！'
+      },
+      {
+        question: '洗完澡或洗手後，媽媽總是提醒「手濕絕對不能碰插頭與電器」，這是因為：',
+        options: [
+          '插座會把水吸進去損壞電線',
+          '自來水與汗水含有雜質能導電，手濕觸碰容易引發觸電危險',
+          '電器碰到水會立刻變冷'
+        ],
+        answer: 1,
+        explanation: '自來水與皮膚汗水都含有微量礦物質能導電，手濕會大幅降低人體電阻，容易發生致命觸電！'
+      },
+      {
+        question: '小華調配了一杯「食鹽水」和一杯「糖水」進行導電檢測，下列敘述何者正確？',
+        options: [
+          '兩杯水都能讓燈泡發亮',
+          '食鹽水能導電（燈泡亮），糖水不導電（燈泡不亮）',
+          '糖水能導電，食鹽水不導電'
+        ],
+        answer: 1,
+        explanation: '食鹽是電解質，溶於水會解離出離子導電；蔗糖以分子形態溶解不產生自由離子，因此不導電！'
+      },
+      {
+        question: '在水溶液導電檢測實驗中，更換檢測下一種水溶液前，電極棒應該做什麼處理？',
+        options: [
+          '直接放進下一杯水溶液，這樣比較快速',
+          '用純水沖洗乾淨並用乾淨紙巾擦乾，避免殘留雜質干擾',
+          '把電極棒放在火上烤熱'
+        ],
+        answer: 1,
+        explanation: '為了實驗準確性，必須以純水清洗並擦乾電極棒，避免上一杯水溶液的溶質殘留污染下一杯！'
+      },
+      {
+        question: '當正負兩根電極棒放入「檸檬汁」中時，電路中的 LED 燈泡亮了起來，這代表什麼？',
+        options: [
+          '檸檬汁使電路形成了「通路」，具有導電性',
+          '檸檬汁使電路發生了「斷路」',
+          '檸檬汁正在發出強烈熱能'
+        ],
+        answer: 0,
+        explanation: '燈泡發光表示電流成功流通，形成了「通路」，證明檸檬汁是能導電的水溶液！'
+      },
+      {
+        question: '下列哪一組水溶液「全部都能導電」？',
+        options: [
+          '食鹽水、白醋、小蘇打水',
+          '純水、糖水、沙拉油',
+          '糖水、純水、食鹽水'
+        ],
+        answer: 0,
+        explanation: '食鹽水、白醋、小蘇打水、檸檬汁都能解離出帶電離子，皆屬於能導電的水溶液！'
+      },
+      {
+        question: '如果不小心把電池的正極與負極兩根導線直接碰在一起（沒有經過燈泡或電阻），會發生什麼情況？',
+        options: [
+          '形成短路，容易導致導線發燙甚至電池損壞危險',
+          '燈泡會變得超級無敵亮',
+          '電池電量會永久用不完'
+        ],
+        answer: 0,
+        explanation: '正負極直接相連會造成「短路」，電流過大會劇烈發熱，實驗時應嚴格避免短路！'
+      },
+      {
+        question: '關於「水溶液導電性」與日常生活的關係，下列哪一項觀念是錯誤的？',
+        options: [
+          '雷雨天不可在大樹下或戶外積水處逗留',
+          '浴室潮濕容易導電，電器使用需特別小心',
+          '純水不導電，所以任何時候都可以邊泡澡邊給手機充電'
+        ],
+        answer: 2,
+        explanation: '絕對不可在浴室泡澡時邊充手機！浴室水氣與自來水都具有導電性，觸電會造成嚴重生命危險！'
+      }
+    ];
+
+    /* ========================================================================
+       三、 應用狀態管理
+       ======================================================================== */
+    const state = {
+      soundEnabled: true,
+
+      // 階段一器材
+      selectedEquipments: {}, // { [equipId]: true }
+      equipmentUnlocked: false,
+
+      // 階段二導電測試
+      selectedSolId: null,
+      probesInserted: false,  // 電極棒是否浸入水中
+      testedMap: {},          // { [solId]: true }
+      studentJudgments: {},   // { [solId]: boolean }
+
+      // 階段三考考你
+      quiz: {
+        index: 0,
+        score: 0,
+        answeredMap: {}
+      }
+    };
+
+    /* ========================================================================
+       四、 Web Audio API 合成音效引擎
+       ======================================================================== */
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioClass) audioCtx = new AudioClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSound(type) {
+      if (!state.soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        if (type === 'click') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, now);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } else if (type === 'buzz_on') {
+          // 電流通路清脆上升電波聲
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(640, now + 0.18);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.22);
+        } else if (type === 'splash') {
+          // 放入水中的浸潤音
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(400, now);
+          osc.frequency.exponentialRampToValueAtTime(180, now + 0.12);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.14);
+        } else if (type === 'success') {
+          // 大三和弦上升音
+          const notes = [523.25, 659.25, 783.99, 1046.5];
+          notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            const start = now + idx * 0.07;
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.18, start);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.25);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + 0.25);
+          });
+        } else if (type === 'wrong') {
+          // 低音提示音
+          const notes = [310, 240];
+          notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            const start = now + idx * 0.12;
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.16, start);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.2);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + 0.2);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      state.soundEnabled = !state.soundEnabled;
+      const icon = document.getElementById('sound-icon');
+      const label = document.getElementById('sound-label');
+      if (state.soundEnabled) {
+        icon.textContent = '🔊';
+        label.textContent = '音效開';
+        playSound('click');
+      } else {
+        icon.textContent = '🔇';
+        label.textContent = '音效關';
+      }
+    }
+
+    /* ========================================================================
+       五、 階段一：器材挑選邏輯
+       ======================================================================== */
+    function renderEquipmentShelf() {
+      const shelf = document.getElementById('equipment-shelf');
+      shelf.innerHTML = EQUIPMENTS.map((eq) => {
+        const isSelected = !!state.selectedEquipments[eq.id];
+        const cardClass = isSelected
+          ? 'bg-emerald-50 border-emerald-400 ring-2 ring-emerald-300 opacity-60'
+          : 'bg-white border-amber-200 hover:border-amber-400 hover:bg-amber-50/40 cursor-pointer';
+
+        return `
+          <button
+            type="button"
+            id="card-eq-${eq.id}"
+            onclick="handleSelectEquipment('${eq.id}')"
+            class="rounded-2xl border-2 p-2.5 sm:p-3 text-left transition-all flex flex-col justify-between shadow-xs ${cardClass}"
+          >
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-2xl">${eq.icon}</span>
+              <span class="text-xs sm:text-sm font-black text-slate-800">${eq.name}</span>
+            </div>
+            <p class="text-[11px] text-slate-500 font-medium leading-tight">${eq.desc}</p>
+            <div class="mt-2 flex items-center justify-between text-[11px] font-bold">
+              ${isSelected
+                ? '<span class="text-emerald-700">✓ 已準備</span>'
+                : '<span class="text-amber-700">加入實驗桌 ＋</span>'}
+            </div>
+          </button>
+        `;
+      }).join('');
+
+      renderSelectedTray();
+    }
+
+    function handleSelectEquipment(eqId) {
+      const eq = EQUIPMENTS.find((e) => e.id === eqId);
+      if (!eq) return;
+
+      if (eq.isEssential) {
+        if (!state.selectedEquipments[eqId]) {
+          state.selectedEquipments[eqId] = true;
+          playSound('success');
+          showToast(`✅ 選對了！【${eq.name}】是導電實驗的必備器材！`);
+        }
+      } else {
+        playSound('wrong');
+        const card = document.getElementById(`card-eq-${eq.id}`);
+        if (card) {
+          card.classList.add('animate-shake');
+          setTimeout(() => card.classList.remove('animate-shake'), 400);
+        }
+        showToast(eq.failHint);
+      }
+
+      renderEquipmentShelf();
+      checkEquipmentCompletion();
+    }
+
+    function renderSelectedTray() {
+      const tray = document.getElementById('selected-tray');
+      const selectedIds = Object.keys(state.selectedEquipments);
+      const essentialCount = EQUIPMENTS.filter((e) => e.isEssential).length;
+      document.getElementById('equip-progress-text').textContent = `${selectedIds.length} / ${essentialCount}`;
+
+      if (selectedIds.length === 0) {
+        tray.innerHTML = `<span class="text-xs text-slate-400 font-medium">尚未挑選器材，請點選上方物品加入...</span>`;
+        return;
+      }
+
+      tray.innerHTML = selectedIds.map((id) => {
+        const item = EQUIPMENTS.find((e) => e.id === id);
+        return `
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-black bg-emerald-100 text-emerald-900 border border-emerald-300 shadow-xs">
+            <span>${item.icon}</span>
+            <span>${item.name}</span>
+          </span>
+        `;
+      }).join('');
+    }
+
+    function checkEquipmentCompletion() {
+      const selectedCount = Object.keys(state.selectedEquipments).length;
+      if (selectedCount === 4 && !state.equipmentUnlocked) {
+        state.equipmentUnlocked = true;
+        playSound('success');
+        showToast('🎉 太棒了！必備器材已全數就緒，解鎖進入導電主實驗！');
+        document.getElementById('stage-equipment-selection').classList.add('border-emerald-300', 'bg-emerald-50/20');
+      }
+    }
+
+    function skipEquipmentSelection() {
+      EQUIPMENTS.filter((e) => e.isEssential).forEach((e) => {
+        state.selectedEquipments[e.id] = true;
+      });
+      state.equipmentUnlocked = true;
+      playSound('click');
+      renderEquipmentShelf();
+      showToast('⚡ 已為您備齊所有必備器材！');
+    }
+
+    /* ========================================================================
+       六、 階段二：水溶液清單與電路檢驗核心邏輯
+       ======================================================================== */
+    function renderSolutionList() {
+      const container = document.getElementById('solution-list');
+      container.innerHTML = SOLUTIONS.map((sol) => {
+        const isSelected = state.selectedSolId === sol.id;
+        const isTested = !!state.testedMap[sol.id];
+
+        let statusBadge = '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-500">未檢測</span>';
+        if (isTested) {
+          statusBadge = sol.conductive
+            ? '<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">💡 會導電</span>'
+            : '<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-rose-100 text-rose-800 border border-rose-300">⚪ 不導電</span>';
+        }
+
+        const cardStyle = isSelected
+          ? 'bg-amber-50/95 border-amber-500 ring-2 ring-amber-300 shadow-md'
+          : 'bg-white border-slate-200 hover:border-amber-300 hover:bg-amber-50/30';
+
+        return `
+          <button
+            type="button"
+            onclick="selectSolution('${sol.id}')"
+            class="w-full text-left rounded-2xl border-2 p-2 sm:p-2.5 transition-all flex items-center justify-between gap-1.5 cursor-pointer ${cardStyle}"
+          >
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-black text-sm shrink-0">
+                🧪
+              </span>
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-sm sm:text-base font-black text-slate-800 truncate">${sol.name}</span>
+                  <span class="px-1.5 py-0.2 rounded-md text-[10px] font-extrabold bg-slate-100 text-slate-600">${sol.tag}</span>
+                </div>
+                <div class="flex items-center gap-1 mt-0.5">
+                  ${statusBadge}
+                </div>
+              </div>
+            </div>
+
+            <div class="shrink-0">
+              <span class="inline-flex items-center justify-center px-2 py-1 rounded-xl ${isSelected ? 'bg-amber-600 text-white' : 'bg-slate-100 text-slate-600'} font-bold text-xs">
+                ${isSelected ? '檢測中' : '選擇'}
+              </span>
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectSolution(solId) {
+      state.selectedSolId = solId;
+      const sol = SOLUTIONS.find((s) => s.id === solId);
+      if (!sol) return;
+
+      playSound('click');
+
+      // 更新燒杯液體視覺
+      document.getElementById('beaker-liquid-rect').setAttribute('fill', sol.liquidColor);
+      document.getElementById('beaker-liquid-surface').setAttribute('fill', sol.liquidSurface);
+      document.getElementById('current-solution-title').textContent = `目前檢測杯：【${sol.name}】`;
+
+      // 拿出電極棒，等待學生點擊測試
+      setProbesState(false);
+
+      renderSolutionList();
+      updateStepGuide('步驟 2', `👉 已倒入【${sol.name}】，請點擊「放入正負電極棒測試」觀察燈泡！`);
+      updateJudgmentPrompt();
+    }
+
+    function toggleProbes() {
+      const sol = SOLUTIONS.find((s) => s.id === state.selectedSolId);
+      if (!sol) {
+        playSound('wrong');
+        showToast('⚠️ 請先在左側選取一種水溶液倒入燒杯喔！');
+        return;
+      }
+
+      setProbesState(!state.probesInserted);
+    }
+
+    function setProbesState(inserted) {
+      state.probesInserted = inserted;
+      const probes = document.getElementById('probes-group');
+      const btnText = document.getElementById('btn-probe-text');
+      const btnIcon = document.getElementById('btn-probe-icon');
+      const statusPill = document.getElementById('circuit-status-pill');
+      const resultCallout = document.getElementById('conductivity-result-callout');
+      const wireBattToProbe = document.getElementById('wire-batt-to-probe');
+      const wireLedToProbe = document.getElementById('wire-led-to-probe');
+      const currentOverlay = document.getElementById('current-flow-overlay');
+
+      const sol = SOLUTIONS.find((s) => s.id === state.selectedSolId);
+
+      if (inserted) {
+        // 電極棒平滑下降浸入燒杯水溶液（Y 軸位移 +65px）
+        probes.style.transform = 'translateY(65px)';
+        btnText.textContent = '拿出電極棒';
+        btnIcon.textContent = '🔌';
+        playSound('splash');
+
+        // 動態延伸正負極導線，確保電線緊密咬合金屬接頭（不再斷開懸空）
+        // 藍色負極線延伸至 (235, 200)，紅色正極線延伸至 (305, 200)
+        if (wireBattToProbe) wireBattToProbe.setAttribute('d', 'M 30 56 L 12 56 L 12 200 L 235 200 L 235 205');
+        if (wireLedToProbe) wireLedToProbe.setAttribute('d', 'M 445 66 L 445 200 L 305 200 L 305 205');
+        if (currentOverlay) currentOverlay.setAttribute('d', 'M 145 56 L 405 56 M 445 66 L 445 200 L 305 200 L 305 205 M 235 205 L 235 200 L 12 200 L 12 56 L 30 56');
+
+        if (sol) {
+          state.testedMap[sol.id] = true;
+          renderSolutionList();
+          updateProgressUI();
+          renderObservationTable();
+
+          if (sol.conductive) {
+            // 通路：燈泡點亮發光、高亮流動電流、水中產生電解微氣泡
+            playSound('buzz_on');
+            activateCircuitVisuals(true, sol);
+            statusPill.textContent = '電路狀態：形成通路 ⚡';
+            statusPill.className = 'hidden sm:inline-flex items-center px-3 py-1 rounded-full bg-emerald-500 text-white text-xs sm:text-sm font-bold shadow-xs';
+            resultCallout.innerHTML = `
+              <span class="text-emerald-800 font-black text-sm sm:text-base">
+                💡 燈泡發亮！電流形成通路 ➔ 【${sol.name}】具有導電性！
+              </span>
+            `;
+            resultCallout.className = 'mt-2 text-center text-sm sm:text-base font-extrabold text-emerald-950 bg-emerald-50 border-2 border-emerald-400 rounded-2xl py-2 px-4 min-h-[42px] flex items-center justify-center shadow-xs';
+          } else {
+            // 斷路：燈泡不發亮
+            activateCircuitVisuals(false, sol);
+            statusPill.textContent = '電路狀態：無法導電（斷路）';
+            statusPill.className = 'hidden sm:inline-flex items-center px-3 py-1 rounded-full bg-rose-500 text-white text-xs sm:text-sm font-bold shadow-xs';
+            resultCallout.innerHTML = `
+              <span class="text-rose-800 font-black text-sm sm:text-base">
+                ⚪ 燈泡不發亮！電路斷路 ➔ 【${sol.name}】不具導電性！
+              </span>
+            `;
+            resultCallout.className = 'mt-2 text-center text-sm sm:text-base font-extrabold text-rose-950 bg-rose-50 border-2 border-rose-300 rounded-2xl py-2 px-4 min-h-[42px] flex items-center justify-center shadow-xs';
+          }
+
+          updateStepGuide('步驟 3', `✨ 觀察燈泡反應！請在下方「C 區塊」判斷【${sol.name}】是否能導電！`);
+          updateJudgmentPrompt();
+        }
+      } else {
+        // 電極棒升起提起至燒杯上方
+        probes.style.transform = 'translateY(0px)';
+        btnText.textContent = '放入正負電極棒測試';
+        btnIcon.textContent = '⚡';
+        activateCircuitVisuals(false, null);
+
+        // 導線收縮回升起狀態位置
+        if (wireBattToProbe) wireBattToProbe.setAttribute('d', 'M 30 56 L 12 56 L 12 135 L 235 135 L 235 145');
+        if (wireLedToProbe) wireLedToProbe.setAttribute('d', 'M 445 66 L 445 135 L 305 135 L 305 145');
+        if (currentOverlay) currentOverlay.setAttribute('d', 'M 145 56 L 405 56 M 445 66 L 445 135 L 305 135 L 305 145 M 235 145 L 235 135 L 12 135 L 12 56 L 30 56');
+
+        statusPill.textContent = '電路狀態：斷路中';
+        statusPill.className = 'hidden sm:inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white text-xs sm:text-sm font-bold shrink-0';
+        resultCallout.innerHTML = '💡 提示：點擊上方「放入正負電極棒測試」，觀察電路與燈泡是否形成通路！';
+        resultCallout.className = 'mt-2 text-center text-sm sm:text-base font-extrabold text-slate-700 bg-amber-50/95 border-2 border-amber-300 rounded-2xl py-2 px-4 min-h-[42px] flex items-center justify-center shadow-xs';
+      }
+    }
+
+    function activateCircuitVisuals(active, sol) {
+      const glowCircle = document.getElementById('bulb-glow-circle');
+      const bulbGlass = document.getElementById('bulb-glass');
+      const currentOverlay = document.getElementById('current-flow-overlay');
+      const bubbles = document.getElementById('electrolysis-bubbles');
+
+      if (active) {
+        glowCircle.classList.remove('hidden');
+        glowCircle.classList.add('animate-bulb-glow');
+        bulbGlass.setAttribute('fill', '#fde047');
+        bulbGlass.setAttribute('stroke', '#eab308');
+
+        currentOverlay.classList.remove('hidden');
+        currentOverlay.classList.add('animate-current-flow');
+
+        // 生成電解氣泡動畫（配合加寬後正負極柱位置 x=235 與 x=305）
+        if (sol && sol.bubbleIntensity > 0) {
+          bubbles.classList.remove('hidden');
+          bubbles.innerHTML = `
+            <circle cx="233" cy="240" r="3" fill="#ffffff" class="bubble-particle" />
+            <circle cx="236" cy="255" r="3.5" fill="#ffffff" class="bubble-particle" style="animation-delay: 0.2s" />
+            <circle cx="234" cy="270" r="2.8" fill="#ffffff" class="bubble-particle" style="animation-delay: 0.4s" />
+            <circle cx="303" cy="242" r="3.2" fill="#ffffff" class="bubble-particle" style="animation-delay: 0.15s" />
+            <circle cx="306" cy="258" r="3.8" fill="#ffffff" class="bubble-particle" style="animation-delay: 0.3s" />
+            <circle cx="304" cy="272" r="2.6" fill="#ffffff" class="bubble-particle" style="animation-delay: 0.5s" />
+          `;
+        }
+      } else {
+        glowCircle.classList.add('hidden');
+        glowCircle.classList.remove('animate-bulb-glow');
+        bulbGlass.setAttribute('fill', '#e2e8f0');
+        bulbGlass.setAttribute('stroke', '#475569');
+
+        currentOverlay.classList.add('hidden');
+        currentOverlay.classList.remove('animate-current-flow');
+        bubbles.classList.add('hidden');
+        bubbles.innerHTML = '';
+      }
+    }
+        currentOverlay.classList.remove('animate-current-flow');
+        bubbles.classList.add('hidden');
+        bubbles.innerHTML = '';
+      }
+    }
+
+    function cleanElectrodes() {
+      playSound('click');
+      setProbesState(false);
+      showToast('🧻 已使用純水沖洗電極棒並用紙巾擦乾！避免殘留離子干擾下一杯！');
+    }
+
+    function updateProgressUI() {
+      const count = Object.keys(state.testedMap).length;
+      document.getElementById('test-progress-count').textContent = `${count} / 7`;
+      document.getElementById('test-progress-bar').style.width = `${(count / 7) * 100}%`;
+
+      if (count === 7) {
+        document.getElementById('mastery-banner').classList.remove('hidden');
+      }
+    }
+
+    /* 渲染觀察紀錄表 */
+    function renderObservationTable() {
+      const tbody = document.getElementById('observation-table-body');
+      tbody.innerHTML = SOLUTIONS.map((sol) => {
+        const tested = !!state.testedMap[sol.id];
+        let lightText = '<span class="text-slate-400 font-bold">尚未測試</span>';
+        let conductText = '<span class="text-slate-400 font-bold">待檢驗</span>';
+
+        if (tested) {
+          lightText = sol.conductive
+            ? '<span class="font-black text-amber-600">💡 發亮 (亮黃光)</span>'
+            : '<span class="font-bold text-slate-500">⚪ 不亮</span>';
+          conductText = sol.conductive
+            ? '<span class="font-black text-emerald-700">✓ 會導電</span>'
+            : '<span class="font-black text-rose-600">✕ 不導電</span>';
+        }
+
+        return `
+          <tr class="hover:bg-amber-50/40 transition-colors">
+            <td class="py-2 px-3 font-black text-slate-800 text-xs sm:text-sm">${sol.name}</td>
+            <td class="py-2 px-3 text-xs sm:text-sm">${lightText}</td>
+            <td class="py-2 px-3 text-xs sm:text-sm">${conductText}</td>
+            <td class="py-2 px-3 text-xs sm:text-sm text-slate-600 hidden sm:table-cell font-medium leading-relaxed">
+              ${tested ? sol.scientificNote : '點選左側選單進行測試'}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function updateStepGuide(badge, text) {
+      document.getElementById('step-guide-badge').textContent = badge;
+      document.getElementById('step-guide-text').textContent = text;
+    }
+
+    /* ========================================================================
+       七、 階段三：自主判斷與「考考你」題庫
+       ======================================================================== */
+    function updateJudgmentPrompt() {
+      const sol = SOLUTIONS.find((s) => s.id === state.selectedSolId);
+      const questionText = document.getElementById('judge-question-text');
+      const statusPill = document.getElementById('judge-status-pill');
+      const feedbackBox = document.getElementById('judge-feedback-box');
+
+      if (!sol) {
+        statusPill.textContent = '尚未選擇水溶液';
+        statusPill.className = 'px-3 py-1 rounded-full text-xs sm:text-sm font-bold bg-slate-100 text-slate-600';
+        questionText.textContent = '請先在上方選擇一種水溶液，放入電極棒觀察燈泡是否發亮，再來判斷此水溶液是否導電！';
+        feedbackBox.innerHTML = '<span class="text-sm font-bold text-slate-600">✨ 觀察燈泡是否發亮後點擊上方按鈕，這裡會立即顯示科學原理與安全提醒！</span>';
+        feedbackBox.className = 'mt-3 rounded-2xl p-3.5 bg-slate-50 border border-slate-200 text-slate-700 text-sm font-medium min-h-[68px] flex items-center';
+        return;
+      }
+
+      const tested = !!state.testedMap[sol.id];
+      statusPill.textContent = tested ? '🧪 已完成實驗觀察' : '⏳ 等待放入電極棒';
+      statusPill.className = tested
+        ? 'px-3 py-1 rounded-full text-xs sm:text-sm font-black bg-blue-100 text-blue-800'
+        : 'px-3 py-1 rounded-full text-xs sm:text-sm font-bold bg-amber-100 text-amber-800';
+
+      questionText.innerHTML = `根據剛才的電路實驗，你認為【<strong class="text-amber-800 text-base sm:text-lg">${sol.name}</strong>】是否具有導電性？`;
+    }
+
+    function submitConductivityJudgment(isConductive) {
+      const sol = SOLUTIONS.find((s) => s.id === state.selectedSolId);
+      if (!sol) {
+        playSound('wrong');
+        showToast('請先選擇水溶液進行檢測喔！');
+        return;
+      }
+
+      const feedbackBox = document.getElementById('judge-feedback-box');
+      if (isConductive === sol.conductive) {
+        playSound('success');
+        feedbackBox.className = 'mt-3 rounded-2xl p-3.5 bg-emerald-50 border-2 border-emerald-400 text-emerald-950 text-sm font-bold min-h-[68px] flex flex-col justify-center shadow-xs';
+        feedbackBox.innerHTML = `
+          <div class="text-emerald-900 font-black text-sm sm:text-base mb-1">🎉 答對了！【${sol.name}】${sol.conductive ? '確實會導電！' : '確實不導電！'}</div>
+          <div class="text-emerald-950 text-xs sm:text-sm font-medium leading-relaxed">${sol.scientificNote} ${sol.safetyTip}</div>
+        `;
+      } else {
+        playSound('wrong');
+        feedbackBox.className = 'mt-3 rounded-2xl p-3.5 bg-rose-50 border-2 border-rose-300 text-rose-950 text-sm font-bold min-h-[68px] flex flex-col justify-center';
+        feedbackBox.innerHTML = `
+          <div class="text-rose-900 font-black text-sm sm:text-base mb-1">🤔 再仔細看一下燈泡喔！</div>
+          <div class="text-rose-950 text-xs sm:text-sm font-medium leading-relaxed">${sol.conductive ? '放入電極棒時燈泡有發光，代表電流形成通路，是「會導電」的喔！' : '放入電極棒時燈泡依然不亮，代表電路處於斷路狀態，是「不導電」的喔！'}</div>
+        `;
+      }
+    }
+
+    /* 考考你題庫邏輯 */
+    function renderQuizQuestion() {
+      const qIdx = state.quiz.index;
+      const qObj = QUIZ_QUESTIONS[qIdx];
+      const chosen = state.quiz.answeredMap[qIdx];
+
+      document.getElementById('quiz-progress-badge').textContent = `第 ${qIdx + 1} / 8 題`;
+      document.getElementById('quiz-score-badge').textContent = `答對：${state.quiz.score} 題`;
+      document.getElementById('quiz-question-text').textContent = `${qIdx + 1}. ${qObj.question}`;
+
+      const labels = ['A', 'B', 'C'];
+      const container = document.getElementById('quiz-options-container');
+      container.innerHTML = qObj.options.map((optText, idx) => {
+        let btnStyle = 'bg-white hover:bg-yellow-50/70 border-slate-200 text-slate-800';
+        let badgeStyle = 'bg-slate-100 text-slate-700';
+
+        if (chosen !== undefined) {
+          if (idx === qObj.answer) {
+            btnStyle = 'bg-emerald-50 border-emerald-400 text-emerald-950 font-black';
+            badgeStyle = 'bg-emerald-600 text-white';
+          } else if (idx === chosen && chosen !== qObj.answer) {
+            btnStyle = 'bg-rose-50 border-rose-300 text-rose-900';
+            badgeStyle = 'bg-rose-500 text-white';
+          } else {
+            btnStyle = 'bg-slate-50 border-slate-200 text-slate-400';
+          }
+        }
+
+        return `
+          <button
+            type="button"
+            onclick="answerQuizOption(${idx})"
+            class="w-full text-left px-3.5 py-2.5 rounded-2xl border-2 transition-all flex items-center gap-3 text-sm sm:text-base font-bold cursor-pointer ${btnStyle}"
+          >
+            <span class="w-6 h-6 rounded-lg flex items-center justify-center text-xs sm:text-sm font-black shrink-0 ${badgeStyle}">
+              ${labels[idx]}
+            </span>
+            <span class="leading-snug">${optText}</span>
+          </button>
+        `;
+      }).join('');
+      }).join('');
+
+      const feedbackEl = document.getElementById('quiz-feedback-text');
+      if (chosen === undefined) {
+        feedbackEl.className = 'text-xs sm:text-sm font-bold text-slate-600 flex-1';
+        feedbackEl.textContent = '👆 請點選上方答案！';
+      } else if (chosen === qObj.answer) {
+        feedbackEl.className = 'text-xs sm:text-sm font-bold text-emerald-800 flex-1';
+        feedbackEl.innerHTML = `🎉 <strong>答對了！</strong>${qObj.explanation}`;
+      } else {
+        feedbackEl.className = 'text-xs sm:text-sm font-bold text-rose-800 flex-1';
+        feedbackEl.innerHTML = `💡 <strong>再想一想喔：</strong>${qObj.explanation}`;
+      }
+
+      const nextBtn = document.getElementById('quiz-next-btn');
+      nextBtn.innerHTML = qIdx === QUIZ_QUESTIONS.length - 1
+        ? '<span>重新挑戰</span><span>🔄</span>'
+        : '<span>下一題</span><span>➡️</span>';
+    }
+
+    function answerQuizOption(optionIdx) {
+      const qIdx = state.quiz.index;
+      const qObj = QUIZ_QUESTIONS[qIdx];
+      const alreadyAnswered = state.quiz.answeredMap[qIdx] !== undefined;
+
+      state.quiz.answeredMap[qIdx] = optionIdx;
+
+      if (optionIdx === qObj.answer) {
+        playSound('success');
+        if (!alreadyAnswered) state.quiz.score += 1;
+      } else {
+        playSound('wrong');
+      }
+
+      renderQuizQuestion();
+    }
+
+    function nextQuizQuestion() {
+      playSound('click');
+      if (state.quiz.index < QUIZ_QUESTIONS.length - 1) {
+        state.quiz.index += 1;
+      } else {
+        state.quiz.index = 0;
+        state.quiz.score = 0;
+        state.quiz.answeredMap = {};
+        showToast('已重新開始「考考你」題庫挑戰！');
+      }
+      renderQuizQuestion();
+    }
+
+    /* ========================================================================
+       八、 重設與初始化
+       ======================================================================== */
+    function resetCurrentTest() {
+      playSound('click');
+      setProbesState(false);
+      state.selectedSolId = null;
+      document.getElementById('beaker-liquid-rect').setAttribute('fill', '#e0f2fe');
+      document.getElementById('beaker-liquid-surface').setAttribute('fill', '#bae6fd');
+      document.getElementById('current-solution-title').textContent = '目前檢測杯：尚未選擇水溶液';
+      renderSolutionList();
+      updateJudgmentPrompt();
+      showToast('已重設檢測燒杯');
+    }
+
+    function openResetAllModal() {
+      playSound('click');
+      document.getElementById('reset-all-modal').classList.remove('hidden');
+    }
+
+    function closeResetAllModal() {
+      playSound('click');
+      document.getElementById('reset-all-modal').classList.add('hidden');
+    }
+
+    function confirmResetAll() {
+      playSound('click');
+      resetCurrentTest();
+      state.selectedEquipments = {};
+      state.equipmentUnlocked = false;
+      state.testedMap = {};
+      state.quiz.index = 0;
+      state.quiz.score = 0;
+      state.quiz.answeredMap = {};
+
+      renderEquipmentShelf();
+      renderSolutionList();
+      renderObservationTable();
+      updateProgressUI();
+      renderQuizQuestion();
+
+      closeResetAllModal();
+      showToast('已重設所有器材與實驗進度');
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const toast = document.getElementById('toast-banner');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2400);
+    }
+
+    /* 初始化頁面 */
+    window.addEventListener('DOMContentLoaded', () => {
+      renderEquipmentShelf();
+      renderSolutionList();
+      renderObservationTable();
+      renderQuizQuestion();
+    });
+  </script>
+</body>
+</html>

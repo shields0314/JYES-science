@@ -1,0 +1,2414 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>國小五年級自然科學｜水溶液的酸鹼性互動實驗室（翰林版）</title>
+  <!-- 載入 Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 載入繁體中文無襯線圓潤字體 Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       全域視覺風格與自適應無障礙設計
+       ========================================================================== */
+    :root {
+      --bg-sky: #eef6ff;
+      --bg-cream: #fafcff;
+      --card-border: #dbeafe;
+      --primary-blue: #2563eb;
+      --accent-amber: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+      background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 45%, #fefce8 100%);
+      color: #1e293b;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* 無障礙高對比焦點外框 */
+    button:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 3px solid #f59e0b;
+      outline-offset: 2px;
+    }
+
+    /* ==========================================================================
+       自適應排版（跨載具適應：電腦、小筆電、平板、手機，嚴防奇怪空白）
+       ========================================================================== */
+    .lab-main-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    /* 中小螢幕筆電與桌機（1024px ~ 1279px）：330px 側欄 + 自適應 540px 高度 */
+    @media (min-width: 1024px) {
+      .lab-main-grid {
+        grid-template-columns: 330px 1fr;
+        align-items: stretch;
+        min-height: 540px;
+        height: 550px;
+      }
+      .block-a-panel,
+      .block-b-panel {
+        height: 100%;
+        min-height: 540px;
+      }
+    }
+
+    /* 大螢幕桌機（1280px 以上）：360px 側欄 + 560px 高度 */
+    @media (min-width: 1280px) {
+      .lab-main-grid {
+        grid-template-columns: 360px 1fr;
+        height: 560px;
+      }
+      .block-a-panel,
+      .block-b-panel {
+        height: 560px;
+      }
+    }
+
+    /* ==========================================================================
+       美化圓潤側邊捲軸（A 區塊水溶液清單專用）
+       ========================================================================== */
+    .custom-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: #93c5fd #eff6ff;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #eff6ff;
+      border-radius: 999px;
+      margin: 3px 0;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #60a5fa, #3b82f6);
+      border-radius: 999px;
+      border: 2px solid #eff6ff;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #3b82f6, #2563eb);
+    }
+
+    /* ==========================================================================
+       實驗舞台網格背景與操作器具
+       ========================================================================== */
+    .lab-stage-bg {
+      background-color: #f8fbff;
+      background-image:
+        linear-gradient(to right, rgba(147, 197, 253, 0.22) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(147, 197, 253, 0.22) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* 擬真滴管跟隨滑鼠與平滑過渡 */
+    .interactive-dropper {
+      position: absolute;
+      top: 2px;
+      transform: translateX(-50%);
+      transition: left 0.12s cubic-bezier(0.2, 0, 0, 1), transform 0.2s ease;
+      pointer-events: none;
+      z-index: 30;
+      filter: drop-shadow(0 6px 12px rgba(15, 23, 42, 0.18));
+    }
+
+    /* 橡膠頭擠壓動畫 */
+    @keyframes bulbSqueeze {
+      0% { transform: scale(1, 1); }
+      35% { transform: scale(1.15, 0.74); }
+      70% { transform: scale(0.94, 1.06); }
+      100% { transform: scale(1, 1); }
+    }
+
+    .animate-squeeze {
+      transform-origin: 50px 26px;
+      animation: bulbSqueeze 0.5s ease-in-out;
+    }
+
+    /* 水滴自由垂直落下動畫 */
+    @keyframes dropFallDynamic {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(0.85);
+      }
+      80% {
+        opacity: 1;
+        transform: translateY(var(--drop-fall-distance, 92px)) scale(1.08);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(calc(var(--drop-fall-distance, 92px) + 16px)) scale(1.35);
+      }
+    }
+
+    .dynamic-falling-droplet {
+      animation: dropFallDynamic 0.42s cubic-bezier(0.55, 0.08, 0.68, 0.53) forwards;
+    }
+
+    /* 試紙局部水滴擴散與毛細暈染動畫（模擬真實濾紙毛細擴散現象） */
+    @keyframes spotSpreadNuanced {
+      0% {
+        transform: translate(-50%, -50%) scale(0.12);
+        opacity: 0.2;
+      }
+      65% {
+        transform: translate(-50%, -50%) scale(1.08);
+        opacity: 0.98;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.94;
+      }
+    }
+
+    .litmus-spot-spread {
+      animation: spotSpreadNuanced 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* 瞄準十字輔助標線（提示操作者可自由點擊落點） */
+    .crosshair-target-guide {
+      background-image:
+        radial-gradient(circle, rgba(59, 130, 246, 0.3) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    /* 高麗菜汁試管氣泡上浮動畫 */
+    @keyframes bubbleRise {
+      0% { transform: translateY(0) scale(0.6); opacity: 0.85; }
+      100% { transform: translateY(-90px) scale(1.15); opacity: 0; }
+    }
+
+    .cabbage-bubble {
+      animation: bubbleRise 0.9s ease-out forwards;
+    }
+
+    /* 紙張微質地與陰影效果 */
+    .litmus-paper-texture {
+      box-shadow:
+        0 6px 14px -3px rgba(15, 23, 42, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .litmus-paper-texture:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 10px 20px -3px rgba(37, 99, 235, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+  </style>
+</head>
+<body class="p-2 sm:p-4 lg:p-5">
+
+  <!-- 主外層容器：置中並自適應寬度 -->
+  <div class="max-w-[1360px] mx-auto space-y-3 sm:space-y-4">
+
+    <!-- ======================================================================
+         頂部導覽列（標題、三大實驗模式分頁、音效開關）
+         ====================================================================== -->
+    <header class="bg-white/95 backdrop-blur border-2 border-blue-100 rounded-3xl shadow-sm px-3.5 py-3 sm:px-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      <!-- 標題與單元標籤 -->
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-2xl shadow-sm shrink-0 text-white font-bold">
+          🧪
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <h1 class="text-lg sm:text-2xl font-black text-slate-800 tracking-tight">
+              國小五年級自然科學｜水溶液的酸鹼性互動實驗室
+            </h1>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-bold bg-amber-100 text-amber-800 border border-amber-300">
+              翰林版單元
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
+            自由移動滴管選擇滴落位置，觀察真實酸鹼深淺變色，挑戰成為小小化學家！
+          </p>
+        </div>
+      </div>
+
+      <!-- 右側實驗模式分頁按鈕群 + 音效開關 -->
+      <div class="flex flex-wrap items-center gap-2">
+        <nav aria-label="實驗模式切換" class="flex flex-wrap items-center bg-slate-100 p-1.5 rounded-2xl border border-slate-200 gap-1.5">
+          <button
+            type="button"
+            id="tab-litmus"
+            onclick="switchMode('litmus')"
+            class="mode-tab px-3 py-2 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center gap-1.5 bg-blue-600 text-white shadow-sm"
+          >
+            <span>🧪</span>
+            <span>石蕊試紙實驗</span>
+          </button>
+          <button
+            type="button"
+            id="tab-universal"
+            onclick="switchMode('universal')"
+            class="mode-tab px-3 py-2 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center gap-1.5 text-slate-700 hover:bg-white/80"
+          >
+            <span>🌈</span>
+            <span>廣用試紙與色階</span>
+          </button>
+          <button
+            type="button"
+            id="tab-cabbage"
+            onclick="switchMode('cabbage')"
+            class="mode-tab px-3 py-2 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center gap-1.5 text-slate-700 hover:bg-white/80"
+          >
+            <span>🟣</span>
+            <span>高麗菜汁實驗</span>
+          </button>
+        </nav>
+
+        <!-- 回實驗室首頁大廳 -->
+        <a
+          href="index.html"
+          class="px-3 py-2 rounded-2xl text-xs sm:text-sm font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all flex items-center gap-1.5 shadow-xs"
+          title="回到國小自然科學實驗室大廳"
+        >
+          <span>🏠</span>
+          <span>實驗大廳</span>
+        </a>
+
+        <!-- 前往新實驗：水溶液混合與酸鹼中和 -->
+        <a
+          href="aqueous_mixing_lab.html"
+          class="px-3 py-2 rounded-2xl text-xs sm:text-sm font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-2 border-emerald-200 transition-all flex items-center gap-1.5 shadow-xs"
+        >
+          <span>⚗️</span>
+          <span>水溶液混合實驗室</span>
+        </a>
+
+        <!-- 前往新實驗：水溶液的導電性 -->
+        <a
+          href="aqueous_conductivity_lab.html"
+          class="px-3 py-2 rounded-2xl text-xs sm:text-sm font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 border-2 border-amber-200 transition-all flex items-center gap-1.5 shadow-xs"
+        >
+          <span>⚡</span>
+          <span>導電性實驗室</span>
+        </a>
+
+        <!-- 音效開關按鈕 -->
+        <button
+          type="button"
+          id="sound-toggle-btn"
+          onclick="toggleSound()"
+          aria-label="切換實驗音效"
+          class="px-3 py-2 rounded-2xl text-sm sm:text-base font-bold bg-sky-50 hover:bg-sky-100 text-sky-800 border-2 border-sky-200 transition-all flex items-center gap-1.5 shrink-0 shadow-sm"
+        >
+          <span id="sound-icon">🔊</span>
+          <span id="sound-label" class="hidden xs:inline">音效開</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 全通關慶祝橫幅（達成 7/7 時顯示） -->
+    <div
+      id="mastery-celebration-banner"
+      class="hidden bg-gradient-to-r from-amber-400 via-yellow-300 to-emerald-400 border-2 border-amber-500 rounded-3xl p-4 shadow-md text-slate-900 flex flex-col sm:flex-row items-center justify-between gap-3"
+    >
+      <div class="flex items-center gap-3">
+        <span class="text-4xl animate-bounce">🏆</span>
+        <div>
+          <h2 class="text-lg sm:text-xl font-black text-slate-900">
+            🎉 恭喜成為小小化學家！
+          </h2>
+          <p class="text-sm sm:text-base font-bold text-slate-800">
+            太棒了！你已經成功完成全部 7 種生活水溶液的酸鹼性動手實驗與自主判斷！
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        onclick="openResetAllModal()"
+        class="px-4 py-2 rounded-xl bg-white/95 hover:bg-white text-slate-800 font-bold text-base shadow border border-slate-300 shrink-0 cursor-pointer"
+      >
+        🔄 再玩一次
+      </button>
+    </div>
+
+    <!-- ======================================================================
+         主實驗區：左右雙欄自適應佈局（桌機等高切齊，筆電與手機無奇怪空位）
+         ====================================================================== -->
+    <main class="lab-main-grid">
+
+      <!-- ====================================================================
+           A 區塊（左側：水溶液樣本與控制面板）
+           ==================================================================== -->
+      <section
+        aria-label="水溶液樣本與控制面板"
+        class="block-a-panel bg-white rounded-3xl border-2 border-blue-100 shadow-sm p-3.5 sm:p-4 flex flex-col overflow-hidden"
+      >
+        <!-- 控制按鈕列：顯示/隱藏 pH 值 & 重設本實驗 -->
+        <div class="grid grid-cols-2 gap-2 mb-2.5 shrink-0">
+          <button
+            type="button"
+            id="toggle-ph-btn"
+            onclick="toggleShowPH()"
+            class="px-3 py-2.5 rounded-2xl text-[14px] sm:text-base font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border-2 border-indigo-200 transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+          >
+            <span id="ph-btn-icon">👁️</span>
+            <span id="ph-btn-text">顯示 pH 值</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="resetCurrentExperiment()"
+            class="px-3 py-2.5 rounded-2xl text-[14px] sm:text-base font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border-2 border-rose-200 transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+          >
+            <span>🔄</span>
+            <span>重設本實驗</span>
+          </button>
+        </div>
+
+        <!-- 學習通關進度條 -->
+        <div class="bg-gradient-to-r from-blue-50 to-emerald-50 rounded-2xl p-2.5 border border-blue-200/80 mb-2.5 shrink-0">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-sm sm:text-base font-extrabold text-slate-800 flex items-center gap-1.5">
+              <span>⭐</span>
+              <span>通關進度：<span id="progress-count" class="text-blue-700 text-base sm:text-lg">0 / 7</span></span>
+            </span>
+            <button
+              type="button"
+              onclick="openResetAllModal()"
+              class="text-xs font-bold text-slate-500 hover:text-rose-600 underline underline-offset-2 px-1 py-0.5 rounded cursor-pointer"
+              title="清除全部通關紀錄"
+            >
+              重設進度
+            </button>
+          </div>
+          <div class="w-full h-3 bg-white rounded-full overflow-hidden border border-blue-200 p-0.5">
+            <div
+              id="progress-bar-fill"
+              class="h-full rounded-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-500 transition-all duration-500"
+              style="width: 0%"
+            ></div>
+          </div>
+        </div>
+
+        <!-- 水溶液清單標題提示 -->
+        <div class="flex items-center justify-between px-1 mb-1.5 shrink-0">
+          <span class="text-xs sm:text-sm font-bold text-slate-600">🧪 點選燒杯吸取水溶液：</span>
+          <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">共 7 種</span>
+        </div>
+
+        <!-- 七種生活水溶液清單（自適應平板 2 欄 / 手機與桌機舒適捲軸） -->
+        <div
+          id="solution-list"
+          class="flex-1 overflow-y-auto custom-scrollbar pr-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2 max-h-[260px] sm:max-h-[220px] lg:max-h-none"
+        >
+          <!-- 由 JavaScript 動態渲染 7 種水溶液卡片 -->
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           B 區塊（右側：實驗操作主舞台）
+           ==================================================================== -->
+      <section
+        aria-label="實驗操作主舞台"
+        class="block-b-panel bg-white rounded-3xl border-2 border-blue-100 shadow-sm flex flex-col overflow-hidden relative min-h-[460px] sm:min-h-[500px]"
+      >
+        <!-- 頂部動態步驟引導列 -->
+        <div
+          id="step-guide-bar"
+          class="bg-gradient-to-r from-sky-600 to-blue-600 text-white px-3.5 py-2.5 sm:px-5 flex items-center justify-between gap-2 shrink-0 shadow-xs"
+        >
+          <div class="flex items-center gap-2">
+            <span id="step-guide-badge" class="px-2.5 py-0.5 rounded-lg bg-amber-400 text-slate-900 font-black text-xs sm:text-sm shrink-0">
+              步驟 1
+            </span>
+            <p id="step-guide-text" class="text-sm sm:text-base font-bold leading-snug">
+              👉 請先在左側點選一種水溶液燒杯，用滴管吸取液體！
+            </p>
+          </div>
+          <span id="current-mode-pill" class="hidden sm:inline-flex items-center px-2.5 py-1 rounded-full bg-white/20 text-white text-xs sm:text-sm font-bold shrink-0">
+            石蕊試紙模式
+          </span>
+        </div>
+
+        <!-- 實驗舞台主畫布區（緊湊平衡，無空置孤立區塊） -->
+        <div class="flex-1 lab-stage-bg relative flex flex-col justify-between overflow-hidden">
+
+          <!-- ================================================================
+               模式一：🧪 石蕊試紙實驗舞台（滑鼠/觸控跟隨滴管 + 自由落點 + 現實濃淡微變色）
+               ================================================================ -->
+          <div id="stage-litmus" class="flex-1 flex flex-col justify-between p-3 sm:p-4 h-full relative select-none">
+            
+            <!-- 上方操作軌道：滑鼠跟隨滴管與液體提示 -->
+            <div id="litmus-dropper-rail" class="relative h-[115px] sm:h-[125px] w-full shrink-0 overflow-visible">
+              <!-- 滑鼠跟隨式擬真滴管本體 -->
+              <div id="litmus-interactive-dropper" class="interactive-dropper flex flex-col items-center" style="left: 50%;">
+                <!-- 滴管狀態標籤 -->
+                <div
+                  id="litmus-dropper-label"
+                  class="mb-1 px-3 py-0.5 rounded-full text-xs sm:text-sm font-black bg-white border-2 border-slate-300 text-slate-600 shadow-sm transition-all whitespace-nowrap"
+                >
+                  滴管狀態：空滴管（請先點選左側燒杯）
+                </div>
+
+                <!-- 精緻 SVG 擬真玻璃滴管（玻璃刻度、反光、液體與動態落下水滴） -->
+                <div class="relative w-[78px] h-[90px] sm:w-[86px] sm:h-[96px] flex items-center justify-center">
+                  <svg viewBox="0 0 100 120" class="w-full h-full overflow-visible">
+                    <defs>
+                      <clipPath id="litmus-tube-clip">
+                        <path d="M 42 44 L 58 44 L 58 84 L 52 104 L 48 104 L 42 84 Z" />
+                      </clipPath>
+                      <linearGradient id="rubber-bulb-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#f87171" />
+                        <stop offset="40%" stop-color="#ef4444" />
+                        <stop offset="100%" stop-color="#b91c1c" />
+                      </linearGradient>
+                    </defs>
+
+                    <!-- 滴管管身內液體高度 -->
+                    <g clip-path="url(#litmus-tube-clip)">
+                      <rect
+                        id="litmus-dropper-liquid"
+                        x="40"
+                        y="105"
+                        width="20"
+                        height="0"
+                        fill="#38bdf8"
+                        class="transition-all duration-300"
+                      />
+                    </g>
+
+                    <!-- 玻璃管身外框 -->
+                    <path
+                      d="M 42 44 L 58 44 L 58 84 L 52 105 L 48 105 L 42 84 Z"
+                      fill="rgba(255, 255, 255, 0.42)"
+                      stroke="#475569"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    />
+                    <!-- 玻璃高光反光 -->
+                    <line x1="45" y1="48" x2="45" y2="84" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" opacity="0.85" />
+
+                    <!-- 刻度線 -->
+                    <line x1="52" y1="56" x2="57" y2="56" stroke="#334155" stroke-width="1.5" />
+                    <line x1="54" y1="64" x2="57" y2="64" stroke="#334155" stroke-width="1.2" />
+                    <line x1="52" y1="72" x2="57" y2="72" stroke="#334155" stroke-width="1.5" />
+                    <line x1="54" y1="80" x2="57" y2="80" stroke="#334155" stroke-width="1.2" />
+
+                    <!-- 玻璃頸環 -->
+                    <rect x="38" y="40" width="24" height="5" rx="2.5" fill="#cbd5e1" stroke="#475569" stroke-width="1.8" />
+
+                    <!-- 彈性紅色橡膠頭 -->
+                    <g id="litmus-rubber-bulb">
+                      <path
+                        d="M 38 40 C 34 32, 35 8, 50 8 C 65 8, 66 32, 62 40 Z"
+                        fill="url(#rubber-bulb-grad)"
+                        stroke="#991b1b"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M 43 33 C 41 25, 42 15, 48 13"
+                        fill="none"
+                        stroke="#fecaca"
+                        stroke-width="2.2"
+                        stroke-linecap="round"
+                        opacity="0.8"
+                      />
+                    </g>
+
+                    <!-- 落下水滴容器 -->
+                    <g id="litmus-droplet-container"></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- 中間操作區：白色實驗皿 + 紅藍雙色石蕊試紙（支援自由點擊指定落點） -->
+            <div
+              id="litmus-interactive-dish"
+              onpointermove="handlePaperPointerMove(event)"
+              class="bg-white/95 rounded-3xl border-2 border-slate-200 shadow-inner p-3 sm:p-4 my-auto relative"
+            >
+              <!-- 頂端操作提示指引 -->
+              <div class="flex items-center justify-between mb-2 px-1">
+                <span class="text-xs sm:text-sm font-extrabold text-blue-900 flex items-center gap-1.5">
+                  <span>🎯</span>
+                  <span>可移動滑鼠對準試紙「任意位置」點擊滴落！</span>
+                </span>
+                <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                  支援多次多點滴落
+                </span>
+              </div>
+
+              <!-- 雙色石蕊試紙並排欄位 -->
+              <div class="grid grid-cols-2 gap-2.5 sm:gap-4 items-stretch">
+                <!-- 左側：紅色石蕊試紙 -->
+                <div class="flex flex-col items-center justify-between bg-rose-50/70 rounded-2xl p-2 sm:p-3 border border-rose-200">
+                  <div class="flex items-center gap-1.5 mb-1.5">
+                    <span class="w-3.5 h-3.5 rounded-full bg-rose-500 inline-block"></span>
+                    <h3 class="text-sm sm:text-base font-black text-rose-900">紅色石蕊試紙</h3>
+                  </div>
+
+                  <!-- 點擊目標試紙 -->
+                  <div
+                    id="red-litmus-strip"
+                    onclick="handlePaperClick(event, 'red')"
+                    onpointermove="handlePaperPointerMove(event)"
+                    aria-label="點擊紅色石蕊試紙任意位置滴落"
+                    class="litmus-paper-texture relative w-full h-[88px] sm:h-[105px] rounded-xl bg-gradient-to-b from-[#fda4af] to-[#fb7185] border-2 border-rose-400 cursor-crosshair overflow-hidden flex items-center justify-center group"
+                  >
+                    <span id="red-litmus-placeholder" class="text-rose-950/80 font-extrabold text-xs sm:text-sm bg-white/60 px-2.5 py-1 rounded-full pointer-events-none group-hover:scale-105 transition-transform text-center">
+                      👆 點這裡滴落
+                    </span>
+                    <!-- 圓點渲染層 -->
+                    <div id="red-litmus-spots" class="absolute inset-0 pointer-events-none"></div>
+                  </div>
+
+                  <div class="mt-1.5 w-full bg-white rounded-lg px-2 py-1 border border-rose-200 text-center">
+                    <p class="text-[11px] sm:text-xs font-bold text-rose-800 leading-tight">
+                      遇鹼性變藍色；遇酸性或中性不變色
+                    </p>
+                  </div>
+                </div>
+
+                <!-- 右側：藍色石蕊試紙 -->
+                <div class="flex flex-col items-center justify-between bg-sky-50/70 rounded-2xl p-2 sm:p-3 border border-sky-200">
+                  <div class="flex items-center gap-1.5 mb-1.5">
+                    <span class="w-3.5 h-3.5 rounded-full bg-blue-600 inline-block"></span>
+                    <h3 class="text-sm sm:text-base font-black text-blue-900">藍色石蕊試紙</h3>
+                  </div>
+
+                  <!-- 點擊目標試紙 -->
+                  <div
+                    id="blue-litmus-strip"
+                    onclick="handlePaperClick(event, 'blue')"
+                    onpointermove="handlePaperPointerMove(event)"
+                    aria-label="點擊藍色石蕊試紙任意位置滴落"
+                    class="litmus-paper-texture relative w-full h-[88px] sm:h-[105px] rounded-xl bg-gradient-to-b from-[#93c5fd] to-[#60a5fa] border-2 border-blue-400 cursor-crosshair overflow-hidden flex items-center justify-center group"
+                  >
+                    <span id="blue-litmus-placeholder" class="text-blue-950/80 font-extrabold text-xs sm:text-sm bg-white/60 px-2.5 py-1 rounded-full pointer-events-none group-hover:scale-105 transition-transform text-center">
+                      👆 點這裡滴落
+                    </span>
+                    <!-- 圓點渲染層 -->
+                    <div id="blue-litmus-spots" class="absolute inset-0 pointer-events-none"></div>
+                  </div>
+
+                  <div class="mt-1.5 w-full bg-white rounded-lg px-2 py-1 border border-blue-200 text-center">
+                    <p class="text-[11px] sm:text-xs font-bold text-blue-800 leading-tight">
+                      遇酸性變紅色；遇鹼性或中性不變色
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 現實生活變色微差異科學解析 -->
+              <div id="litmus-nuance-callout" class="mt-2 text-center text-xs sm:text-sm font-extrabold text-slate-600 bg-amber-50/80 border border-amber-200 rounded-xl py-1.5 px-2.5 min-h-[30px] flex items-center justify-center">
+                💡 現實微觀察：不同水溶液酸鹼強弱不同，變色深淺濃淡也會有微妙差異喔！
+              </div>
+            </div>
+
+            <!-- 底部操作列：即時提醒與換新試紙 -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1.5 shrink-0">
+              <div id="litmus-observation-chip" class="text-xs sm:text-sm font-bold text-slate-600 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-xs">
+                💡 小提醒：兩張試紙都要滴看看，觀察哪一張變色喔！
+              </div>
+              <button
+                type="button"
+                onclick="clearLitmusPapers()"
+                class="px-3.5 py-1.5 rounded-xl text-sm sm:text-base font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border-2 border-amber-300 transition-all flex items-center gap-1.5 shadow-xs cursor-pointer shrink-0"
+              >
+                <span>🧻</span>
+                <span>更換全新試紙</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ================================================================
+               模式二：🌈 廣用試紙與色階舞台（支援自由點擊指定落點）
+               ================================================================ -->
+          <div id="stage-universal" class="hidden flex-1 flex flex-col justify-between p-3 sm:p-4 h-full relative select-none">
+            <!-- 頂部：pH 1～14 廣用試紙標準比色卡 -->
+            <div class="bg-white rounded-2xl border-2 border-slate-200 p-2 sm:p-2.5 shadow-xs shrink-0">
+              <div class="flex items-center justify-between text-[11px] sm:text-xs font-extrabold mb-1 px-1">
+                <span class="text-rose-600">◀ 酸性 (pH &lt; 7)</span>
+                <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">中性 (pH = 7)</span>
+                <span class="text-indigo-700">鹼性 (pH &gt; 7) ▶</span>
+              </div>
+              <!-- 14 個 pH 色塊 -->
+              <div id="ph-scale-grid" class="grid grid-cols-14 gap-0.5 sm:gap-1" style="grid-template-columns: repeat(14, minmax(0, 1fr));">
+                <!-- 由 JS 動態生成 pH 1~14 色塊 -->
+              </div>
+              <!-- 顏色最接近指示標籤 -->
+              <div id="ph-match-callout" class="mt-1.5 text-center text-xs sm:text-sm font-extrabold text-slate-500 min-h-[22px]">
+                點擊下方黃色廣用試紙任意位置滴落水溶液，即可對照色階！
+              </div>
+            </div>
+
+            <!-- 中央：滴管 + 黃色廣用試紙實驗盤 -->
+            <div class="flex-1 flex flex-col items-center justify-center my-1 relative">
+              <!-- 狀態提示 -->
+              <div
+                id="universal-dropper-label"
+                class="px-3 py-0.5 mb-1.5 rounded-full text-xs sm:text-sm font-extrabold bg-white border-2 border-slate-300 text-slate-600 shadow-xs"
+              >
+                滴管狀態：空滴管（請先點選左側燒杯）
+              </div>
+
+              <!-- 滴管 SVG -->
+              <div class="relative w-[76px] h-[82px] flex items-center justify-center -mb-2 z-10">
+                <svg viewBox="0 0 100 120" class="w-full h-full overflow-visible">
+                  <defs>
+                    <clipPath id="univ-tube-clip">
+                      <path d="M 42 44 L 58 44 L 58 84 L 52 104 L 48 104 L 42 84 Z" />
+                    </clipPath>
+                  </defs>
+                  <g clip-path="url(#univ-tube-clip)">
+                    <rect id="univ-dropper-liquid" x="40" y="105" width="20" height="0" fill="#38bdf8" class="transition-all duration-300" />
+                  </g>
+                  <path d="M 42 44 L 58 44 L 58 84 L 52 105 L 48 105 L 42 84 Z" fill="rgba(255,255,255,0.42)" stroke="#475569" stroke-width="2.2" />
+                  <line x1="52" y1="56" x2="57" y2="56" stroke="#334155" stroke-width="1.5" />
+                  <line x1="52" y1="70" x2="57" y2="70" stroke="#334155" stroke-width="1.5" />
+                  <rect x="38" y="40" width="24" height="5" rx="2.5" fill="#cbd5e1" stroke="#475569" stroke-width="1.8" />
+                  <g id="univ-rubber-bulb">
+                    <path d="M 38 40 C 34 32, 35 8, 50 8 C 65 8, 66 32, 62 40 Z" fill="url(#rubber-bulb-grad)" stroke="#991b1b" stroke-width="2" />
+                  </g>
+                  <g id="univ-droplet-container"></g>
+                </svg>
+              </div>
+
+              <!-- 白色實驗盤與黃色廣用試紙（點擊自由位置） -->
+              <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-inner px-4 py-3 sm:px-6 sm:py-3.5 flex flex-col items-center w-full max-w-[440px]">
+                <div
+                  id="universal-paper-strip"
+                  onclick="handleUniversalPaperClick(event)"
+                  aria-label="點擊黃色廣用試紙任意位置滴落"
+                  class="litmus-paper-texture relative w-full h-[88px] sm:h-[96px] rounded-2xl bg-gradient-to-b from-[#fef08a] to-[#fde047] border-2 border-amber-400 cursor-crosshair overflow-hidden flex items-center justify-center group"
+                >
+                  <span id="univ-paper-placeholder" class="text-amber-950/80 font-extrabold text-xs sm:text-sm bg-white/70 px-3 py-1 rounded-full pointer-events-none group-hover:scale-105 transition-transform">
+                    👆 點擊廣用試紙任意處滴落
+                  </span>
+                  <div id="univ-paper-spots" class="absolute inset-0 pointer-events-none"></div>
+                </div>
+                <p class="mt-1.5 text-[11px] sm:text-xs font-bold text-slate-600 text-center">
+                  廣用試紙原本為<span class="text-amber-600 font-black">黃色</span>，會隨 pH 值呈現紅、橙、黃、綠、藍或紫！
+                </p>
+              </div>
+            </div>
+
+            <!-- 底部操作列 -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1 shrink-0">
+              <div id="univ-result-badge" class="text-xs sm:text-sm font-bold text-slate-600 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-xs">
+                🌈 觀察變色圓點，找出上方最接近的 pH 色階！
+              </div>
+              <button
+                type="button"
+                onclick="clearUniversalPaper()"
+                class="px-3.5 py-1.5 rounded-xl text-sm sm:text-base font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border-2 border-amber-300 transition-all flex items-center gap-1.5 shadow-xs cursor-pointer shrink-0"
+              >
+                <span>🧻</span>
+                <span>更換全新廣用試紙</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ================================================================
+               模式三：🟣 高麗菜汁實驗舞台（對照組 vs 實驗組）
+               ================================================================ -->
+          <div id="stage-cabbage" class="hidden flex-1 flex flex-col justify-between p-3 sm:p-4 h-full relative select-none">
+            <!-- 試管架主舞台 -->
+            <div class="flex-1 bg-white/90 rounded-3xl border-2 border-purple-100 shadow-inner px-3 py-2 sm:px-6 flex flex-col justify-between relative overflow-hidden">
+              <!-- 狀態與按鈕 -->
+              <div class="flex flex-wrap items-center justify-between gap-2 z-10">
+                <span
+                  id="cabbage-dropper-label"
+                  class="px-3 py-0.5 rounded-full text-xs sm:text-sm font-extrabold bg-purple-50 border border-purple-200 text-purple-900"
+                >
+                  滴管狀態：空滴管（請先點選左側燒杯）
+                </span>
+                <button
+                  type="button"
+                  id="cabbage-drip-btn"
+                  onclick="dripIntoCabbage()"
+                  class="px-3.5 py-1 rounded-xl text-sm sm:text-base font-black bg-purple-600 hover:bg-purple-700 text-white shadow transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span>💧</span>
+                  <span>滴入水溶液混合</span>
+                </button>
+              </div>
+
+              <!-- 雙試管視覺舞台 -->
+              <div class="flex-1 flex items-end justify-center gap-8 sm:gap-16 pb-2 relative">
+                <!-- 左側：對照組試管（原液藍紫色） -->
+                <div class="flex flex-col items-center z-10">
+                  <span class="mb-1 px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-extrabold bg-purple-100 text-purple-900 border border-purple-300">
+                    對照組：原液（藍紫色）
+                  </span>
+                  <div class="relative w-[62px] h-[160px] sm:w-[68px] sm:h-[175px]">
+                    <svg viewBox="0 0 80 200" class="w-full h-full drop-shadow">
+                      <path d="M 20 65 L 60 65 L 60 165 C 60 180, 20 180, 20 165 Z" fill="#6d28d9" />
+                      <ellipse cx="40" cy="65" rx="20" ry="4" fill="#8b5cf6" />
+                      <path d="M 18 18 L 18 165 C 18 183, 62 183, 62 165 L 62 18" fill="rgba(255,255,255,0.22)" stroke="#475569" stroke-width="3" stroke-linecap="round" />
+                      <rect x="14" y="14" width="52" height="6" rx="3" fill="#e2e8f0" stroke="#475569" stroke-width="2.2" />
+                      <line x1="25" y1="28" x2="25" y2="155" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.7" />
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- 右側：實驗組試管（動態變色） -->
+                <div class="flex flex-col items-center z-10 relative">
+                  <div id="cabbage-test-badge" class="mb-1 px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-extrabold bg-amber-100 text-amber-900 border border-amber-300">
+                    實驗組：點試管滴入混合
+                  </div>
+
+                  <button
+                    type="button"
+                    onclick="dripIntoCabbage()"
+                    aria-label="點擊將水溶液滴入實驗組高麗菜汁試管"
+                    class="relative w-[62px] h-[160px] sm:w-[68px] sm:h-[175px] cursor-pointer group focus:outline-none"
+                  >
+                    <svg viewBox="0 0 80 200" class="w-full h-full drop-shadow group-hover:scale-105 transition-transform">
+                      <path id="cabbage-exp-liquid" d="M 20 65 L 60 65 L 60 165 C 60 180, 20 180, 20 165 Z" fill="#6d28d9" class="transition-colors duration-700" />
+                      <ellipse id="cabbage-exp-meniscus" cx="40" cy="65" rx="20" ry="4" fill="#8b5cf6" class="transition-colors duration-700" />
+                      <g id="cabbage-bubbles-group"></g>
+                      <path d="M 18 18 L 18 165 C 18 183, 62 183, 62 165 L 62 18" fill="rgba(255,255,255,0.22)" stroke="#475569" stroke-width="3" stroke-linecap="round" />
+                      <rect x="14" y="14" width="52" height="6" rx="3" fill="#e2e8f0" stroke="#475569" stroke-width="2.2" />
+                      <line x1="25" y1="28" x2="25" y2="155" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.7" />
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- 木製試管架 -->
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 w-[290px] sm:w-[360px] h-[14px] rounded-lg bg-gradient-to-b from-amber-500 to-amber-700 border-2 border-amber-900/40 shadow pointer-events-none"></div>
+                <div class="absolute bottom-1 left-1/2 -translate-x-1/2 w-[320px] sm:w-[390px] h-[10px] rounded-lg bg-gradient-to-b from-amber-600 to-amber-800 border-2 border-amber-950/40 shadow-md pointer-events-none"></div>
+              </div>
+            </div>
+
+            <!-- 下方變色說明卡與換新菜汁按鈕 -->
+            <div class="mt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 shrink-0">
+              <div class="flex-1 bg-white rounded-2xl border border-slate-200 p-1.5 grid grid-cols-3 gap-1.5 text-center shadow-xs">
+                <div class="rounded-xl bg-rose-50 border border-rose-200 py-1 px-1">
+                  <div class="w-4 h-4 rounded-full bg-[#e11d48] mx-auto mb-0.5"></div>
+                  <div class="text-[11px] sm:text-xs font-black text-rose-800">酸性：偏紅/桃紅</div>
+                </div>
+                <div class="rounded-xl bg-purple-50 border border-purple-200 py-1 px-1">
+                  <div class="w-4 h-4 rounded-full bg-[#6d28d9] mx-auto mb-0.5"></div>
+                  <div class="text-[11px] sm:text-xs font-black text-purple-800">中性：藍紫(不變)</div>
+                </div>
+                <div class="rounded-xl bg-teal-50 border border-teal-200 py-1 px-1">
+                  <div class="w-4 h-4 rounded-full bg-[#0d9488] mx-auto mb-0.5"></div>
+                  <div class="text-[11px] sm:text-xs font-black text-teal-800">鹼性：偏藍綠/綠</div>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onclick="resetCabbageTube()"
+                class="px-3.5 py-2 rounded-2xl text-sm sm:text-base font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border-2 border-amber-300 transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer shrink-0"
+              >
+                <span>🔄</span>
+                <span>換一管新菜汁</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <!-- ======================================================================
+         C 區塊（下方：自主判斷與「考考你」互動評量）
+         ====================================================================== -->
+    <section aria-label="自主判斷與觀念評量區" class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+
+      <!-- 左半部：🔍 實驗觀察自主判斷（通關任務） -->
+      <div class="bg-white rounded-3xl border-2 border-emerald-100 shadow-sm p-4 sm:p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <h2 class="text-base sm:text-lg font-black text-slate-800 flex items-center gap-2">
+              <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-base sm:text-lg">🔍</span>
+              <span>實驗觀察自主判斷（通關任務）</span>
+            </h2>
+            <span id="judge-status-pill" class="px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-bold bg-slate-100 text-slate-600">
+              尚未選擇水溶液
+            </span>
+          </div>
+
+          <!-- 題目敘述 -->
+          <p id="judge-question-text" class="text-sm sm:text-base font-bold text-slate-700 bg-slate-50 rounded-2xl p-3 border border-slate-200">
+            請先在上方左側選擇一種水溶液並完成實驗，再來判斷它是酸性、中性還是鹼性喔！
+          </p>
+
+          <!-- 實驗提醒 -->
+          <div
+            id="judge-experiment-reminder"
+            class="hidden mt-2 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs sm:text-sm font-bold flex items-center gap-1.5"
+          >
+            <span>💡</span>
+            <span id="judge-reminder-text">建議先在上方實驗台吸取並滴落水溶液觀察變化，再來作答喔！</span>
+          </div>
+
+          <!-- 三個大作答按鈕 -->
+          <div class="grid grid-cols-3 gap-2 sm:gap-3 mt-3">
+            <button
+              type="button"
+              id="btn-judge-acid"
+              onclick="submitJudgment('acid')"
+              class="py-3 px-2 rounded-2xl text-sm sm:text-base font-black bg-rose-50 hover:bg-rose-100 active:scale-95 text-rose-800 border-2 border-rose-300 shadow-xs transition-all flex flex-col sm:flex-row items-center justify-center gap-1 cursor-pointer"
+            >
+              <span>🔴</span>
+              <span>酸性水溶液</span>
+            </button>
+
+            <button
+              type="button"
+              id="btn-judge-neutral"
+              onclick="submitJudgment('neutral')"
+              class="py-3 px-2 rounded-2xl text-sm sm:text-base font-black bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 border-2 border-emerald-300 shadow-xs transition-all flex flex-col sm:flex-row items-center justify-center gap-1 cursor-pointer"
+            >
+              <span>🟢</span>
+              <span>中性水溶液</span>
+            </button>
+
+            <button
+              type="button"
+              id="btn-judge-base"
+              onclick="submitJudgment('base')"
+              class="py-3 px-2 rounded-2xl text-sm sm:text-base font-black bg-blue-50 hover:bg-blue-100 active:scale-95 text-blue-800 border-2 border-blue-300 shadow-xs transition-all flex flex-col sm:flex-row items-center justify-center gap-1 cursor-pointer"
+            >
+              <span>🔵</span>
+              <span>鹼性水溶液</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 即時回饋框 -->
+        <div
+          id="judge-feedback-box"
+          class="mt-3 rounded-2xl p-3 bg-sky-50/70 border border-sky-200 text-slate-600 text-xs sm:text-sm font-medium min-h-[68px] flex items-center"
+        >
+          <span>✨ 選擇上方任一性質按鈕後，這裡會立即顯示科學原理解析與通關結果！</span>
+        </div>
+      </div>
+
+      <!-- 右半部：🎓 翰林版「考考你」觀念挑戰 -->
+      <div class="bg-white rounded-3xl border-2 border-amber-100 shadow-sm p-4 sm:p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <h2 class="text-base sm:text-lg font-black text-slate-800 flex items-center gap-2">
+              <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-base sm:text-lg">🎓</span>
+              <span>翰林版「考考你」觀念挑戰</span>
+            </h2>
+            <div class="flex items-center gap-2">
+              <span id="quiz-progress-badge" class="px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-extrabold bg-amber-100 text-amber-900">
+                第 1 / 8 題
+              </span>
+              <span id="quiz-score-badge" class="px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-extrabold bg-emerald-100 text-emerald-800">
+                答對：0 題
+              </span>
+            </div>
+          </div>
+
+          <!-- 題幹 -->
+          <p id="quiz-question-text" class="text-sm sm:text-base font-bold text-slate-800 bg-amber-50/60 rounded-2xl p-3 border border-amber-200/80 leading-relaxed">
+            載入題目中...
+          </p>
+
+          <!-- 三個大選項按鈕 -->
+          <div id="quiz-options-container" class="space-y-1.5 mt-2.5">
+            <!-- 由 JS 動態渲染選項 -->
+          </div>
+        </div>
+
+        <!-- 考考你回饋與下一題控制列 -->
+        <div class="mt-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-slate-50 rounded-2xl p-2.5 border border-slate-200 min-h-[64px]">
+          <p id="quiz-feedback-text" class="text-xs sm:text-sm font-bold text-slate-600 flex-1">
+            👆 請點選上方你認為正確的答案選項！
+          </p>
+          <button
+            type="button"
+            id="quiz-next-btn"
+            onclick="nextQuizQuestion()"
+            class="px-3.5 py-2 rounded-xl text-sm sm:text-base font-black bg-blue-600 hover:bg-blue-700 text-white shadow transition-all shrink-0 flex items-center justify-center gap-1 cursor-pointer"
+          >
+            <span>下一題</span>
+            <span>➡️</span>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- ========================================================================
+       自訂確認對話框（絕不使用 window.confirm）
+       ======================================================================== -->
+  <div
+    id="reset-all-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title"
+    class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4"
+  >
+    <div class="bg-white rounded-3xl border-2 border-slate-200 max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl shrink-0">
+          🔄
+        </div>
+        <h3 id="modal-title" class="text-xl font-black text-slate-800">
+          確定要重設全部學習進度嗎？
+        </h3>
+      </div>
+      <p class="text-sm sm:text-base text-slate-600 font-medium leading-relaxed">
+        重設後，將會清除所有 7 種水溶液的「✅ 已通關」紀錄、實驗室試紙狀態與「考考你」分數，讓你可以從頭重新挑戰！
+      </p>
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <button
+          type="button"
+          onclick="closeResetAllModal()"
+          class="px-4 py-2 rounded-2xl text-base font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer"
+        >
+          先不要，取消
+        </button>
+        <button
+          type="button"
+          onclick="confirmResetAllProgress()"
+          class="px-5 py-2 rounded-2xl text-base font-black bg-rose-600 hover:bg-rose-700 text-white shadow transition-all cursor-pointer"
+        >
+          確定重設全部
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 輕量浮動提示 Toast -->
+  <div
+    id="toast-banner"
+    class="pointer-events-none fixed bottom-5 left-1/2 -translate-x-1/2 z-40 opacity-0 transition-all duration-300 bg-slate-900/90 text-white px-5 py-2 rounded-full text-sm sm:text-base font-bold shadow-lg"
+  >
+    已更新狀態
+  </div>
+
+  <script>
+    /* ========================================================================
+       一、 科學資料庫定義（七種生活水溶液已打散順序，包含現實酸鹼深淺濃淡模擬數據）
+       ======================================================================== */
+    const SOLUTIONS = [
+      {
+        id: 'lemon',
+        name: '檸檬汁',
+        type: 'acid',          // 酸性
+        typeLabel: '酸性水溶液',
+        ph: 2.4,
+        phNearest: 2,
+        universalColor: '#ea580c',
+        liquidColor: '#fef08a',
+        liquidStroke: '#eab308',
+        cloudy: true,
+        bubbles: false,
+        iconType: 'lemon',
+        // 現實深淺模擬色值
+        litmusBlueColor: {
+          core: '#991b1b',
+          edge: '#dc2626',
+          spread: 'rgba(220, 38, 38, 0.45)',
+          shadow: 'rgba(185, 28, 28, 0.5)',
+          label: '濃豔深緋紅色（強有機酸反應最濃郁）'
+        },
+        litmusRedWet: 'rgba(159, 18, 57, 0.35)',
+        cabbageColor: '#be123c',
+        cabbageMeniscus: '#e11d48',
+        nuanceDesc: '🔬 檸檬汁（pH 2.4）屬於較強天然酸，藍色石蕊試紙變為【濃豔深緋紅】，顏色比汽水更加深邃濃烈！',
+        litmusExplain: '檸檬汁含有豐富檸檬酸，屬於【酸性水溶液】，會使「藍色石蕊試紙」變紅色，而「紅色石蕊試紙」不變色。',
+        cabbageExplain: '檸檬汁屬於【酸性水溶液】，加入紫色高麗菜汁中會變成鮮明桃紅色！'
+      },
+      {
+        id: 'baking_soda',
+        name: '小蘇打水',
+        type: 'base',          // 鹼性
+        typeLabel: '鹼性水溶液',
+        ph: 8.5,
+        phNearest: 9,
+        universalColor: '#0284c7',
+        liquidColor: '#e2e8f0',
+        liquidStroke: '#94a3b8',
+        cloudy: true,
+        bubbles: false,
+        iconType: 'baking_soda',
+        // 現實深淺模擬色值（弱鹼呈柔和晴空天藍）
+        litmusRedColor: {
+          core: '#2563eb',
+          edge: '#3b82f6',
+          spread: 'rgba(96, 165, 250, 0.4)',
+          shadow: 'rgba(59, 130, 246, 0.4)',
+          label: '柔和天藍色（弱鹼反應淡雅均勻）'
+        },
+        litmusBlueWet: 'rgba(30, 58, 138, 0.28)',
+        cabbageColor: '#0d9488',
+        cabbageMeniscus: '#2dd4bf',
+        nuanceDesc: '🔬 小蘇打水（pH 8.5）屬於弱鹼性，紅色石蕊試紙呈現【柔和晴空天藍色】，比肥皂水的濃藍色稍微柔和！',
+        litmusExplain: '小蘇打水溶於水後呈弱鹼性，屬於【鹼性水溶液】，所以會使「紅色石蕊試紙」變藍色，而「藍色石蕊試紙」不變色。',
+        cabbageExplain: '小蘇打水屬於【鹼性水溶液】，加入紫色高麗菜汁中會變成藍綠色！'
+      },
+      {
+        id: 'salt_water',
+        name: '食鹽水',
+        type: 'neutral',       // 中性
+        typeLabel: '中性水溶液',
+        ph: 7.0,
+        phNearest: 7,
+        universalColor: '#22c55e',
+        liquidColor: '#e0f2fe',
+        liquidStroke: '#38bdf8',
+        cloudy: false,
+        bubbles: false,
+        iconType: 'salt',
+        litmusRedWet: 'rgba(159, 18, 57, 0.28)',
+        litmusBlueWet: 'rgba(30, 58, 138, 0.28)',
+        cabbageColor: '#6d28d9',
+        cabbageMeniscus: '#8b5cf6',
+        nuanceDesc: '🔬 食鹽水（pH 7.0）為中性水溶液，紅色與藍色試紙皆不變色，僅留下乾淨半透明的水分浸潤光澤。',
+        litmusExplain: '食鹽水是【中性水溶液】，因此滴在紅色和藍色石蕊試紙上，兩張試紙都只是變濕、皆不會變色！',
+        cabbageExplain: '食鹽水是【中性水溶液】，加入紫色高麗菜汁中依然維持原本的藍紫色（不變色）。'
+      },
+      {
+        id: 'vinegar',
+        name: '白醋',
+        type: 'acid',          // 酸性
+        typeLabel: '酸性水溶液',
+        ph: 2.9,
+        phNearest: 3,
+        universalColor: '#f97316',
+        liquidColor: '#fef3c7',
+        liquidStroke: '#f59e0b',
+        cloudy: false,
+        bubbles: false,
+        iconType: 'vinegar',
+        // 現實深淺模擬色值
+        litmusBlueColor: {
+          core: '#dc2626',
+          edge: '#ef4444',
+          spread: 'rgba(239, 68, 68, 0.42)',
+          shadow: 'rgba(220, 38, 38, 0.45)',
+          label: '鮮豔明亮純紅色（食用醋酸標準變色）'
+        },
+        litmusRedWet: 'rgba(190, 18, 60, 0.3)',
+        cabbageColor: '#e11d48',
+        cabbageMeniscus: '#fb7185',
+        nuanceDesc: '🔬 白醋（pH 2.9）含有約 5% 醋酸，使藍色石蕊試紙變為【鮮明正紅色】！',
+        litmusExplain: '白醋含有醋酸，屬於【酸性水溶液】，會使「藍色石蕊試紙」變成紅色，而「紅色石蕊試紙」不變色。',
+        cabbageExplain: '白醋屬於【酸性水溶液】，加入紫色高麗菜汁中會變成桃紅色！'
+      },
+      {
+        id: 'soapy_water',
+        name: '肥皂水',
+        type: 'base',          // 鹼性
+        typeLabel: '鹼性水溶液',
+        ph: 9.5,
+        phNearest: 10,
+        universalColor: '#2563eb',
+        liquidColor: '#f1f5f9',
+        liquidStroke: '#94a3b8',
+        cloudy: true,
+        bubbles: true,
+        iconType: 'soap',
+        // 現實深淺模擬色值（強鹼呈深邃皇家靛藍）
+        litmusRedColor: {
+          core: '#1e3a8a',
+          edge: '#1d4ed8',
+          spread: 'rgba(37, 99, 235, 0.5)',
+          shadow: 'rgba(30, 58, 138, 0.5)',
+          label: '深濃皇家靛藍色（鹼性較強反應極明顯）'
+        },
+        litmusBlueWet: 'rgba(30, 58, 138, 0.35)',
+        cabbageColor: '#15803d',
+        cabbageMeniscus: '#22c55e',
+        nuanceDesc: '🔬 肥皂水（pH 9.5）屬於較強生活鹼，紅色石蕊試紙變為【深濃皇家靛藍】，藍色極為飽和鮮豔！',
+        litmusExplain: '肥皂水是生活中常見的【鹼性水溶液】，會使「紅色石蕊試紙」變成藍色，而「藍色石蕊試紙」不變色。',
+        cabbageExplain: '肥皂水屬於【鹼性水溶液】，加入紫色高麗菜汁中會變成綠色！'
+      },
+      {
+        id: 'sugar_water',
+        name: '糖水',
+        type: 'neutral',       // 中性
+        typeLabel: '中性水溶液',
+        ph: 7.0,
+        phNearest: 7,
+        universalColor: '#22c55e',
+        liquidColor: '#e0f2fe',
+        liquidStroke: '#38bdf8',
+        cloudy: false,
+        bubbles: false,
+        iconType: 'sugar',
+        litmusRedWet: 'rgba(159, 18, 57, 0.28)',
+        litmusBlueWet: 'rgba(30, 58, 138, 0.28)',
+        cabbageColor: '#6d28d9',
+        cabbageMeniscus: '#8b5cf6',
+        nuanceDesc: '🔬 糖水（pH 7.0）為中性水溶液，紅色與藍色石蕊試紙都不變色，僅使試紙纖維微濕潤。',
+        litmusExplain: '糖水屬於【中性水溶液】，因此紅色與藍色石蕊試紙皆不會產生顏色變化。',
+        cabbageExplain: '糖水屬於【中性水溶液】，加入紫色高麗菜汁中維持藍紫色（不變色）。'
+      },
+      {
+        id: 'soda',
+        name: '汽水',
+        type: 'acid',          // 酸性
+        typeLabel: '酸性水溶液',
+        ph: 3.5,
+        phNearest: 4,
+        universalColor: '#fb923c',
+        liquidColor: '#dbeafe',
+        liquidStroke: '#60a5fa',
+        cloudy: false,
+        bubbles: true,
+        iconType: 'soda',
+        // 現實深淺模擬色值（弱酸呈柔和珊瑚淡粉紅）
+        litmusBlueColor: {
+          core: '#e11d48',
+          edge: '#f43f5e',
+          spread: 'rgba(251, 113, 133, 0.35)',
+          shadow: 'rgba(244, 63, 94, 0.35)',
+          label: '柔和珊瑚粉紅色（弱碳酸反應較淡雅）'
+        },
+        litmusRedWet: 'rgba(225, 29, 72, 0.25)',
+        cabbageColor: '#d946ef',
+        cabbageMeniscus: '#f472b6',
+        nuanceDesc: '🔬 汽水（pH 3.5）因溶有微弱碳酸，藍色試紙呈現【柔和珊瑚粉紅色】，明顯比檸檬汁（pH 2.4）更清淡！',
+        litmusExplain: '汽水裡溶有二氧化碳（形成碳酸），屬於【酸性水溶液】，會使「藍色石蕊試紙」變紅色，而「紅色石蕊試紙」不變色。',
+        cabbageExplain: '汽水屬於【酸性水溶液】，加入紫色高麗菜汁中會變成紫粉紅色！'
+      }
+    ];
+
+    /* pH 1 ~ 14 廣用試紙標準色階 */
+    const PH_SCALE = [
+      { ph: 1, color: '#dc2626', text: '#ffffff' },
+      { ph: 2, color: '#ea580c', text: '#ffffff' },
+      { ph: 3, color: '#f97316', text: '#ffffff' },
+      { ph: 4, color: '#fb923c', text: '#1e293b' },
+      { ph: 5, color: '#facc15', text: '#1e293b' },
+      { ph: 6, color: '#a3e635', text: '#1e293b' },
+      { ph: 7, color: '#22c55e', text: '#ffffff' },
+      { ph: 8, color: '#14b8a6', text: '#ffffff' },
+      { ph: 9, color: '#0284c7', text: '#ffffff' },
+      { ph: 10, color: '#2563eb', text: '#ffffff' },
+      { ph: 11, color: '#4f46e5', text: '#ffffff' },
+      { ph: 12, color: '#6d28d9', text: '#ffffff' },
+      { ph: 13, color: '#7e22ce', text: '#ffffff' },
+      { ph: 14, color: '#581c87', text: '#ffffff' }
+    ];
+
+    /* 翰林版國小五年級「考考你」精選 8 題 */
+    const QUIZ_QUESTIONS = [
+      {
+        question: '小華用滴管吸取「檸檬汁」，分別滴在紅色和藍色石蕊試紙上，會觀察到什麼變化？',
+        options: [
+          '紅色石蕊試紙不變色，藍色石蕊試紙變紅色',
+          '紅色石蕊試紙變藍色，藍色石蕊試紙不變色',
+          '兩張石蕊試紙都變成綠色'
+        ],
+        answer: 0,
+        explanation: '檸檬汁是酸性水溶液，酸性水溶液會使「藍色石蕊試紙變紅色」，紅色石蕊試紙則不變色喔！'
+      },
+      {
+        question: '下列哪一種生活水溶液滴在「紅色石蕊試紙」上，會讓試紙出現明顯的藍色圓點？',
+        options: [
+          '白醋',
+          '小蘇打水',
+          '食鹽水'
+        ],
+        answer: 1,
+        explanation: '小蘇打水是鹼性水溶液，鹼性水溶液會使「紅色石蕊試紙變藍色」；白醋是酸性，食鹽水是中性。'
+      },
+      {
+        question: '在實驗室發現一杯無色透明的「糖水」和一杯「食鹽水」，用石蕊試紙檢驗時會出現什麼結果？',
+        options: [
+          '兩杯都會讓藍色石蕊試紙變紅',
+          '兩杯都會讓紅色石蕊試紙變藍',
+          '紅色和藍色石蕊試紙都不會變色'
+        ],
+        answer: 2,
+        explanation: '糖水和食鹽水都是「中性水溶液」，中性水溶液不會使紅色或藍色石蕊試紙變色！'
+      },
+      {
+        question: '關於「紫色高麗菜汁」指示劑的變色特性，下列敘述哪一個是正確的？',
+        options: [
+          '加入肥皂水（鹼性）會變成桃紅色',
+          '加入白醋（酸性）會變成偏紅或桃紅色',
+          '加入食鹽水（中性）會變成藍綠色'
+        ],
+        answer: 1,
+        explanation: '紫色高麗菜汁遇到酸性會變偏紅／桃紅色；遇到中性維持藍紫色；遇到鹼性則會變成藍綠色！'
+      },
+      {
+        question: '使用「廣用試紙」檢驗水溶液時，如果試紙變色後對照比色卡接近 pH 7（綠色），代表這杯水溶液是什麼性質？',
+        options: [
+          '強酸性水溶液',
+          '中性水溶液',
+          '強鹼性水溶液'
+        ],
+        answer: 1,
+        explanation: '廣用試紙色階中，pH 小於 7 為酸性（偏紅橙黃），pH 等於 7 為中性（綠色），pH 大於 7 為鹼性（偏藍紫）。'
+      },
+      {
+        question: '炎熱的夏天喝「汽水」時覺得酸酸的，如果把汽水滴在藍色石蕊試紙上，試紙會如何變化？',
+        options: [
+          '變成紅色，因為汽水屬於酸性水溶液',
+          '變成藍色，因為汽水屬於鹼性水溶液',
+          '完全不會變色，因為汽水是透明的'
+        ],
+        answer: 0,
+        explanation: '汽水中溶有二氧化碳氣體，溶於水後呈酸性，因此會使藍色石蕊試紙變成紅色！'
+      },
+      {
+        question: '小美用紫色高麗菜汁檢驗「肥皂水」，試管裡的菜汁變成了綠色。這代表肥皂水屬於哪一類？',
+        options: [
+          '酸性水溶液',
+          '中性水溶液',
+          '鹼性水溶液'
+        ],
+        answer: 2,
+        explanation: '紫色高麗菜汁遇到鹼性水溶液會變成藍綠色或綠色，肥皂水正是常見的鹼性水溶液！'
+      },
+      {
+        question: '進行自然科實驗時，桌上有兩杯標籤脫落的透明水溶液，下列哪一種辨識方法最安全又科學？',
+        options: [
+          '用嘴巴喝喝看是酸的還是鹹的',
+          '用滴管吸取後滴在石蕊試紙或高麗菜汁中觀察變色',
+          '直接用手去摸摸看會不會滑滑的'
+        ],
+        answer: 1,
+        explanation: '實驗室裡的水溶液絕對不可以用嘴巴嘗或直接用手觸摸！使用石蕊試紙、廣用試紙或高麗菜汁檢驗才安全科學。'
+      }
+    ];
+
+    /* ========================================================================
+       二、 應用程式狀態管理
+       ======================================================================== */
+    const state = {
+      mode: 'litmus',          // 'litmus' | 'universal' | 'cabbage'
+      selectedId: null,        // 目前吸取的水溶液 ID
+      showPH: false,           // 是否顯示 pH 值
+      soundEnabled: true,      // Web Audio API 音效開關
+      testedMap: {},           // { [solutionId]: true }
+      masteredMap: {},         // { [solutionId]: true }
+
+      // 模式一：石蕊試紙（支援多點自由座標滴落）
+      litmus: {
+        redDrops: [],          // [{ x, y, solId, timestamp }]
+        blueDrops: [],
+        lastNuanceText: ''
+      },
+
+      // 模式二：廣用試紙
+      universal: {
+        drops: [],             // [{ x, y, color, phNearest, solutionName }]
+        lastMatchedPH: null,
+        lastSolutionName: ''
+      },
+
+      // 模式三：高麗菜汁
+      cabbage: {
+        currentColor: '#6d28d9',
+        meniscusColor: '#8b5cf6',
+        testedName: null,
+        testedType: null
+      },
+
+      // C 區塊：考考你題庫
+      quiz: {
+        index: 0,
+        score: 0,
+        answeredMap: {}
+      }
+    };
+
+    /* ========================================================================
+       三、 Web Audio API 合成音效引擎（無外部檔案依賴）
+       ======================================================================== */
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSound(type) {
+      if (!state.soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        if (type === 'suction') {
+          // 氣泡吸取音
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(260, now);
+          osc.frequency.exponentialRampToValueAtTime(680, now + 0.14);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.16);
+        } else if (type === 'drop') {
+          // 清脆水滴音
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(540, now);
+          osc.frequency.exponentialRampToValueAtTime(1020, now + 0.12);
+          gain.gain.setValueAtTime(0.22, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.15);
+        } else if (type === 'success') {
+          // 上升和弦音
+          const notes = [523.25, 659.25, 783.99, 1046.5];
+          notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            const start = now + idx * 0.08;
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.18, start);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.28);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + 0.28);
+          });
+        } else if (type === 'wrong') {
+          // 提示低音
+          const notes = [330, 261.63];
+          notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            const start = now + idx * 0.14;
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.15, start);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.22);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + 0.22);
+          });
+        } else if (type === 'click') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, now);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        }
+      } catch (e) {
+        // 忽略無音效環境錯誤
+      }
+    }
+
+    function toggleSound() {
+      state.soundEnabled = !state.soundEnabled;
+      const icon = document.getElementById('sound-icon');
+      const label = document.getElementById('sound-label');
+      if (state.soundEnabled) {
+        icon.textContent = '🔊';
+        label.textContent = '音效開';
+        playSound('click');
+      } else {
+        icon.textContent = '🔇';
+        label.textContent = '音效關';
+      }
+    }
+
+    /* ========================================================================
+       四、 SVG 卡通圖標生成器（燒杯與生活小徽章）
+       ======================================================================== */
+    function getItemBadgeSVG(iconType) {
+      switch (iconType) {
+        case 'lemon':
+          return `<svg viewBox="0 0 32 32" class="w-5 h-5 sm:w-6 sm:h-6 shrink-0"><ellipse cx="16" cy="17" rx="11" ry="8" fill="#facc15" stroke="#ca8a04" stroke-width="2"/><circle cx="27" cy="17" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="1.5"/><circle cx="5" cy="17" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="1.5"/><path d="M16 9 C18 5, 23 5, 24 8 C20 10, 17 10, 16 9 Z" fill="#22c55e"/></svg>`;
+        case 'baking_soda':
+          return `<svg viewBox="0 0 32 32" class="w-5 h-5 sm:w-6 sm:h-6 shrink-0"><rect x="7" y="5" width="18" height="23" rx="3" fill="#38bdf8" stroke="#0284c7" stroke-width="2"/><rect x="10" y="10" width="12" height="9" rx="1.5" fill="#ffffff"/><circle cx="16" cy="14.5" r="2.5" fill="#f59e0b"/></svg>`;
+        case 'salt':
+          return `<svg viewBox="0 0 32 32" class="w-5 h-5 sm:w-6 sm:h-6 shrink-0"><path d="M10 11 L22 11 L24 27 L8 27 Z" fill="#f8fafc" stroke="#64748b" stroke-width="2" stroke-linejoin="round"/><path d="M11 11 C11 6, 21 6, 21 11 Z" fill="#94a3b8" stroke="#475569" stroke-width="1.8"/><circle cx="14" cy="19" r="1.2" fill="#94a3b8"/><circle cx="18" cy="21" r="1.2" fill="#94a3b8"/></svg>`;
+        case 'vinegar':
+          return `<svg viewBox="0 0 32 32" class="w-5 h-5 sm:w-6 sm:h-6 shrink-0"><rect x="13" y="4" width="6" height="5" rx="1" fill="#dc2626"/><path d="M13 9 L19 9 L22 15 L22 27 L10 27 L10 15 Z" fill="#fde68a" stroke="#d97706" stroke-width="2" stroke-linejoin="round"/><rect x="12" y="17" width="8" height="5" fill="#ffffff"/></svg>`;
+        case 'soap':
+          return `<svg viewBox="0 0 32 32" class="w-5 h-5 sm:w-6 sm:h-6 shrink-0"><rect x="6" y="13" width="18" height="12" rx="5" fill="#f472b6" stroke="#db2777" stroke-width="2"/><circle cx="23" cy="9" r="3.5" fill="#bae6fd" stroke="#38bdf8" stroke-width="1.5"/><circle cx="17" cy="7" r="2" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1.2"/></svg>`;
+        case 'sugar':
+          return `<svg viewBox="0 0 32 32" class="w-5 h-5 sm:w-6 sm:h-6 shrink-0"><rect x="7" y="14" width="10" height="10" rx="2" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/><rect x="15" y="10" width="10" height="10" rx="2" fill="#f8fafc" stroke="#64748b" stroke-width="2"/></svg>`;
+        case 'soda':
+          return `<svg viewBox="0 0 32 32" class="w-5 h-5 sm:w-6 sm:h-6 shrink-0"><rect x="9" y="6" width="14" height="21" rx="3" fill="#ef4444" stroke="#b91c1c" stroke-width="2"/><path d="M9 14 Q16 11 23 14 L23 19 Q16 16 9 19 Z" fill="#ffffff"/><line x1="15" y1="3" x2="19" y2="6" stroke="#64748b" stroke-width="2" stroke-linecap="round"/></svg>`;
+        default:
+          return '';
+      }
+    }
+
+    function getMiniBeakerSVG(sol) {
+      const bubblesSVG = sol.bubbles
+        ? `<circle cx="18" cy="30" r="1.4" fill="#ffffff" opacity="0.9"/>
+           <circle cx="25" cy="26" r="1.7" fill="#ffffff" opacity="0.9"/>
+           <circle cx="21" cy="22" r="1.2" fill="#ffffff" opacity="0.9"/>`
+        : '';
+      return `
+        <svg viewBox="0 0 44 46" class="w-9 h-9 sm:w-11 sm:h-11 shrink-0">
+          <path d="M 10 20 L 34 20 L 34 37 C 34 40, 10 40, 10 37 Z" fill="${sol.liquidColor}" />
+          <ellipse cx="22" cy="20" rx="12" ry="2.2" fill="${sol.liquidStroke}" opacity="0.45" />
+          ${bubblesSVG}
+          <path d="M 8 10 L 10 12 L 10 37 C 10 41, 34 41, 34 37 L 34 10" fill="none" stroke="#475569" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+          <line x1="27" y1="25" x2="32" y2="25" stroke="#64748b" stroke-width="1.3" />
+          <line x1="29" y1="31" x2="32" y2="31" stroke="#64748b" stroke-width="1.3" />
+        </svg>
+      `;
+    }
+
+    /* ========================================================================
+       五、 渲染 A 區塊：生活水溶液清單卡片
+       ======================================================================== */
+    function renderSolutionList() {
+      const container = document.getElementById('solution-list');
+      container.innerHTML = SOLUTIONS.map((sol) => {
+        const isSelected = state.selectedId === sol.id;
+        const isMastered = !!state.masteredMap[sol.id];
+        const isTested = !!state.testedMap[sol.id];
+
+        let statusBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-500">未測試</span>`;
+        if (isMastered) {
+          statusBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">✅ 已通關</span>`;
+        } else if (isTested) {
+          statusBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-sky-100 text-sky-800 border border-sky-300">🧪 已實驗</span>`;
+        }
+
+        const cardClass = isSelected
+          ? 'bg-blue-50/95 border-blue-500 ring-2 ring-blue-300 shadow-md'
+          : isMastered
+            ? 'bg-emerald-50/35 border-emerald-200 hover:border-blue-300 hover:bg-blue-50/40'
+            : 'bg-white border-slate-200 hover:border-blue-300 hover:bg-sky-50/40';
+
+        const phBadge = state.showPH
+          ? `<span class="px-1.5 py-0.5 rounded-md text-[11px] font-black bg-indigo-100 text-indigo-800 border border-indigo-200">pH ${sol.ph.toFixed(1)}</span>`
+          : '';
+
+        return `
+          <button
+            type="button"
+            onclick="selectSolution('${sol.id}')"
+            class="w-full text-left rounded-2xl border-2 p-2 sm:p-2.5 transition-all flex items-center justify-between gap-2 cursor-pointer ${cardClass}"
+          >
+            <div class="flex items-center gap-2 min-w-0">
+              ${getMiniBeakerSVG(sol)}
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5">
+                  ${getItemBadgeSVG(sol.iconType)}
+                  <span class="text-base sm:text-lg font-black text-slate-800 truncate">${sol.name}</span>
+                </div>
+                <div class="flex flex-wrap items-center gap-1 mt-0.5">
+                  ${statusBadge}
+                  ${phBadge}
+                </div>
+              </div>
+            </div>
+
+            <div class="shrink-0">
+              <span class="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-xl ${isSelected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'} font-bold text-xs sm:text-sm">
+                ${isSelected ? '💧' : '吸取'}
+              </span>
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function updateProgressUI() {
+      const masteredCount = Object.keys(state.masteredMap).length;
+      const total = SOLUTIONS.length;
+      document.getElementById('progress-count').textContent = `${masteredCount} / ${total}`;
+      const percent = Math.round((masteredCount / total) * 100);
+      document.getElementById('progress-bar-fill').style.width = `${percent}%`;
+
+      const banner = document.getElementById('mastery-celebration-banner');
+      if (masteredCount === total) {
+        banner.classList.remove('hidden');
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+
+    /* ========================================================================
+       六、 水溶液選取與滴管狀態更新
+       ======================================================================== */
+    function getSelectedSolution() {
+      return SOLUTIONS.find((s) => s.id === state.selectedId) || null;
+    }
+
+    function selectSolution(id) {
+      state.selectedId = id;
+      const sol = getSelectedSolution();
+      if (!sol) return;
+
+      playSound('suction');
+      renderSolutionList();
+      updateDropperVisuals(sol, true);
+      updateStepGuide(
+        '步驟 2',
+        `👉 滴管已吸取【${sol.name}】，請在試紙上選擇「任一位置」點擊滴落！`
+      );
+      updateJudgmentPanel();
+    }
+
+    function updateStepGuide(badge, text) {
+      document.getElementById('step-guide-badge').textContent = badge;
+      document.getElementById('step-guide-text').textContent = text;
+    }
+
+    function updateDropperVisuals(sol, animateSqueeze = false) {
+      const litmusLiquid = document.getElementById('litmus-dropper-liquid');
+      const litmusLabel = document.getElementById('litmus-dropper-label');
+      const litmusBulb = document.getElementById('litmus-rubber-bulb');
+
+      const univLiquid = document.getElementById('univ-dropper-liquid');
+      const univLabel = document.getElementById('universal-dropper-label');
+      const univBulb = document.getElementById('univ-rubber-bulb');
+
+      const cabbageLabel = document.getElementById('cabbage-dropper-label');
+
+      if (!sol) {
+        litmusLiquid.setAttribute('y', '105');
+        litmusLiquid.setAttribute('height', '0');
+        litmusLabel.textContent = '滴管狀態：空滴管（請先點選左側燒杯）';
+        litmusLabel.className = 'mb-1 px-3 py-0.5 rounded-full text-xs sm:text-sm font-extrabold bg-white border-2 border-slate-300 text-slate-600 shadow-xs transition-all whitespace-nowrap';
+
+        univLiquid.setAttribute('y', '105');
+        univLiquid.setAttribute('height', '0');
+        univLabel.textContent = '滴管狀態：空滴管（請先點選左側燒杯）';
+        univLabel.className = 'px-3 py-0.5 mb-1.5 rounded-full text-xs sm:text-sm font-extrabold bg-white border-2 border-slate-300 text-slate-600 shadow-xs whitespace-nowrap';
+
+        cabbageLabel.textContent = '滴管狀態：空滴管（請先點選左側燒杯）';
+        return;
+      }
+
+      const visibleTubeFill = sol.liquidColor === '#f1f5f9' || sol.liquidColor === '#e2e8f0'
+        ? '#cbd5e1'
+        : sol.liquidStroke;
+
+      litmusLiquid.setAttribute('fill', visibleTubeFill);
+      litmusLiquid.setAttribute('y', '56');
+      litmusLiquid.setAttribute('height', '49');
+      litmusLabel.textContent = `滴管內：【${sol.name}】`;
+      litmusLabel.className = 'mb-1 px-3.5 py-0.5 rounded-full text-xs sm:text-sm font-black bg-blue-600 border-2 border-blue-700 text-white shadow-sm transition-all whitespace-nowrap';
+
+      univLiquid.setAttribute('fill', visibleTubeFill);
+      univLiquid.setAttribute('y', '56');
+      univLiquid.setAttribute('height', '49');
+      univLabel.textContent = `滴管內：【${sol.name}】`;
+      univLabel.className = 'px-3.5 py-0.5 mb-1.5 rounded-full text-xs sm:text-sm font-black bg-blue-600 border-2 border-blue-700 text-white shadow-sm whitespace-nowrap';
+
+      cabbageLabel.textContent = `滴管內：【${sol.name}】`;
+
+      if (animateSqueeze) {
+        litmusBulb.classList.remove('animate-squeeze');
+        univBulb.classList.remove('animate-squeeze');
+        void litmusBulb.offsetWidth;
+        litmusBulb.classList.add('animate-squeeze');
+        univBulb.classList.add('animate-squeeze');
+      }
+    }
+
+    /* ========================================================================
+       七、 模式切換邏輯
+       ======================================================================== */
+    function switchMode(newMode) {
+      state.mode = newMode;
+      playSound('click');
+
+      const modes = ['litmus', 'universal', 'cabbage'];
+      const modeNames = {
+        litmus: '石蕊試紙模式',
+        universal: '廣用試紙模式',
+        cabbage: '高麗菜汁模式'
+      };
+
+      modes.forEach((m) => {
+        const tab = document.getElementById(`tab-${m}`);
+        const stage = document.getElementById(`stage-${m}`);
+        if (m === newMode) {
+          tab.className = 'mode-tab px-3 py-2 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center gap-1.5 bg-blue-600 text-white shadow-sm';
+          stage.classList.remove('hidden');
+        } else {
+          tab.className = 'mode-tab px-3 py-2 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center gap-1.5 text-slate-700 hover:bg-white/80';
+          stage.classList.add('hidden');
+        }
+      });
+
+      document.getElementById('current-mode-pill').textContent = modeNames[newMode];
+
+      const sol = getSelectedSolution();
+      if (!sol) {
+        updateStepGuide('步驟 1', '👉 請先在左側點選一種水溶液燒杯，用滴管吸取液體！');
+      } else {
+        updateStepGuide('步驟 2', `👉 滴管內有【${sol.name}】，請在試紙上點擊選擇滴落位置！`);
+      }
+    }
+
+    /* ========================================================================
+       八、 模式一：石蕊試紙滑鼠/觸控即時跟隨與精準自由落點互動
+       ======================================================================== */
+
+    // 滑鼠/手指在試紙區域移動時，即時讓滴管水平跟隨對齊
+    function handlePaperPointerMove(event) {
+      const rail = document.getElementById('litmus-dropper-rail');
+      const mover = document.getElementById('litmus-interactive-dropper');
+      if (!rail || !mover) return;
+
+      const railRect = rail.getBoundingClientRect();
+      const clientX = event.clientX;
+      const relX = clientX - railRect.left;
+      const clampedX = Math.max(30, Math.min(railRect.width - 30, relX));
+
+      mover.style.left = `${clampedX}px`;
+    }
+
+    // 當操作者點擊試紙任意位置時，計算該點相對百分比並滴落
+    function handlePaperClick(event, paperColor) {
+      const sol = getSelectedSolution();
+      if (!sol) {
+        playSound('wrong');
+        updateStepGuide('小提醒', '⚠️ 滴管裡面還是空的喔！請先在左側點選一種水溶液燒杯來吸取液體！');
+        showToast('請先點選左側燒杯吸取水溶液！');
+        return;
+      }
+
+      // 取得目標試紙容器並計算落點百分比
+      const stripEl = document.getElementById(`${paperColor}-litmus-strip`);
+      const rect = stripEl.getBoundingClientRect();
+      const clickX = ((event.clientX - rect.left) / rect.width) * 100;
+      const clickY = ((event.clientY - rect.top) / rect.height) * 100;
+
+      // 限制落點在試紙有效範圍內（避免超出邊緣）
+      const posX = Math.max(10, Math.min(90, clickX));
+      const posY = Math.max(16, Math.min(84, clickY));
+
+      // 同步滴管位置對齊該點 X 座標
+      const rail = document.getElementById('litmus-dropper-rail');
+      const mover = document.getElementById('litmus-interactive-dropper');
+      if (rail && mover) {
+        const railRect = rail.getBoundingClientRect();
+        const clampedRailX = Math.max(30, Math.min(railRect.width - 30, event.clientX - railRect.left));
+        mover.style.left = `${clampedRailX}px`;
+      }
+
+      executeLitmusDrop(paperColor, posX, posY, sol);
+    }
+
+    // 執行滴管擠壓、水滴落下動畫、產生真實深淺斑點
+    function executeLitmusDrop(paperColor, posX, posY, sol) {
+      playSound('drop');
+
+      // 橡膠頭擠壓
+      const bulb = document.getElementById('litmus-rubber-bulb');
+      bulb.classList.remove('animate-squeeze');
+      void bulb.offsetWidth;
+      bulb.classList.add('animate-squeeze');
+
+      // 水滴垂直落下 SVG
+      const dropletContainer = document.getElementById('litmus-droplet-container');
+      const dropFill = sol.liquidStroke || '#38bdf8';
+      dropletContainer.innerHTML = `
+        <path
+          d="M 50 105 C 50 105, 44 114, 44 118 C 44 121.5, 46.7 124, 50 124 C 53.3 124, 56 121.5, 56 118 C 56 114, 50 105, 50 105 Z"
+          fill="${dropFill}"
+          stroke="#0284c7"
+          stroke-width="1"
+          class="dynamic-falling-droplet"
+        />
+      `;
+
+      // 記錄實驗狀態
+      state.testedMap[sol.id] = true;
+      renderSolutionList();
+      updateJudgmentPanel();
+
+      // 加入到對應試紙斑點紀錄清單
+      const targetList = paperColor === 'red' ? state.litmus.redDrops : state.litmus.blueDrops;
+      targetList.push({
+        x: posX,
+        y: posY,
+        solId: sol.id,
+        timestamp: Date.now()
+      });
+      // 最多保留最新 8 顆滴落圓點
+      if (targetList.length > 8) targetList.shift();
+
+      // 延遲 240ms 配合水滴觸底，生成擴散斑點
+      setTimeout(() => {
+        renderLitmusSpots();
+        updateLitmusNuanceCallout(sol, paperColor);
+        updateLitmusObservationHint(sol);
+      }, 240);
+
+      updateStepGuide(
+        '步驟 3',
+        `✨ 觀察試紙變色！請至下方「C 區塊」判斷【${sol.name}】是酸性、中性還是鹼性喔！`
+      );
+    }
+
+    // 渲染紅色與藍色石蕊試紙上的變色斑點（依溶液酸鹼真實濃淡與濕潤水漬呈現）
+    function renderLitmusSpots() {
+      // 1. 紅色石蕊試紙
+      const redContainer = document.getElementById('red-litmus-spots');
+      const redPlaceholder = document.getElementById('red-litmus-placeholder');
+      redPlaceholder.style.display = state.litmus.redDrops.length > 0 ? 'none' : 'inline-block';
+
+      redContainer.innerHTML = state.litmus.redDrops.map((drop) => {
+        const sol = SOLUTIONS.find((s) => s.id === drop.solId) || getSelectedSolution();
+        if (!sol) return '';
+
+        // 科學邏輯：紅色石蕊試紙遇鹼性變藍色（肥皂水強鹼濃藍、小蘇打弱鹼天藍）；遇酸性或中性不變色（僅深粉紅水漬）
+        if (sol.type === 'base' && sol.litmusRedColor) {
+          const cfg = sol.litmusRedColor;
+          return `
+            <div
+              class="litmus-spot-spread absolute rounded-full pointer-events-none"
+              style="
+                left: ${drop.x}%;
+                top: ${drop.y}%;
+                width: 38px;
+                height: 38px;
+                background: radial-gradient(circle, ${cfg.core} 0%, ${cfg.edge} 60%, ${cfg.spread} 86%, transparent 100%);
+                box-shadow: 0 0 10px ${cfg.shadow};
+              "
+            ></div>
+          `;
+        } else {
+          // 酸性或中性：不變色，呈現半透明濕潤水漬圈
+          const wetTone = sol.litmusRedWet || 'rgba(159, 18, 57, 0.28)';
+          return `
+            <div
+              class="litmus-spot-spread absolute rounded-full pointer-events-none"
+              style="
+                left: ${drop.x}%;
+                top: ${drop.y}%;
+                width: 34px;
+                height: 34px;
+                background: radial-gradient(circle, ${wetTone} 0%, rgba(159, 18, 57, 0.15) 68%, transparent 100%);
+                border: 1px dashed rgba(159, 18, 57, 0.28);
+              "
+            ></div>
+          `;
+        }
+      }).join('');
+
+      // 2. 藍色石蕊試紙
+      const blueContainer = document.getElementById('blue-litmus-spots');
+      const bluePlaceholder = document.getElementById('blue-litmus-placeholder');
+      bluePlaceholder.style.display = state.litmus.blueDrops.length > 0 ? 'none' : 'inline-block';
+
+      blueContainer.innerHTML = state.litmus.blueDrops.map((drop) => {
+        const sol = SOLUTIONS.find((s) => s.id === drop.solId) || getSelectedSolution();
+        if (!sol) return '';
+
+        // 科學邏輯：藍色石蕊試紙遇酸性變紅色（檸檬汁強酸深緋紅、白醋純正紅、汽水柔和淡粉紅）；遇鹼性或中性不變色（僅深藍水漬）
+        if (sol.type === 'acid' && sol.litmusBlueColor) {
+          const cfg = sol.litmusBlueColor;
+          return `
+            <div
+              class="litmus-spot-spread absolute rounded-full pointer-events-none"
+              style="
+                left: ${drop.x}%;
+                top: ${drop.y}%;
+                width: 38px;
+                height: 38px;
+                background: radial-gradient(circle, ${cfg.core} 0%, ${cfg.edge} 58%, ${cfg.spread} 86%, transparent 100%);
+                box-shadow: 0 0 10px ${cfg.shadow};
+              "
+            ></div>
+          `;
+        } else {
+          // 鹼性或中性：不變色，呈現半透明濕潤水漬圈
+          const wetTone = sol.litmusBlueWet || 'rgba(30, 58, 138, 0.28)';
+          return `
+            <div
+              class="litmus-spot-spread absolute rounded-full pointer-events-none"
+              style="
+                left: ${drop.x}%;
+                top: ${drop.y}%;
+                width: 34px;
+                height: 34px;
+                background: radial-gradient(circle, ${wetTone} 0%, rgba(30, 58, 138, 0.15) 68%, transparent 100%);
+                border: 1px dashed rgba(30, 58, 138, 0.28);
+              "
+            ></div>
+          `;
+        }
+      }).join('');
+    }
+
+    // 更新現實微觀察提示文字（清楚呈現不同液體的深淺差異原因）
+    function updateLitmusNuanceCallout(sol, paperColor) {
+      const callout = document.getElementById('litmus-nuance-callout');
+      callout.innerHTML = sol.nuanceDesc;
+      callout.className = 'mt-2 text-center text-xs sm:text-sm font-extrabold text-blue-900 bg-blue-50 border border-blue-200 rounded-xl py-1.5 px-2.5 min-h-[30px] flex items-center justify-center';
+    }
+
+    function updateLitmusObservationHint(sol) {
+      const chip = document.getElementById('litmus-observation-chip');
+      const hasRed = state.litmus.redDrops.some((d) => d.solId === sol.id);
+      const hasBlue = state.litmus.blueDrops.some((d) => d.solId === sol.id);
+
+      if (hasRed && hasBlue) {
+        chip.innerHTML = `👀 已完成【${sol.name}】雙試紙測試！比對哪一張變色了？`;
+        chip.className = 'text-xs sm:text-sm font-extrabold text-blue-800 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-300 shadow-xs';
+      } else if (hasRed) {
+        chip.innerHTML = `👉 已滴在紅色石蕊試紙，別忘了也滴在右邊「藍色石蕊試紙」喔！`;
+        chip.className = 'text-xs sm:text-sm font-bold text-amber-800 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-300 shadow-xs';
+      } else if (hasBlue) {
+        chip.innerHTML = `👉 已滴在藍色石蕊試紙，別忘了也滴在左邊「紅色石蕊試紙」喔！`;
+        chip.className = 'text-xs sm:text-sm font-bold text-amber-800 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-300 shadow-xs';
+      }
+    }
+
+    function clearLitmusPapers() {
+      playSound('click');
+      state.litmus.redDrops = [];
+      state.litmus.blueDrops = [];
+      renderLitmusSpots();
+      const chip = document.getElementById('litmus-observation-chip');
+      chip.innerHTML = '🧻 已換上全新乾燥的紅、藍石蕊試紙！';
+      chip.className = 'text-xs sm:text-sm font-bold text-slate-600 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-xs';
+      document.getElementById('litmus-nuance-callout').innerHTML = '💡 現實微觀察：不同水溶液酸鹼強弱不同，變色深淺濃淡也會有微妙差異喔！';
+      document.getElementById('litmus-nuance-callout').className = 'mt-2 text-center text-xs sm:text-sm font-extrabold text-slate-600 bg-amber-50/80 border border-amber-200 rounded-xl py-1.5 px-2.5 min-h-[30px] flex items-center justify-center';
+      showToast('已更換全新石蕊試紙');
+    }
+
+    /* ========================================================================
+       九、 模式二：廣用試紙自由落點與 pH 1–14 色階
+       ======================================================================== */
+    function renderPHScaleChart() {
+      const grid = document.getElementById('ph-scale-grid');
+      grid.innerHTML = PH_SCALE.map((item) => {
+        const isMatched = state.universal.lastMatchedPH === item.ph;
+        const highlightClass = isMatched
+          ? 'ring-3 ring-amber-400 scale-110 z-10 shadow-md font-black'
+          : 'opacity-95';
+        return `
+          <div
+            class="rounded-md sm:rounded-lg py-1 sm:py-1.5 flex flex-col items-center justify-center transition-all duration-300 ${highlightClass}"
+            style="background-color: ${item.color}; color: ${item.text};"
+          >
+            <span class="text-[10px] sm:text-xs font-black leading-none">${item.ph}</span>
+            ${isMatched ? '<span class="text-[9px] leading-none mt-0.5">▲</span>' : ''}
+          </div>
+        `;
+      }).join('');
+
+      const callout = document.getElementById('ph-match-callout');
+      if (state.universal.lastMatchedPH !== null) {
+        const phVal = state.universal.lastMatchedPH;
+        const zone = phVal < 7 ? '酸性範圍 (pH < 7)' : phVal === 7 ? '中性 (pH = 7)' : '鹼性範圍 (pH > 7)';
+        callout.innerHTML = `
+          <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+            ▲ 【${state.universal.lastSolutionName}】顏色最接近 pH ${phVal}！（屬於${zone}）
+          </span>
+        `;
+      } else {
+        callout.textContent = '點擊下方黃色廣用試紙任意位置滴落水溶液，即可對照色階！';
+      }
+    }
+
+    function handleUniversalPaperClick(event) {
+      const sol = getSelectedSolution();
+      if (!sol) {
+        playSound('wrong');
+        updateStepGuide('小提醒', '⚠️ 滴管裡面還是空的喔！請先在左側點選一種水溶液燒杯來吸取液體！');
+        showToast('請先點選左側燒杯吸取水溶液！');
+        return;
+      }
+
+      playSound('drop');
+
+      const stripEl = document.getElementById('universal-paper-strip');
+      const rect = stripEl.getBoundingClientRect();
+      const posX = Math.max(8, Math.min(92, ((event.clientX - rect.left) / rect.width) * 100));
+      const posY = Math.max(16, Math.min(84, ((event.clientY - rect.top) / rect.height) * 100));
+
+      const bulb = document.getElementById('univ-rubber-bulb');
+      bulb.classList.remove('animate-squeeze');
+      void bulb.offsetWidth;
+      bulb.classList.add('animate-squeeze');
+
+      const dropletContainer = document.getElementById('univ-droplet-container');
+      dropletContainer.innerHTML = `
+        <path
+          d="M 50 105 C 50 105, 44 114, 44 118 C 44 121.5, 46.7 124, 50 124 C 53.3 124, 56 121.5, 56 118 C 56 114, 50 105, 50 105 Z"
+          fill="${sol.universalColor}"
+          class="dynamic-falling-droplet"
+        />
+      `;
+
+      state.testedMap[sol.id] = true;
+      renderSolutionList();
+      updateJudgmentPanel();
+
+      state.universal.drops.push({
+        x: posX,
+        y: posY,
+        color: sol.universalColor
+      });
+      if (state.universal.drops.length > 6) state.universal.drops.shift();
+
+      state.universal.lastMatchedPH = sol.phNearest;
+      state.universal.lastSolutionName = sol.name;
+
+      setTimeout(() => {
+        renderUniversalSpots();
+        renderPHScaleChart();
+        const badge = document.getElementById('univ-result-badge');
+        badge.innerHTML = `🌈 【${sol.name}】使廣用試紙變色，對照最接近 <strong class="text-indigo-700">pH ${sol.phNearest}</strong>！`;
+      }, 240);
+
+      updateStepGuide(
+        '步驟 3',
+        `✨ 對照上方色階，判斷【${sol.name}】是酸性、中性還是鹼性，並至下方「C 區塊」作答！`
+      );
+    }
+
+    function renderUniversalSpots() {
+      const container = document.getElementById('univ-paper-spots');
+      const placeholder = document.getElementById('univ-paper-placeholder');
+      placeholder.style.display = state.universal.drops.length > 0 ? 'none' : 'inline-block';
+
+      container.innerHTML = state.universal.drops.map((d) => `
+        <div
+          class="litmus-spot-spread absolute rounded-full pointer-events-none"
+          style="
+            left: ${d.x}%;
+            top: ${d.y}%;
+            width: 44px;
+            height: 44px;
+            background: radial-gradient(circle, ${d.color} 0%, ${d.color} 65%, transparent 100%);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
+          "
+        ></div>
+      `).join('');
+    }
+
+    function clearUniversalPaper() {
+      playSound('click');
+      state.universal.drops = [];
+      state.universal.lastMatchedPH = null;
+      state.universal.lastSolutionName = '';
+      renderUniversalSpots();
+      renderPHScaleChart();
+      document.getElementById('univ-result-badge').textContent = '🧻 已換上全新黃色廣用試紙！';
+      showToast('已更換全新廣用試紙');
+    }
+
+    /* ========================================================================
+       十、 模式三：高麗菜汁實驗互動邏輯
+       ======================================================================== */
+    function dripIntoCabbage() {
+      const sol = getSelectedSolution();
+      if (!sol) {
+        playSound('wrong');
+        updateStepGuide('小提醒', '⚠️ 滴管裡面還是空的喔！請先在左側點選一種水溶液燒杯來吸取液體！');
+        showToast('請先點選左側燒杯吸取水溶液！');
+        return;
+      }
+
+      playSound('drop');
+
+      state.testedMap[sol.id] = true;
+      renderSolutionList();
+      updateJudgmentPanel();
+
+      const nextLiquid = sol.cabbageColor || '#6d28d9';
+      const nextMeniscus = sol.cabbageMeniscus || '#8b5cf6';
+      let badgeText = `實驗組：加入【${sol.name}】→ 維持藍紫色`;
+      let badgeStyle = 'mb-1 px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-extrabold bg-purple-100 text-purple-900 border border-purple-300';
+
+      if (sol.type === 'acid') {
+        badgeText = `實驗組：加入【${sol.name}】→ 變桃紅色！`;
+        badgeStyle = 'mb-1 px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-extrabold bg-rose-100 text-rose-900 border border-rose-300';
+      } else if (sol.type === 'base') {
+        badgeText = `實驗組：加入【${sol.name}】→ 變藍綠色/綠色！`;
+        badgeStyle = 'mb-1 px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-extrabold bg-teal-100 text-teal-900 border border-teal-300';
+      }
+
+      state.cabbage.currentColor = nextLiquid;
+      state.cabbage.meniscusColor = nextMeniscus;
+      state.cabbage.testedName = sol.name;
+      state.cabbage.testedType = sol.type;
+
+      // 氣泡上浮
+      const bubblesGroup = document.getElementById('cabbage-bubbles-group');
+      bubblesGroup.innerHTML = `
+        <circle cx="30" cy="150" r="3" fill="#ffffff" opacity="0.7" class="cabbage-bubble" />
+        <circle cx="44" cy="158" r="4" fill="#ffffff" opacity="0.7" class="cabbage-bubble" style="animation-delay: 0.1s" />
+        <circle cx="36" cy="142" r="2.5" fill="#ffffff" opacity="0.7" class="cabbage-bubble" style="animation-delay: 0.2s" />
+        <circle cx="50" cy="148" r="3.2" fill="#ffffff" opacity="0.7" class="cabbage-bubble" style="animation-delay: 0.15s" />
+      `;
+
+      document.getElementById('cabbage-exp-liquid').setAttribute('fill', nextLiquid);
+      document.getElementById('cabbage-exp-meniscus').setAttribute('fill', nextMeniscus);
+
+      const testBadge = document.getElementById('cabbage-test-badge');
+      testBadge.textContent = badgeText;
+      testBadge.className = badgeStyle;
+
+      updateStepGuide(
+        '步驟 3',
+        `✨ 與左邊紫色對照組比較看看！請至下方「C 區塊」判斷【${sol.name}】的酸鹼性！`
+      );
+    }
+
+    function resetCabbageTube() {
+      playSound('click');
+      state.cabbage.currentColor = '#6d28d9';
+      state.cabbage.meniscusColor = '#8b5cf6';
+      state.cabbage.testedName = null;
+      state.cabbage.testedType = null;
+
+      document.getElementById('cabbage-exp-liquid').setAttribute('fill', '#6d28d9');
+      document.getElementById('cabbage-exp-meniscus').setAttribute('fill', '#8b5cf6');
+      document.getElementById('cabbage-bubbles-group').innerHTML = '';
+
+      const testBadge = document.getElementById('cabbage-test-badge');
+      testBadge.textContent = '實驗組：點試管滴入混合';
+      testBadge.className = 'mb-1 px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-extrabold bg-amber-100 text-amber-900 border border-amber-300';
+      showToast('已換上一管新鮮紫色高麗菜汁');
+    }
+
+    /* ========================================================================
+       十一、 C 區塊左半部：自主判斷（通關任務）
+       ======================================================================== */
+    function updateJudgmentPanel() {
+      const sol = getSelectedSolution();
+      const statusPill = document.getElementById('judge-status-pill');
+      const questionText = document.getElementById('judge-question-text');
+      const reminderBox = document.getElementById('judge-experiment-reminder');
+      const reminderText = document.getElementById('judge-reminder-text');
+      const feedbackBox = document.getElementById('judge-feedback-box');
+
+      if (!sol) {
+        statusPill.textContent = '尚未選擇水溶液';
+        statusPill.className = 'px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-bold bg-slate-100 text-slate-600';
+        questionText.textContent = '請先在上方左側選擇一種水溶液並完成實驗，再來判斷它是酸性、中性還是鹼性喔！';
+        reminderBox.classList.add('hidden');
+        feedbackBox.className = 'mt-3 rounded-2xl p-3 bg-sky-50/70 border border-sky-200 text-slate-600 text-xs sm:text-sm font-medium min-h-[68px] flex items-center';
+        feedbackBox.innerHTML = '<span>✨ 選擇上方任一性質按鈕後，這裡會立即顯示科學原理解析與通關結果！</span>';
+        return;
+      }
+
+      const isMastered = !!state.masteredMap[sol.id];
+      const isTested = !!state.testedMap[sol.id];
+
+      questionText.innerHTML = `請根據剛才的實驗結果，判斷【<span class="text-blue-700 font-black">${sol.name}</span>】屬於哪一種性質？`;
+
+      if (isMastered) {
+        statusPill.textContent = '✅ 已通關';
+        statusPill.className = 'px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-black bg-emerald-100 text-emerald-800 border border-emerald-300';
+        reminderBox.classList.add('hidden');
+        feedbackBox.className = 'mt-3 rounded-2xl p-3 bg-emerald-50 border-2 border-emerald-300 text-emerald-900 text-xs sm:text-sm font-bold min-h-[68px] flex items-center';
+        feedbackBox.innerHTML = `<span>🎉 你已成功鑑定【${sol.name}】是<strong>${sol.typeLabel}</strong>！${sol.litmusExplain}</span>`;
+      } else {
+        statusPill.textContent = isTested ? '🧪 已完成實驗・請作答' : '⏳ 等待實驗觀察';
+        statusPill.className = isTested
+          ? 'px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-extrabold bg-blue-100 text-blue-800'
+          : 'px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-bold bg-amber-100 text-amber-800';
+
+        if (!isTested) {
+          reminderBox.classList.remove('hidden');
+          reminderText.textContent = `💡 建議先在上方吸取並滴落【${sol.name}】觀察變化，再來作答喔！`;
+        } else {
+          reminderBox.classList.add('hidden');
+        }
+
+        feedbackBox.className = 'mt-3 rounded-2xl p-3 bg-sky-50/70 border border-sky-200 text-slate-600 text-xs sm:text-sm font-medium min-h-[68px] flex items-center';
+        feedbackBox.innerHTML = `<span>👇 觀察顏色變化後，點選上方「酸性 / 中性 / 鹼性」按鈕吧！</span>`;
+      }
+    }
+
+    function submitJudgment(chosenType) {
+      const sol = getSelectedSolution();
+      if (!sol) {
+        playSound('wrong');
+        showToast('請先在左上角點選一種水溶液燒杯喔！');
+        return;
+      }
+
+      const feedbackBox = document.getElementById('judge-feedback-box');
+
+      if (chosenType === sol.type) {
+        playSound('success');
+        const wasAlreadyMastered = !!state.masteredMap[sol.id];
+        state.masteredMap[sol.id] = true;
+        state.testedMap[sol.id] = true;
+
+        renderSolutionList();
+        updateProgressUI();
+        updateJudgmentPanel();
+
+        const explainText = state.mode === 'cabbage' ? sol.cabbageExplain : sol.litmusExplain;
+        feedbackBox.className = 'mt-3 rounded-2xl p-3 bg-emerald-50 border-2 border-emerald-400 text-emerald-950 text-xs sm:text-sm font-bold min-h-[68px] flex items-center shadow-xs';
+        feedbackBox.innerHTML = `
+          <div>
+            <div class="text-emerald-700 font-black text-base sm:text-lg mb-0.5">🎉 答對了！【${sol.name}】就是${sol.typeLabel}！${wasAlreadyMastered ? '' : '（通關進度 +1）'}</div>
+            <p class="text-xs sm:text-sm font-medium text-emerald-900">${explainText}</p>
+          </div>
+        `;
+      } else {
+        playSound('wrong');
+        let hintMsg = '';
+        if (state.mode === 'litmus') {
+          hintMsg = '再仔細看看兩張石蕊試紙喔！紅色試紙變藍才是鹼性、藍色試紙變紅才是酸性，兩張都不變色則是中性。';
+        } else if (state.mode === 'universal') {
+          hintMsg = '對照看看上方 pH 1–14 色階吧！pH 小於 7 偏紅橙黃是酸性，pH 7 綠色是中性，pH 大於 7 偏藍紫是鹼性。';
+        } else {
+          hintMsg = '和左邊的紫色原液比較看看！偏桃紅色是酸性、維持藍紫色是中性、偏綠色則是鹼性喔！';
+        }
+
+        feedbackBox.className = 'mt-3 rounded-2xl p-3 bg-rose-50 border-2 border-rose-300 text-rose-900 text-xs sm:text-sm font-bold min-h-[68px] flex items-center';
+        feedbackBox.innerHTML = `
+          <div>
+            <div class="text-rose-700 font-black text-base sm:text-lg mb-0.5">🤔 再想一想喔！答案還差一點點～</div>
+            <p class="text-xs sm:text-sm font-medium text-rose-900">${hintMsg}</p>
+          </div>
+        `;
+      }
+    }
+
+    /* ========================================================================
+       十二、 C 區塊右半部：翰林版「考考你」觀念挑戰
+       ======================================================================== */
+    function renderQuizQuestion() {
+      const qIdx = state.quiz.index;
+      const qObj = QUIZ_QUESTIONS[qIdx];
+      const chosen = state.quiz.answeredMap[qIdx];
+
+      document.getElementById('quiz-progress-badge').textContent = `第 ${qIdx + 1} / ${QUIZ_QUESTIONS.length} 題`;
+      document.getElementById('quiz-score-badge').textContent = `答對：${state.quiz.score} 題`;
+      document.getElementById('quiz-question-text').textContent = `${qIdx + 1}. ${qObj.question}`;
+
+      const labels = ['A', 'B', 'C'];
+      const optionsContainer = document.getElementById('quiz-options-container');
+      optionsContainer.innerHTML = qObj.options.map((optText, idx) => {
+        let btnStyle = 'bg-white hover:bg-amber-50/70 border-slate-200 text-slate-800';
+        let badgeStyle = 'bg-slate-100 text-slate-700';
+
+        if (chosen !== undefined) {
+          if (idx === qObj.answer) {
+            btnStyle = 'bg-emerald-50 border-emerald-400 text-emerald-950 font-black';
+            badgeStyle = 'bg-emerald-600 text-white';
+          } else if (idx === chosen && chosen !== qObj.answer) {
+            btnStyle = 'bg-rose-50 border-rose-300 text-rose-900';
+            badgeStyle = 'bg-rose-500 text-white';
+          } else {
+            btnStyle = 'bg-slate-50 border-slate-200 text-slate-400';
+          }
+        }
+
+        return `
+          <button
+            type="button"
+            onclick="answerQuizOption(${idx})"
+            class="w-full text-left px-3 py-2 rounded-2xl border-2 transition-all flex items-center gap-2.5 text-xs sm:text-sm font-bold cursor-pointer ${btnStyle}"
+          >
+            <span class="w-6 h-6 rounded-lg flex items-center justify-center text-xs font-black shrink-0 ${badgeStyle}">
+              ${labels[idx]}
+            </span>
+            <span class="leading-snug">${optText}</span>
+          </button>
+        `;
+      }).join('');
+
+      const feedbackEl = document.getElementById('quiz-feedback-text');
+      if (chosen === undefined) {
+        feedbackEl.className = 'text-xs sm:text-sm font-bold text-slate-600 flex-1';
+        feedbackEl.textContent = '👆 請點選上方你認為正確的答案選項！';
+      } else if (chosen === qObj.answer) {
+        feedbackEl.className = 'text-xs sm:text-sm font-bold text-emerald-800 flex-1';
+        feedbackEl.innerHTML = `🎉 <strong>答對了！</strong>${qObj.explanation}`;
+      } else {
+        feedbackEl.className = 'text-xs sm:text-sm font-bold text-rose-800 flex-1';
+        feedbackEl.innerHTML = `💡 <strong>再想一想！</strong>${qObj.explanation}`;
+      }
+
+      const nextBtn = document.getElementById('quiz-next-btn');
+      nextBtn.innerHTML = qIdx === QUIZ_QUESTIONS.length - 1
+        ? '<span>重新挑戰</span><span>🔄</span>'
+        : '<span>下一題</span><span>➡️</span>';
+    }
+
+    function answerQuizOption(optionIdx) {
+      const qIdx = state.quiz.index;
+      const qObj = QUIZ_QUESTIONS[qIdx];
+      const alreadyAnswered = state.quiz.answeredMap[qIdx] !== undefined;
+
+      state.quiz.answeredMap[qIdx] = optionIdx;
+
+      if (optionIdx === qObj.answer) {
+        playSound('success');
+        if (!alreadyAnswered) {
+          state.quiz.score += 1;
+        }
+      } else {
+        playSound('wrong');
+      }
+
+      renderQuizQuestion();
+    }
+
+    function nextQuizQuestion() {
+      playSound('click');
+      if (state.quiz.index < QUIZ_QUESTIONS.length - 1) {
+        state.quiz.index += 1;
+      } else {
+        state.quiz.index = 0;
+        state.quiz.score = 0;
+        state.quiz.answeredMap = {};
+        showToast('已重新開始「考考你」題庫挑戰！');
+      }
+      renderQuizQuestion();
+    }
+
+    /* ========================================================================
+       十三、 控制列與 Modal
+       ======================================================================== */
+    function toggleShowPH() {
+      state.showPH = !state.showPH;
+      playSound('click');
+
+      const btn = document.getElementById('toggle-ph-btn');
+      const icon = document.getElementById('ph-btn-icon');
+      const text = document.getElementById('ph-btn-text');
+
+      if (state.showPH) {
+        btn.className = 'px-3 py-2.5 rounded-2xl text-[14px] sm:text-base font-black bg-indigo-600 text-white border-2 border-indigo-700 transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer';
+        icon.textContent = '🙈';
+        text.textContent = '隱藏 pH 值';
+        showToast('已顯示所有水溶液的精確 pH 值');
+      } else {
+        btn.className = 'px-3 py-2.5 rounded-2xl text-[14px] sm:text-base font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border-2 border-indigo-200 transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer';
+        icon.textContent = '👁️';
+        text.textContent = '顯示 pH 值';
+        showToast('已隱藏 pH 值，試著用指示劑觀察判斷吧！');
+      }
+
+      renderSolutionList();
+    }
+
+    function resetCurrentExperiment() {
+      playSound('click');
+      state.selectedId = null;
+      updateDropperVisuals(null, false);
+      renderSolutionList();
+      updateJudgmentPanel();
+
+      if (state.mode === 'litmus') {
+        clearLitmusPapers();
+        showToast('已重設石蕊試紙實驗台');
+      } else if (state.mode === 'universal') {
+        clearUniversalPaper();
+        showToast('已重設廣用試紙實驗台');
+      } else if (state.mode === 'cabbage') {
+        resetCabbageTube();
+        showToast('已重設高麗菜汁實驗台');
+      }
+
+      updateStepGuide('步驟 1', '👉 請在左側點選一種水溶液燒杯，用滴管吸取液體！');
+    }
+
+    function openResetAllModal() {
+      playSound('click');
+      document.getElementById('reset-all-modal').classList.remove('hidden');
+    }
+
+    function closeResetAllModal() {
+      playSound('click');
+      document.getElementById('reset-all-modal').classList.add('hidden');
+    }
+
+    function confirmResetAllProgress() {
+      playSound('click');
+      state.selectedId = null;
+      state.testedMap = {};
+      state.masteredMap = {};
+      state.litmus.redDrops = [];
+      state.litmus.blueDrops = [];
+      state.universal.drops = [];
+      state.universal.lastMatchedPH = null;
+      state.universal.lastSolutionName = '';
+      state.quiz.index = 0;
+      state.quiz.score = 0;
+      state.quiz.answeredMap = {};
+
+      updateDropperVisuals(null, false);
+      renderLitmusSpots();
+      renderUniversalSpots();
+      renderPHScaleChart();
+      resetCabbageTube();
+      renderSolutionList();
+      updateProgressUI();
+      updateJudgmentPanel();
+      renderQuizQuestion();
+      updateStepGuide('步驟 1', '👉 請在左側點選一種水溶液燒杯，用滴管吸取液體！');
+
+      closeResetAllModal();
+      showToast('已重設全部學習進度與實驗狀態！');
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const toast = document.getElementById('toast-banner');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2200);
+    }
+
+    /* ========================================================================
+       十四、 頁面初始化
+       ======================================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSolutionList();
+      updateProgressUI();
+      renderPHScaleChart();
+      updateJudgmentPanel();
+      renderQuizQuestion();
+    });
+  </script>
+</body>
+</html>
