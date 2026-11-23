@@ -114,6 +114,27 @@
       animation: wireCurrentFlow 0.6s linear infinite;
     }
 
+    /* 水溶液內部離子導電光流動畫（消除迷思，直觀展現水溶液形成通路） */
+    @keyframes ionCurrentPulse {
+      0% { stroke-dashoffset: 48; opacity: 0.4; }
+      50% { opacity: 0.95; }
+      100% { stroke-dashoffset: 0; opacity: 0.4; }
+    }
+
+    .animate-ion-flow {
+      stroke-dasharray: 6 6;
+      animation: ionCurrentPulse 0.75s linear infinite;
+    }
+
+    @keyframes ionFieldGlow {
+      0%, 100% { opacity: 0.35; filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.4)); }
+      50% { opacity: 0.85; filter: drop-shadow(0 0 14px rgba(251, 191, 36, 0.7)); }
+    }
+
+    .animate-ion-glow {
+      animation: ionFieldGlow 1.2s ease-in-out infinite;
+    }
+
     /* LED 燈泡發光脈動與光暈動畫 */
     @keyframes bulbGlowPulse {
       0%, 100% {
@@ -481,41 +502,41 @@
                   </g>
                 </g>
 
-                <!-- 3. 電路導線（頂部固定正極導線、左側負極導線、右側正極回流導線） -->
-                <!-- 電池(+) 到 LED(+) 頂部紅色導線 -->
+                <!-- 3. 電路導線（頂部紅色微弧導線、左側柔韌藍色負極導線、右側柔韌紅色正極導線） -->
+                <!-- 電池(+) 到 LED(+) 頂部紅色導線（自然微弧線） -->
                 <path
                   id="wire-batt-to-led"
-                  d="M 145 56 L 405 56"
+                  d="M 145 56 C 220 70, 330 70, 405 56"
                   fill="none"
                   stroke="#ef4444"
                   stroke-width="4.5"
                   stroke-linecap="round"
                 />
 
-                <!-- 電池(-) 到 檢測棒(-) 藍色導線（動態依電極升降即時接合） -->
+                <!-- 電池(-) 到 負極棒(-) 柔和下垂藍色導線（動態貝茲曲線隨測試棒升降自然伸展） -->
                 <path
                   id="wire-batt-to-probe"
-                  d="M 30 56 L 12 56 L 12 135 L 235 135 L 235 145"
+                  d="M 30 56 C 20 120, 150 140, 235 115"
                   fill="none"
                   stroke="#2563eb"
                   stroke-width="4.5"
                   stroke-linecap="round"
                 />
 
-                <!-- LED(-) 到 檢測棒(+) 紅色導線（動態依電極升降即時接合） -->
+                <!-- LED(-) 到 正極棒(+) 柔和下垂紅色導線（動態貝茲曲線隨測試棒升降自然伸展） -->
                 <path
                   id="wire-led-to-probe"
-                  d="M 445 66 L 445 135 L 305 135 L 305 145"
+                  d="M 425 68 C 435 120, 355 140, 305 115"
                   fill="none"
                   stroke="#dc2626"
                   stroke-width="4.5"
                   stroke-linecap="round"
                 />
 
-                <!-- 電流通路流動視覺層（通電時點亮高頻流動） -->
+                <!-- 電流通路流動視覺層（通電時沿自然導線迴路高頻流動） -->
                 <path
                   id="current-flow-overlay"
-                  d="M 145 56 L 405 56 M 445 66 L 445 135 L 305 135 L 305 145 M 235 145 L 235 135 L 12 135 L 12 56 L 30 56"
+                  d="M 145 56 C 220 70, 330 70, 405 56 M 425 68 C 435 120, 355 140, 305 115 M 235 115 C 150 140, 20 120, 30 56"
                   fill="none"
                   stroke="#fbbf24"
                   stroke-width="3.5"
@@ -530,6 +551,19 @@
                     <rect id="beaker-liquid-rect" x="180" y="188" width="180" height="105" fill="#e0f2fe" class="transition-all duration-300" />
                     <!-- 液面橢圓 -->
                     <ellipse id="beaker-liquid-surface" cx="270" cy="188" rx="85" ry="9" fill="#bae6fd" class="transition-all duration-300" />
+                    
+                    <!-- 水溶液內部離子導電光流區域（通電時在水中兩極間直接發光，破除迷思） -->
+                    <g id="liquid-conduction-field" class="hidden">
+                      <!-- 水中柔和離子導電光場背景 -->
+                      <rect x="222" y="212" width="96" height="64" rx="8" fill="rgba(254, 240, 138, 0.28)" class="animate-ion-glow" />
+                      <!-- 兩極棒之間穿透水溶液的離子導電能量流 -->
+                      <path d="M 235 222 C 265 226, 275 226, 305 222" stroke="#facc15" stroke-width="3" stroke-linecap="round" fill="none" class="animate-ion-flow" />
+                      <path d="M 235 236 C 260 240, 280 240, 305 236" stroke="#fbbf24" stroke-width="3.5" stroke-linecap="round" fill="none" class="animate-ion-flow" style="animation-duration: 0.6s" />
+                      <path d="M 235 250 C 265 254, 275 254, 305 250" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" fill="none" class="animate-ion-flow" style="animation-duration: 0.9s" />
+                      <path d="M 235 264 C 260 268, 280 268, 305 264" stroke="#facc15" stroke-width="2.5" stroke-linecap="round" fill="none" class="animate-ion-flow" style="animation-duration: 0.75s" />
+                      <text x="270" y="247" text-anchor="middle" fill="#b45309" font-size="9" font-weight="900" opacity="0.95">⚡ 水溶液離子導電中</text>
+                    </g>
+
                     <!-- 電解氣泡粒子容器 -->
                     <g id="electrolysis-bubbles" class="hidden"></g>
                   </g>
@@ -554,26 +588,32 @@
                   <line x1="344" y1="178" x2="344" y2="280" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" opacity="0.8" />
                 </g>
 
-                <!-- 5. 可升降之正負極電極檢測棒組合（附帶頂部導線接頭） -->
+                <!-- 5. 兩根完全獨立分開的檢測電極棒（左負極藍色手柄、右正極紅色手柄，中間無任何橫桿連接） -->
                 <g id="probes-group" class="probes-assembly" transform="translate(0, 0)">
-                  <!-- 橫向絕緣固定夾具 -->
-                  <rect x="215" y="132" width="110" height="15" rx="5" fill="#334155" stroke="#0f172a" stroke-width="2" />
-                  <text x="270" y="143" text-anchor="middle" fill="#cbd5e1" font-size="9" font-weight="900">電極固定座</text>
-                  
-                  <!-- 負極棒（左側藍色接頭） -->
-                  <g transform="translate(228, 138)">
-                    <rect x="0" y="0" width="14" height="10" rx="3" fill="#2563eb" stroke="#1d4ed8" stroke-width="1.5" />
-                    <!-- 碳黑導電電極棒主體 -->
-                    <rect x="3" y="10" width="8" height="85" rx="3" fill="#1e293b" stroke="#0f172a" stroke-width="1.5" />
-                    <text x="7" y="-5" text-anchor="middle" fill="#2563eb" font-size="13" font-weight="900">－</text>
+                  <!-- 左側：負極檢測棒（獨立懸掛，頂部藍色握柄標示 － 負極，下方為碳棒導電體） -->
+                  <g id="probe-negative-unit" transform="translate(235, 115)">
+                    <!-- 頂部防滑絕緣握柄 -->
+                    <rect x="-8" y="0" width="16" height="24" rx="4" fill="#2563eb" stroke="#1d4ed8" stroke-width="1.8" />
+                    <line x1="-5" y1="7" x2="5" y2="7" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" />
+                    <line x1="-5" y1="12" x2="5" y2="12" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" />
+                    <line x1="-5" y1="17" x2="5" y2="17" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" />
+                    <!-- 碳黑導電電極棒（長度 96px，可直接深入水溶液） -->
+                    <rect x="-4" y="24" width="8" height="96" rx="3" fill="#1e293b" stroke="#0f172a" stroke-width="1.5" />
+                    <!-- 極性標記 -->
+                    <text x="0" y="-5" text-anchor="middle" fill="#2563eb" font-size="12" font-weight="900">－ 負極</text>
                   </g>
 
-                  <!-- 正極棒（右側紅色接頭） -->
-                  <g transform="translate(298, 138)">
-                    <rect x="0" y="0" width="14" height="10" rx="3" fill="#ef4444" stroke="#b91c1c" stroke-width="1.5" />
-                    <!-- 碳黑導電電極棒主體 -->
-                    <rect x="3" y="10" width="8" height="85" rx="3" fill="#1e293b" stroke="#0f172a" stroke-width="1.5" />
-                    <text x="7" y="-5" text-anchor="middle" fill="#ef4444" font-size="13" font-weight="900">＋</text>
+                  <!-- 右側：正極檢測棒（獨立懸掛，頂部紅色握柄標示 ＋ 正極，下方為碳棒導電體） -->
+                  <g id="probe-positive-unit" transform="translate(305, 115)">
+                    <!-- 頂部防滑絕緣握柄 -->
+                    <rect x="-8" y="0" width="16" height="24" rx="4" fill="#ef4444" stroke="#b91c1c" stroke-width="1.8" />
+                    <line x1="-5" y1="7" x2="5" y2="7" stroke="#fca5a5" stroke-width="1.5" stroke-linecap="round" />
+                    <line x1="-5" y1="12" x2="5" y2="12" stroke="#fca5a5" stroke-width="1.5" stroke-linecap="round" />
+                    <line x1="-5" y1="17" x2="5" y2="17" stroke="#fca5a5" stroke-width="1.5" stroke-linecap="round" />
+                    <!-- 碳黑導電電極棒（長度 96px，可直接深入水溶液） -->
+                    <rect x="-4" y="24" width="8" height="96" rx="3" fill="#1e293b" stroke="#0f172a" stroke-width="1.5" />
+                    <!-- 極性標記 -->
+                    <text x="0" y="-5" text-anchor="middle" fill="#ef4444" font-size="12" font-weight="900">＋ 正極</text>
                   </g>
                 </g>
               </svg>
@@ -585,37 +625,58 @@
             </div>
           </div>
 
-          <!-- 下方：實驗觀察紀錄表（整合記錄 7 種水溶液之發光與導電結果） -->
-          <div class="bg-white/95 rounded-2xl border-2 border-slate-200 p-2.5 sm:p-3 shrink-0 overflow-x-auto shadow-xs">
-            <div class="flex items-center justify-between mb-2 px-1">
-              <span class="text-sm font-black text-slate-800 flex items-center gap-1.5">
-                <span>📋</span>
-                <span>水溶液導電性實驗觀察紀錄表：</span>
-              </span>
-              <span class="text-xs font-bold text-slate-500">
-                自動同步實驗結果
-              </span>
-            </div>
-
-            <!-- 紀錄表格 -->
-            <table class="w-full text-left text-xs sm:text-sm border-collapse">
-              <thead>
-                <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
-                  <th class="py-1.5 px-2.5 font-black">水溶液名稱</th>
-                  <th class="py-1.5 px-2.5 font-black">燈泡反應</th>
-                  <th class="py-1.5 px-2.5 font-black">是否導電</th>
-                  <th class="py-1.5 px-2.5 font-black hidden sm:table-cell">科學原理解析與生活備註</th>
-                </tr>
-              </thead>
-              <tbody id="observation-table-body" class="divide-y divide-slate-100 text-slate-700">
-                <!-- 由 JS 動態渲染 7 種水溶液檢測紀錄 -->
-              </tbody>
-            </table>
-          </div>
-
         </div>
       </section>
     </main>
+
+    <!-- ======================================================================
+         實驗觀察紀錄表（獨立專屬專區：完整展開 7 種水溶液之燈泡反應、導電性與自主判定）
+         ====================================================================== -->
+    <section
+      aria-label="水溶液導電性實驗觀察紀錄表"
+      class="bg-white rounded-3xl border-2 border-amber-200 shadow-sm p-4 sm:p-5 space-y-3"
+    >
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-100 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-lg font-black shrink-0">
+            📋
+          </span>
+          <div>
+            <h2 class="text-base sm:text-lg font-black text-slate-800">
+              水溶液導電性實驗觀察紀錄表
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium">
+              將正負電極棒放入水溶液中，即時觀察燈泡反應，並自動同步實驗紀錄與自主判定！
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <span class="text-xs sm:text-sm font-bold text-amber-800 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200">
+            紀錄完成度：<strong id="table-progress-text" class="text-amber-700 text-base font-black">0 / 7</strong>
+          </span>
+        </div>
+      </div>
+
+      <!-- 紀錄表格容器 -->
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 shadow-xs">
+        <table class="w-full text-left text-xs sm:text-sm border-collapse">
+          <thead>
+            <tr class="bg-amber-50/90 text-slate-800 border-b border-amber-200 font-black">
+              <th class="py-2.5 px-3">水溶液名稱</th>
+              <th class="py-2.5 px-3">燈泡反應</th>
+              <th class="py-2.5 px-3">導電性結論</th>
+              <th class="py-2.5 px-3">我的自主判斷</th>
+              <th class="py-2.5 px-3 hidden md:table-cell">科學原理解析與生活安全備註</th>
+              <th class="py-2.5 px-3 text-center">操作</th>
+            </tr>
+          </thead>
+          <tbody id="observation-table-body" class="divide-y divide-slate-100 text-slate-700">
+            <!-- 由 JS 動態渲染 7 種水溶液檢測紀錄 -->
+          </tbody>
+        </table>
+      </div>
+    </section>
 
     <!-- ======================================================================
          C 區塊（下方：自主推論判斷 & 翰林版 8 題「考考你」）
@@ -1341,11 +1402,10 @@
         btnIcon.textContent = '🔌';
         playSound('splash');
 
-        // 動態延伸正負極導線，確保電線緊密咬合金屬接頭（不再斷開懸空）
-        // 藍色負極線延伸至 (235, 200)，紅色正極線延伸至 (305, 200)
-        if (wireBattToProbe) wireBattToProbe.setAttribute('d', 'M 30 56 L 12 56 L 12 200 L 235 200 L 235 205');
-        if (wireLedToProbe) wireLedToProbe.setAttribute('d', 'M 445 66 L 445 200 L 305 200 L 305 205');
-        if (currentOverlay) currentOverlay.setAttribute('d', 'M 145 56 L 405 56 M 445 66 L 445 200 L 305 200 L 305 205 M 235 205 L 235 200 L 12 200 L 12 56 L 30 56');
+        // 動態延伸正負極導線，沿自然平滑貝茲曲線隨電極下降延伸
+        if (wireBattToProbe) wireBattToProbe.setAttribute('d', 'M 30 56 C 20 180, 160 210, 235 180');
+        if (wireLedToProbe) wireLedToProbe.setAttribute('d', 'M 425 68 C 435 180, 360 210, 305 180');
+        if (currentOverlay) currentOverlay.setAttribute('d', 'M 145 56 C 220 70, 330 70, 405 56 M 425 68 C 435 180, 360 210, 305 180 M 235 180 C 160 210, 20 180, 30 56');
 
         if (sol) {
           state.testedMap[sol.id] = true;
@@ -1388,10 +1448,10 @@
         btnIcon.textContent = '⚡';
         activateCircuitVisuals(false, null);
 
-        // 導線收縮回升起狀態位置
-        if (wireBattToProbe) wireBattToProbe.setAttribute('d', 'M 30 56 L 12 56 L 12 135 L 235 135 L 235 145');
-        if (wireLedToProbe) wireLedToProbe.setAttribute('d', 'M 445 66 L 445 135 L 305 135 L 305 145');
-        if (currentOverlay) currentOverlay.setAttribute('d', 'M 145 56 L 405 56 M 445 66 L 445 135 L 305 135 L 305 145 M 235 145 L 235 135 L 12 135 L 12 56 L 30 56');
+        // 導線收縮回升起狀態位置（平滑懸垂微弧線）
+        if (wireBattToProbe) wireBattToProbe.setAttribute('d', 'M 30 56 C 20 120, 150 140, 235 115');
+        if (wireLedToProbe) wireLedToProbe.setAttribute('d', 'M 425 68 C 435 120, 355 140, 305 115');
+        if (currentOverlay) currentOverlay.setAttribute('d', 'M 145 56 C 220 70, 330 70, 405 56 M 425 68 C 435 120, 355 140, 305 115 M 235 115 C 150 140, 20 120, 30 56');
 
         statusPill.textContent = '電路狀態：斷路中';
         statusPill.className = 'hidden sm:inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white text-xs sm:text-sm font-bold shrink-0';
@@ -1405,6 +1465,7 @@
       const bulbGlass = document.getElementById('bulb-glass');
       const currentOverlay = document.getElementById('current-flow-overlay');
       const bubbles = document.getElementById('electrolysis-bubbles');
+      const liquidField = document.getElementById('liquid-conduction-field');
 
       if (active) {
         glowCircle.classList.remove('hidden');
@@ -1414,6 +1475,9 @@
 
         currentOverlay.classList.remove('hidden');
         currentOverlay.classList.add('animate-current-flow');
+
+        // 水中離子導電光束特效
+        if (liquidField) liquidField.classList.remove('hidden');
 
         // 生成電解氣泡動畫（配合加寬後正負極柱位置 x=235 與 x=305）
         if (sol && sol.bubbleIntensity > 0) {
@@ -1435,11 +1499,7 @@
 
         currentOverlay.classList.add('hidden');
         currentOverlay.classList.remove('animate-current-flow');
-        bubbles.classList.add('hidden');
-        bubbles.innerHTML = '';
-      }
-    }
-        currentOverlay.classList.remove('animate-current-flow');
+        if (liquidField) liquidField.classList.add('hidden');
         bubbles.classList.add('hidden');
         bubbles.innerHTML = '';
       }
@@ -1464,27 +1524,60 @@
     /* 渲染觀察紀錄表 */
     function renderObservationTable() {
       const tbody = document.getElementById('observation-table-body');
+      if (!tbody) return;
+
+      const tableProgress = document.getElementById('table-progress-text');
+      const testedCount = Object.keys(state.testedMap).length;
+      if (tableProgress) {
+        tableProgress.textContent = `${testedCount} / ${SOLUTIONS.length}`;
+      }
+
       tbody.innerHTML = SOLUTIONS.map((sol) => {
         const tested = !!state.testedMap[sol.id];
-        let lightText = '<span class="text-slate-400 font-bold">尚未測試</span>';
+        const isCurrent = state.selectedSolId === sol.id;
+        let lightText = '<span class="text-slate-400 font-bold">尚未放入電極</span>';
         let conductText = '<span class="text-slate-400 font-bold">待檢驗</span>';
 
         if (tested) {
           lightText = sol.conductive
-            ? '<span class="font-black text-amber-600">💡 發亮 (亮黃光)</span>'
-            : '<span class="font-bold text-slate-500">⚪ 不亮</span>';
+            ? '<span class="font-black text-amber-600 inline-flex items-center gap-1">💡 發亮 (黃光通路)</span>'
+            : '<span class="font-bold text-slate-500 inline-flex items-center gap-1">⚪ 不亮 (斷路)</span>';
           conductText = sol.conductive
-            ? '<span class="font-black text-emerald-700">✓ 會導電</span>'
-            : '<span class="font-black text-rose-600">✕ 不導電</span>';
+            ? '<span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-300">✓ 具有導電性</span>'
+            : '<span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-rose-100 text-rose-800 border border-rose-300">✕ 不具導電性</span>';
         }
 
+        // 自主判斷欄位狀態
+        const studentJudge = state.studentJudgments[sol.id];
+        let judgeBadge = '<span class="px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-500">待自主判斷</span>';
+        if (studentJudge !== undefined) {
+          judgeBadge = studentJudge
+            ? '<span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-500 text-white shadow-xs">✅ 判定正確</span>'
+            : '<span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-rose-500 text-white shadow-xs">🤔 判定有誤</span>';
+        }
+
+        const rowHighlight = isCurrent ? 'bg-amber-100/40 ring-1 ring-amber-300' : 'hover:bg-amber-50/50';
+
         return `
-          <tr class="hover:bg-amber-50/40 transition-colors">
-            <td class="py-2 px-3 font-black text-slate-800 text-xs sm:text-sm">${sol.name}</td>
-            <td class="py-2 px-3 text-xs sm:text-sm">${lightText}</td>
-            <td class="py-2 px-3 text-xs sm:text-sm">${conductText}</td>
-            <td class="py-2 px-3 text-xs sm:text-sm text-slate-600 hidden sm:table-cell font-medium leading-relaxed">
-              ${tested ? sol.scientificNote : '點選左側選單進行測試'}
+          <tr class="${rowHighlight} transition-colors">
+            <td class="py-2.5 px-3 font-black text-slate-800 text-xs sm:text-sm flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center text-xs shrink-0">🧪</span>
+              <span class="truncate">${sol.name}</span>
+            </td>
+            <td class="py-2.5 px-3 text-xs sm:text-sm">${lightText}</td>
+            <td class="py-2.5 px-3 text-xs sm:text-sm">${conductText}</td>
+            <td class="py-2.5 px-3 text-xs sm:text-sm">${judgeBadge}</td>
+            <td class="py-2.5 px-3 text-xs sm:text-sm text-slate-600 hidden md:table-cell font-medium leading-relaxed">
+              ${tested ? sol.scientificNote : '點選右側按鈕切換並放入電極棒測試'}
+            </td>
+            <td class="py-2.5 px-3 text-center">
+              <button
+                type="button"
+                onclick="selectSolution('${sol.id}')"
+                class="px-2.5 py-1 rounded-xl text-xs font-black bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 transition-all shadow-xs cursor-pointer active:scale-95"
+              >
+                ${isCurrent ? '👉 檢驗中' : '檢測此杯 🧪'}
+              </button>
             </td>
           </tr>
         `;
@@ -1532,7 +1625,11 @@
       }
 
       const feedbackBox = document.getElementById('judge-feedback-box');
-      if (isConductive === sol.conductive) {
+      const isCorrect = (isConductive === sol.conductive);
+      state.studentJudgments[sol.id] = isCorrect;
+      renderObservationTable();
+
+      if (isCorrect) {
         playSound('success');
         feedbackBox.className = 'mt-3 rounded-2xl p-3.5 bg-emerald-50 border-2 border-emerald-400 text-emerald-950 text-sm font-bold min-h-[68px] flex flex-col justify-center shadow-xs';
         feedbackBox.innerHTML = `
@@ -1589,7 +1686,6 @@
             <span class="leading-snug">${optText}</span>
           </button>
         `;
-      }).join('');
       }).join('');
 
       const feedbackEl = document.getElementById('quiz-feedback-text');
@@ -1671,6 +1767,7 @@
       state.selectedEquipments = {};
       state.equipmentUnlocked = false;
       state.testedMap = {};
+      state.studentJudgments = {};
       state.quiz.index = 0;
       state.quiz.score = 0;
       state.quiz.answeredMap = {};
