@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>國小五年級自然科學｜水溶液混合與酸鹼中和互動實驗室（翰林版）</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Noto Sans TC 繁體中文圓潤字體 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       全域視覺風格與自適應無障礙設計
+       ========================================================================== */
+    :root {
+      --bg-sky: #eef6ff;
+      --bg-cream: #fafcff;
+      --card-border: #dbeafe;
+      --primary-blue: #2563eb;
+      --accent-amber: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+      background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 45%, #fefce8 100%);
+      color: #1e293b;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    button:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 3px solid #f59e0b;
+      outline-offset: 2px;
+    }
+
+    /* 左右雙欄等高對齊與自適應 */
+    .lab-main-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 1024px) {
+      .lab-main-grid {
+        grid-template-columns: 330px 1fr;
+        align-items: stretch;
+        min-height: 560px;
+        height: 580px;
+      }
+      .block-a-panel,
+      .block-b-panel {
+        height: 100%;
+        min-height: 560px;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .lab-main-grid {
+        grid-template-columns: 350px 1fr;
+        height: 580px;
+      }
+    }
+
+    /* 美化圓潤側邊捲軸 */
+    .custom-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: #93c5fd #eff6ff;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #eff6ff;
+      border-radius: 999px;
+      margin: 3px 0;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #60a5fa, #3b82f6);
+      border-radius: 999px;
+      border: 2px solid #eff6ff;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #3b82f6, #2563eb);
+    }
+
+    /* 實驗舞台網格背景 */
+    .lab-stage-bg {
+      background-color: #f8fbff;
+      background-image:
+        linear-gradient(to right, rgba(147, 197, 253, 0.22) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(147, 197, 253, 0.22) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* 滴管擠壓動畫 */
+    @keyframes bulbSqueeze {
+      0% { transform: scale(1, 1); }
+      35% { transform: scale(1.15, 0.74); }
+      70% { transform: scale(0.94, 1.06); }
+      100% { transform: scale(1, 1); }
+    }
+
+    .animate-squeeze {
+      transform-origin: 50px 26px;
+      animation: bulbSqueeze 0.45s ease-in-out;
+    }
+
+    /* 水滴落下動畫 */
+    @keyframes dropFallIntoFlask {
+      0% { opacity: 1; transform: translateY(0) scale(0.85); }
+      80% { opacity: 1; transform: translateY(75px) scale(1.1); }
+      100% { opacity: 0; transform: translateY(92px) scale(1.4); }
+    }
+
+    .falling-droplet-mixing {
+      animation: dropFallIntoFlask 0.38s cubic-bezier(0.55, 0.08, 0.68, 0.53) forwards;
+    }
+
+    /* 液面漣漪動畫 */
+    @keyframes rippleExpand {
+      0% { transform: scale(0.2); opacity: 0.8; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    .liquid-ripple {
+      transform-origin: center;
+      animation: rippleExpand 0.6s ease-out forwards;
+    }
+
+    /* 磁力攪拌轉子旋轉動畫 */
+    @keyframes stirrerSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .animate-stirrer {
+      transform-origin: 100px 175px;
+      animation: stirrerSpin 0.35s linear infinite;
+    }
+
+    /* 斑點擴散 */
+    @keyframes spotSpread {
+      0% { transform: translate(-50%, -50%) scale(0.15); opacity: 0.3; }
+      70% { transform: translate(-50%, -50%) scale(1.08); opacity: 0.98; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 0.94; }
+    }
+
+    .spot-anim {
+      animation: spotSpread 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* 試紙紙質質感 */
+    .litmus-paper-texture {
+      box-shadow:
+        0 4px 10px -2px rgba(15, 23, 42, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+  </style>
+</head>
+<body class="p-2 sm:p-4 lg:p-5">
+
+  <div class="max-w-[1360px] mx-auto space-y-3 sm:space-y-4">
+
+    <!-- ======================================================================
+         頂部導覽列（標題、大廳連結、切換實驗室連結、音效開關）
+         ====================================================================== -->
+    <header class="bg-white/95 backdrop-blur border-2 border-emerald-100 rounded-3xl shadow-sm px-3.5 py-3 sm:px-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      <!-- 標題與單元標註 -->
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-2xl shadow-sm shrink-0 text-white font-bold">
+          ⚗️
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <h1 class="text-lg sm:text-2xl font-black text-slate-800 tracking-tight">
+              國小五年級自然科學｜水溶液混合與酸鹼中和互動實驗室
+            </h1>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+              翰林版單元延伸
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
+            滴加水溶液觀察酸鹼中和，抽取混合液滴在試紙即時檢驗！
+          </p>
+        </div>
+      </div>
+
+      <!-- 右側切換與功能列 -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- 回實驗室首頁大廳 -->
+        <a
+          href="index.html"
+          class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all flex items-center gap-1.5 shadow-xs"
+          title="回到國小自然科學實驗室大廳"
+        >
+          <span>🏠</span>
+          <span>實驗大廳</span>
+        </a>
+
+        <!-- 切換至指示劑實驗室 -->
+        <a
+          href="aqueous_acid_base_lab.html"
+          class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 transition-all flex items-center gap-1.5 shadow-xs"
+        >
+          <span>🧪</span>
+          <span>指示劑實驗室</span>
+        </a>
+
+        <!-- 音效開關 -->
+        <button
+          type="button"
+          id="sound-toggle-btn"
+          onclick="toggleSound()"
+          aria-label="切換音效"
+          class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
+        >
+          <span id="sound-icon">🔊</span>
+          <span id="sound-label">音效開</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 全通關慶祝橫幅 -->
+    <div
+      id="mastery-banner"
+      class="hidden bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 border-2 border-emerald-500 rounded-3xl p-4 shadow-md text-slate-900 flex flex-col sm:flex-row items-center justify-between gap-3"
+    >
+      <div class="flex items-center gap-3">
+        <span class="text-4xl animate-bounce">🏆</span>
+        <div>
+          <h2 class="text-lg sm:text-xl font-black text-slate-900">
+            🎉 恭喜達成「酸鹼中和大師」成就！
+          </h2>
+          <p class="text-sm sm:text-base font-bold text-slate-800">
+            你已經精通酸與鹼互相中和、稀釋與試紙檢驗的科學奧秘，太優秀了！
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        onclick="openResetAllModal()"
+        class="px-4 py-2 rounded-xl bg-white/95 hover:bg-white text-slate-800 font-bold text-base shadow border border-slate-300 shrink-0 cursor-pointer"
+      >
+        🔄 重新挑戰
+      </button>
+    </div>
+
+    <!-- ======================================================================
+         主實驗區：左右雙欄自適應佈局
+         ====================================================================== -->
+    <main class="lab-main-grid">
+
+      <!-- ====================================================================
+           A 區塊（左側：水溶液庫與控制面板）
+           ==================================================================== -->
+      <section
+        aria-label="水溶液控制面板"
+        class="block-a-panel bg-white rounded-3xl border-2 border-emerald-100 shadow-sm p-3.5 sm:p-4 flex flex-col overflow-hidden"
+      >
+        <!-- 控制按鈕列：顯示/隱藏 pH 數值 & 清空混合瓶 -->
+        <div class="grid grid-cols-2 gap-2 mb-2.5 shrink-0">
+          <button
+            type="button"
+            id="toggle-ph-btn"
+            onclick="toggleShowPH()"
+            class="px-3 py-2.5 rounded-2xl text-[14px] sm:text-base font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border-2 border-indigo-200 transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+          >
+            <span id="ph-btn-icon">👁️</span>
+            <span id="ph-btn-text">顯示 pH 數值</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="resetFlask()"
+            class="px-3 py-2.5 rounded-2xl text-[14px] sm:text-base font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border-2 border-rose-200 transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+          >
+            <span>🔄</span>
+            <span>清空混合瓶</span>
+          </button>
+        </div>
+
+        <!-- 4 大中和任務進度條 -->
+        <div class="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-2.5 border border-emerald-200 mb-2.5 shrink-0">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs sm:text-sm font-extrabold text-slate-800 flex items-center gap-1.5">
+              <span>⭐</span>
+              <span>中和任務進度：<span id="task-progress-count" class="text-emerald-700 text-base font-black">0 / 4</span></span>
+            </span>
+            <button
+              type="button"
+              onclick="openResetAllModal()"
+              class="text-xs font-bold text-slate-500 hover:text-rose-600 underline underline-offset-2 px-1 py-0.5 rounded cursor-pointer"
+            >
+              重設任務
+            </button>
+          </div>
+          <div class="w-full h-2.5 bg-white rounded-full overflow-hidden border border-emerald-200 p-0.5">
+            <div
+              id="task-progress-bar"
+              class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-500"
+              style="width: 0%"
+            ></div>
+          </div>
+        </div>
+
+        <!-- 滴加量控制與選取提示 -->
+        <div class="flex items-center justify-between px-1 mb-1.5 shrink-0">
+          <span class="text-xs sm:text-sm font-bold text-slate-700">🧪 選擇水溶液並滴加：</span>
+          <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+            <span class="text-xs font-bold text-slate-500 px-1">每次：</span>
+            <button
+              type="button"
+              onclick="setDropBatch(1)"
+              id="btn-drop-1"
+              class="px-2 py-0.5 rounded-lg text-xs font-black bg-white text-emerald-700 shadow-xs border border-emerald-200 cursor-pointer"
+            >
+              1 滴
+            </button>
+            <button
+              type="button"
+              onclick="setDropBatch(3)"
+              id="btn-drop-3"
+              class="px-2 py-0.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-white cursor-pointer"
+            >
+              3 滴
+            </button>
+          </div>
+        </div>
+
+        <!-- 七種水溶液清單 -->
+        <div
+          id="solution-list"
+          class="flex-1 overflow-y-auto custom-scrollbar pr-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2 max-h-[260px] sm:max-h-[220px] lg:max-h-none"
+        >
+          <!-- 由 JS 動態生成 -->
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           B 區塊（右側：混合反應主舞台 + 放大版試紙採樣工作台）
+           ==================================================================== -->
+      <section
+        aria-label="混合反應主舞台"
+        class="block-b-panel bg-white rounded-3xl border-2 border-emerald-100 shadow-sm flex flex-col overflow-hidden relative min-h-[480px] sm:min-h-[540px]"
+      >
+        <!-- 步驟與狀態引導列 -->
+        <div
+          id="step-guide-bar"
+          class="bg-gradient-to-r from-teal-600 to-emerald-600 text-white px-3.5 py-2.5 sm:px-5 flex items-center justify-between gap-2 shrink-0 shadow-xs"
+        >
+          <div class="flex items-center gap-2">
+            <span id="step-guide-badge" class="px-2.5 py-0.5 rounded-lg bg-amber-400 text-slate-900 font-black text-xs sm:text-sm shrink-0">
+              引導
+            </span>
+            <p id="step-guide-text" class="text-sm sm:text-base font-bold leading-snug">
+              👉 請在左側點選水溶液滴入燒瓶，並點擊下方按鈕進行「試紙採樣檢驗」！
+            </p>
+          </div>
+          <!-- 指示劑切換選項 -->
+          <div class="flex items-center gap-1.5 shrink-0">
+            <span class="hidden md:inline text-xs font-bold text-emerald-100">燒瓶指示劑：</span>
+            <select
+              id="indicator-selector"
+              onchange="changeIndicator(this.value)"
+              class="bg-white/90 text-slate-800 text-xs sm:text-sm font-bold rounded-xl px-2.5 py-1 border border-white/40 cursor-pointer focus:outline-none"
+            >
+              <option value="cabbage">🟣 紫色高麗菜汁</option>
+              <option value="universal">🌈 廣用指示劑</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 舞台主畫面區（反應燒瓶 + 放大版採樣工作台） -->
+        <div class="flex-1 lab-stage-bg relative flex flex-col justify-between p-3 sm:p-3.5 overflow-hidden select-none gap-2">
+          
+          <!-- 上半部：滴管 + 大型反應燒瓶 -->
+          <div class="flex-1 flex flex-col justify-center items-center relative min-h-[220px]">
+            <!-- 滴管本體 -->
+            <div id="mixing-dropper" class="flex flex-col items-center mb-0.5">
+              <div
+                id="mixing-dropper-label"
+                class="mb-0.5 px-3 py-0.5 rounded-full text-xs font-black bg-white border-2 border-slate-300 text-slate-600 shadow-xs"
+              >
+                準備吸取：請選擇左側燒杯
+              </div>
+
+              <!-- 滴管 SVG -->
+              <div class="relative w-[62px] h-[68px] flex items-center justify-center">
+                <svg viewBox="0 0 100 120" class="w-full h-full overflow-visible">
+                  <defs>
+                    <clipPath id="mix-tube-clip">
+                      <path d="M 42 44 L 58 44 L 58 84 L 52 104 L 48 104 L 42 84 Z" />
+                    </clipPath>
+                    <linearGradient id="mix-rubber-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#f87171" />
+                      <stop offset="40%" stop-color="#ef4444" />
+                      <stop offset="100%" stop-color="#b91c1c" />
+                    </linearGradient>
+                  </defs>
+
+                  <g clip-path="url(#mix-tube-clip)">
+                    <rect id="mix-dropper-liquid" x="40" y="105" width="20" height="0" fill="#38bdf8" class="transition-all duration-300" />
+                  </g>
+                  <path d="M 42 44 L 58 44 L 58 84 L 52 105 L 48 105 L 42 84 Z" fill="rgba(255,255,255,0.42)" stroke="#475569" stroke-width="2.2" />
+                  <line x1="52" y1="56" x2="57" y2="56" stroke="#334155" stroke-width="1.5" />
+                  <line x1="52" y1="70" x2="57" y2="70" stroke="#334155" stroke-width="1.5" />
+                  <rect x="38" y="40" width="24" height="5" rx="2.5" fill="#cbd5e1" stroke="#475569" stroke-width="1.8" />
+                  <g id="mix-rubber-bulb">
+                    <path d="M 38 40 C 34 32, 35 8, 50 8 C 65 8, 66 32, 62 40 Z" fill="url(#mix-rubber-grad)" stroke="#991b1b" stroke-width="2" />
+                  </g>
+                  <g id="mix-droplet-container"></g>
+                </svg>
+              </div>
+            </div>
+
+            <!-- 大型透明反應燒瓶 -->
+            <div class="relative w-[170px] h-[180px] sm:w-[190px] sm:h-[195px]">
+              <svg viewBox="0 0 200 220" class="w-full h-full drop-shadow-md overflow-visible">
+                <defs>
+                  <clipPath id="flask-liquid-clip">
+                    <path d="M 85 50 L 115 50 L 115 80 L 175 180 C 180 190, 175 198, 160 198 L 40 198 C 25 198, 20 190, 25 180 L 85 80 Z" />
+                  </clipPath>
+                </defs>
+
+                <!-- 內部液體 -->
+                <g clip-path="url(#flask-liquid-clip)">
+                  <rect
+                    id="flask-liquid-rect"
+                    x="20"
+                    y="130"
+                    width="160"
+                    height="70"
+                    fill="#6d28d9"
+                    class="transition-all duration-700"
+                  />
+                  <ellipse
+                    id="flask-liquid-meniscus"
+                    cx="100"
+                    cy="130"
+                    rx="55"
+                    ry="7"
+                    fill="#8b5cf6"
+                    class="transition-all duration-700"
+                  />
+                  <g id="flask-ripple-group"></g>
+                  <rect
+                    id="stirrer-bar"
+                    x="86"
+                    y="188"
+                    width="28"
+                    height="7"
+                    rx="3.5"
+                    fill="#ffffff"
+                    stroke="#94a3b8"
+                    stroke-width="1.5"
+                  />
+                </g>
+
+                <!-- 燒瓶玻璃外框 -->
+                <path
+                  d="M 85 30 L 85 80 L 25 180 C 20 190, 25 198, 40 198 L 160 198 C 175 198, 180 190, 175 180 L 115 80 L 115 30"
+                  fill="rgba(255, 255, 255, 0.25)"
+                  stroke="#475569"
+                  stroke-width="3"
+                  stroke-linejoin="round"
+                />
+                <rect x="80" y="24" width="40" height="8" rx="4" fill="#e2e8f0" stroke="#475569" stroke-width="2.5" />
+                <line x1="88" y1="110" x2="98" y2="110" stroke="#64748b" stroke-width="1.5" opacity="0.8" />
+                <line x1="84" y1="130" x2="98" y2="130" stroke="#64748b" stroke-width="1.8" opacity="0.8" />
+                <line x1="80" y1="150" x2="98" y2="150" stroke="#64748b" stroke-width="1.5" opacity="0.8" />
+                <line x1="76" y1="170" x2="98" y2="170" stroke="#64748b" stroke-width="1.8" opacity="0.8" />
+                <path d="M 88 40 L 88 80 L 38 165" fill="none" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round" opacity="0.75" />
+              </svg>
+
+              <!-- 攪拌開關 -->
+              <button
+                type="button"
+                id="stirrer-btn"
+                onclick="toggleStirrer()"
+                class="absolute -bottom-1 -right-2 px-2.5 py-1 rounded-xl text-xs font-black bg-white/95 hover:bg-white text-slate-700 border border-slate-300 shadow-md flex items-center gap-1 cursor-pointer"
+                title="開啟/關閉磁力攪拌器"
+              >
+                <span id="stirrer-icon">🌀</span>
+                <span id="stirrer-label">攪拌：開</span>
+              </button>
+            </div>
+
+            <!-- 即時狀態標籤 -->
+            <div class="mt-1 flex flex-wrap items-center justify-center gap-1.5 text-center">
+              <div id="ph-display-badge" class="px-3 py-0.5 rounded-full text-xs sm:text-sm font-black bg-purple-100 text-purple-900 border border-purple-300 shadow-xs">
+                目前狀態：中性 (藍紫色)
+              </div>
+              <div id="volume-badge" class="px-3 py-0.5 rounded-full text-xs sm:text-sm font-bold bg-white text-slate-600 border border-slate-200 shadow-xs">
+                總滴數：0 滴
+              </div>
+            </div>
+          </div>
+
+          <!-- 下半部：【重點升級】放大版石蕊試紙與指示劑採樣工作台 -->
+          <div class="bg-white/95 rounded-3xl border-2 border-slate-200 shadow-md p-2.5 sm:p-3 shrink-0 space-y-2">
+            <!-- 配方紀錄與採樣檢驗按鈕列 -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-1.5">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1 text-[11px] font-black text-slate-600 mb-0.5">
+                  <span>📝</span>
+                  <span>燒瓶內配方紀錄：</span>
+                </div>
+                <div id="recipe-tags-container" class="flex flex-wrap items-center gap-1 max-h-[36px] overflow-y-auto">
+                  <span class="text-xs text-slate-400 font-medium">尚未加入任何水溶液（純指示劑原液）</span>
+                </div>
+              </div>
+
+              <!-- 採樣與換新試紙按鈕 -->
+              <div class="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onclick="sampleAndTest()"
+                  class="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                >
+                  <span>🧪</span>
+                  <span>抽取混合液・滴在試紙檢驗！</span>
+                </button>
+
+                <button
+                  type="button"
+                  onclick="clearSamplePapers()"
+                  class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 transition-all flex items-center gap-1 cursor-pointer"
+                  title="換上全新乾燥試紙"
+                >
+                  <span>🧻</span>
+                  <span class="hidden sm:inline">換新試紙</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 三大放大版試紙展示區（紅色石蕊、藍色石蕊、黃色廣用試紙） -->
+            <div class="grid grid-cols-3 gap-2 sm:gap-3">
+              <!-- 1. 紅色石蕊試紙 -->
+              <div class="flex flex-col items-center bg-rose-50/70 rounded-2xl p-1.5 sm:p-2 border border-rose-200">
+                <div class="flex items-center gap-1 mb-1">
+                  <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                  <span class="text-[11px] sm:text-xs font-black text-rose-900">紅色石蕊試紙</span>
+                </div>
+                <div
+                  id="sample-red-paper"
+                  class="litmus-paper-texture relative w-full h-[58px] sm:h-[68px] rounded-xl bg-gradient-to-b from-[#fda4af] to-[#fb7185] border-2 border-rose-400 flex items-center justify-center overflow-hidden"
+                >
+                  <span id="sample-red-label" class="text-rose-950/70 font-extrabold text-[10px] sm:text-xs bg-white/60 px-2 py-0.5 rounded-full pointer-events-none">
+                    等待採樣
+                  </span>
+                  <div id="sample-red-spot" class="absolute inset-0 pointer-events-none flex items-center justify-center"></div>
+                </div>
+                <span class="text-[10px] text-rose-800 font-bold mt-1">遇鹼變藍・遇酸不變</span>
+              </div>
+
+              <!-- 2. 藍色石蕊試紙 -->
+              <div class="flex flex-col items-center bg-sky-50/70 rounded-2xl p-1.5 sm:p-2 border border-sky-200">
+                <div class="flex items-center gap-1 mb-1">
+                  <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                  <span class="text-[11px] sm:text-xs font-black text-blue-900">藍色石蕊試紙</span>
+                </div>
+                <div
+                  id="sample-blue-paper"
+                  class="litmus-paper-texture relative w-full h-[58px] sm:h-[68px] rounded-xl bg-gradient-to-b from-[#93c5fd] to-[#60a5fa] border-2 border-blue-400 flex items-center justify-center overflow-hidden"
+                >
+                  <span id="sample-blue-label" class="text-blue-950/70 font-extrabold text-[10px] sm:text-xs bg-white/60 px-2 py-0.5 rounded-full pointer-events-none">
+                    等待採樣
+                  </span>
+                  <div id="sample-blue-spot" class="absolute inset-0 pointer-events-none flex items-center justify-center"></div>
+                </div>
+                <span class="text-[10px] text-blue-800 font-bold mt-1">遇酸變紅・遇鹼不變</span>
+              </div>
+
+              <!-- 3. 黃色廣用試紙 -->
+              <div class="flex flex-col items-center bg-amber-50/70 rounded-2xl p-1.5 sm:p-2 border border-amber-200">
+                <div class="flex items-center gap-1 mb-1">
+                  <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                  <span class="text-[11px] sm:text-xs font-black text-amber-900">黃色廣用試紙</span>
+                </div>
+                <div
+                  id="sample-univ-paper"
+                  class="litmus-paper-texture relative w-full h-[58px] sm:h-[68px] rounded-xl bg-gradient-to-b from-[#fef08a] to-[#fde047] border-2 border-amber-400 flex items-center justify-center overflow-hidden"
+                >
+                  <span id="sample-univ-label" class="text-amber-950/70 font-extrabold text-[10px] sm:text-xs bg-white/60 px-2 py-0.5 rounded-full pointer-events-none">
+                    等待採樣
+                  </span>
+                  <div id="sample-univ-spot" class="absolute inset-0 pointer-events-none flex items-center justify-center"></div>
+                </div>
+                <span class="text-[10px] text-amber-800 font-bold mt-1">酸紅橙/中綠/鹼藍紫</span>
+              </div>
+            </div>
+
+            <!-- 即時採樣科學觀察結論標籤 -->
+            <div id="sampling-result-card" class="text-center text-xs sm:text-sm font-bold text-slate-600 bg-slate-50 border border-slate-200 rounded-xl py-1.5 px-3 min-h-[30px] flex items-center justify-center">
+              💡 點擊「抽取混合液・滴在試紙檢驗」，觀察三張放大試紙的即時變色！
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <!-- ======================================================================
+         C 區塊（下方：自主推論任務挑戰 & 10 題觀念考考你）
+         ====================================================================== -->
+    <section aria-label="自主任務與評量區" class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+
+      <!-- 左半部：🔍 酸鹼中和自主推論任務 -->
+      <div class="bg-white rounded-3xl border-2 border-emerald-100 shadow-sm p-4 sm:p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <h2 class="text-base sm:text-lg font-black text-slate-800 flex items-center gap-2">
+              <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-base sm:text-lg">🎯</span>
+              <span>酸鹼中和自主通關任務</span>
+            </h2>
+            <span id="current-task-pill" class="px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-bold bg-amber-100 text-amber-900">
+              進行中：任務 1
+            </span>
+          </div>
+
+          <!-- 任務目標說明 -->
+          <div id="task-goal-box" class="bg-emerald-50/70 rounded-2xl p-3 border border-emerald-200">
+            <div class="flex items-center gap-2">
+              <span class="text-xl">🏆</span>
+              <div>
+                <h3 id="task-title" class="text-sm sm:text-base font-black text-emerald-950">
+                  任務 1：【調出酸性】讓燒瓶內液體變成「桃紅色／酸性」
+                </h3>
+                <p id="task-desc" class="text-xs sm:text-sm font-medium text-emerald-900 mt-0.5">
+                  試著在左側選擇「白醋」或「檸檬汁」，滴入 2~3 滴到混合瓶中，觀察指示劑變色！
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 自主性質推論作答按鈕 -->
+          <div class="mt-3">
+            <div class="text-xs font-bold text-slate-600 mb-1.5">👇 根據目前杯中顏色與試紙採樣結果，你推論混合液是：</div>
+            <div class="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onclick="submitGuess('acid')"
+                class="py-2.5 px-2 rounded-2xl text-xs sm:text-sm font-black bg-rose-50 hover:bg-rose-100 active:scale-95 text-rose-800 border-2 border-rose-300 shadow-xs cursor-pointer flex items-center justify-center gap-1"
+              >
+                <span>🔴</span>
+                <span>酸性</span>
+              </button>
+              <button
+                type="button"
+                onclick="submitGuess('neutral')"
+                class="py-2.5 px-2 rounded-2xl text-xs sm:text-sm font-black bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 border-2 border-emerald-300 shadow-xs cursor-pointer flex items-center justify-center gap-1"
+              >
+                <span>🟢</span>
+                <span>中性</span>
+              </button>
+              <button
+                type="button"
+                onclick="submitGuess('base')"
+                class="py-2.5 px-2 rounded-2xl text-xs sm:text-sm font-black bg-blue-50 hover:bg-blue-100 active:scale-95 text-blue-800 border-2 border-blue-300 shadow-xs cursor-pointer flex items-center justify-center gap-1"
+              >
+                <span>🔵</span>
+                <span>鹼性</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 任務與推論回饋框 -->
+        <div
+          id="task-feedback-box"
+          class="mt-3 rounded-2xl p-2.5 bg-slate-50 border border-slate-200 text-slate-600 text-xs sm:text-sm font-medium min-h-[58px] flex items-center"
+        >
+          <span>💡 提示：點擊上方「酸性／中性／鹼性」按鈕，立即驗證你的科學推論！</span>
+        </div>
+      </div>
+
+      <!-- 右半部：🎓 翰林版「考考你」觀念挑戰（10 題精選） -->
+      <div class="bg-white rounded-3xl border-2 border-amber-100 shadow-sm p-4 sm:p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <h2 class="text-base sm:text-lg font-black text-slate-800 flex items-center gap-2">
+              <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-base sm:text-lg">🎓</span>
+              <span>翰林版「考考你」水溶液混合挑戰</span>
+            </h2>
+            <div class="flex items-center gap-2">
+              <span id="quiz-progress-badge" class="px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-extrabold bg-amber-100 text-amber-900">
+                第 1 / 10 題
+              </span>
+              <span id="quiz-score-badge" class="px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-extrabold bg-emerald-100 text-emerald-800">
+                答對：0 題
+              </span>
+            </div>
+          </div>
+
+          <!-- 題幹 -->
+          <p id="quiz-question-text" class="text-xs sm:text-sm font-bold text-slate-800 bg-amber-50/60 rounded-2xl p-2.5 border border-amber-200/80 leading-relaxed">
+            載入題目中...
+          </p>
+
+          <!-- 三個大選項 -->
+          <div id="quiz-options-container" class="space-y-1.5 mt-2">
+            <!-- 由 JS 動態生成 -->
+          </div>
+        </div>
+
+        <!-- 回饋與下一題 -->
+        <div class="mt-2.5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-slate-50 rounded-2xl p-2 border border-slate-200 min-h-[58px]">
+          <p id="quiz-feedback-text" class="text-xs sm:text-sm font-bold text-slate-600 flex-1">
+            👆 請點選上方答案！
+          </p>
+          <button
+            type="button"
+            id="quiz-next-btn"
+            onclick="nextQuizQuestion()"
+            class="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black bg-blue-600 hover:bg-blue-700 text-white shadow transition-all shrink-0 flex items-center justify-center gap-1 cursor-pointer"
+          >
+            <span>下一題</span>
+            <span>➡️</span>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- 自訂確認對話框 -->
+  <div
+    id="reset-all-modal"
+    role="dialog"
+    aria-modal="true"
+    class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4"
+  >
+    <div class="bg-white rounded-3xl border-2 border-slate-200 max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl shrink-0">
+          🔄
+        </div>
+        <h3 class="text-xl font-black text-slate-800">
+          確定要重設全部進度與題目嗎？
+        </h3>
+      </div>
+      <p class="text-sm sm:text-base text-slate-600 font-medium leading-relaxed">
+        重設後將清空混合燒杯、重置 4 大任務進度與「考考你」題庫分數。
+      </p>
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <button
+          type="button"
+          onclick="closeResetAllModal()"
+          class="px-4 py-2 rounded-2xl text-base font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer"
+        >
+          取消
+        </button>
+        <button
+          type="button"
+          onclick="confirmResetAll()"
+          class="px-5 py-2 rounded-2xl text-base font-black bg-rose-600 hover:bg-rose-700 text-white shadow cursor-pointer"
+        >
+          確定重設
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 浮動提示 Toast -->
+  <div
+    id="toast-banner"
+    class="pointer-events-none fixed bottom-5 left-1/2 -translate-x-1/2 z-40 opacity-0 transition-all duration-300 bg-slate-900/90 text-white px-5 py-2 rounded-full text-xs sm:text-sm font-bold shadow-lg"
+  >
+    狀態提示
+  </div>
+
+  <script>
+    /* ========================================================================
+       一、 水溶液資料庫（濃度、酸鹼當量強度定義）
+       ======================================================================== */
+    const SOLUTIONS = [
+      {
+        id: 'lemon',
+        name: '檸檬汁',
+        type: 'acid',
+        typeLabel: '酸性水溶液',
+        strengthLabel: '強天然酸 (pH 2.4)',
+        ph: 2.4,
+        acidPower: 3.5,     // 酸性強度當量係數
+        basePower: 0,
+        liquidColor: '#fef08a',
+        liquidStroke: '#eab308',
+        iconType: 'lemon',
+        desc: '含高濃度檸檬酸，中和能力強'
+      },
+      {
+        id: 'vinegar',
+        name: '白醋',
+        type: 'acid',
+        typeLabel: '酸性水溶液',
+        strengthLabel: '食用醋酸 (pH 2.9)',
+        ph: 2.9,
+        acidPower: 2.0,
+        basePower: 0,
+        liquidColor: '#fef3c7',
+        liquidStroke: '#f59e0b',
+        iconType: 'vinegar',
+        desc: '含約 5% 醋酸，常見酸性調味料'
+      },
+      {
+        id: 'soda',
+        name: '汽水',
+        type: 'acid',
+        typeLabel: '酸性水溶液',
+        strengthLabel: '微弱碳酸 (pH 3.5)',
+        ph: 3.5,
+        acidPower: 0.8,
+        basePower: 0,
+        liquidColor: '#dbeafe',
+        liquidStroke: '#60a5fa',
+        iconType: 'soda',
+        desc: '溶有二氧化碳氣體，弱酸性'
+      },
+      {
+        id: 'salt_water',
+        name: '食鹽水',
+        type: 'neutral',
+        typeLabel: '中性水溶液',
+        strengthLabel: '中性食鹽水 (pH 7.0)',
+        ph: 7.0,
+        acidPower: 0,
+        basePower: 0,
+        liquidColor: '#e0f2fe',
+        liquidStroke: '#38bdf8',
+        iconType: 'salt',
+        desc: '中性，加入可稀釋酸或鹼'
+      },
+      {
+        id: 'sugar_water',
+        name: '糖水',
+        type: 'neutral',
+        typeLabel: '中性水溶液',
+        strengthLabel: '中性糖水 (pH 7.0)',
+        ph: 7.0,
+        acidPower: 0,
+        basePower: 0,
+        liquidColor: '#e0f2fe',
+        liquidStroke: '#38bdf8',
+        iconType: 'sugar',
+        desc: '中性，加入可稀釋酸或鹼'
+      },
+      {
+        id: 'baking_soda',
+        name: '小蘇打水',
+        type: 'base',
+        typeLabel: '鹼性水溶液',
+        strengthLabel: '弱鹼性 (pH 8.5)',
+        ph: 8.5,
+        acidPower: 0,
+        basePower: 1.2,     // 鹼性強度當量係數
+        liquidColor: '#e2e8f0',
+        liquidStroke: '#94a3b8',
+        iconType: 'baking_soda',
+        desc: '碳酸氫鈉弱鹼，溫和中和酸'
+      },
+      {
+        id: 'soapy_water',
+        name: '肥皂水',
+        type: 'base',
+        typeLabel: '鹼性水溶液',
+        strengthLabel: '中強生活鹼 (pH 9.5)',
+        ph: 9.5,
+        acidPower: 0,
+        basePower: 2.8,
+        liquidColor: '#f1f5f9',
+        liquidStroke: '#94a3b8',
+        iconType: 'soap',
+        desc: '脂肪酸鈉生活鹼，中和酸性顯著'
+      }
+    ];
+
+    /* 4 大酸鹼中和自主任務定義 */
+    const TASKS = [
+      {
+        id: 1,
+        title: '任務 1：【調出酸性】讓混合瓶變成「桃紅色／酸性」',
+        desc: '在左側選擇「白醋」或「檸檬汁」，滴入 2~3 滴到混合瓶中，觀察指示劑變為酸性！',
+        targetType: 'acid',
+        check: (pH, recipe) => pH < 6.0
+      },
+      {
+        id: 2,
+        title: '任務 2：【中和反轉】在酸性中加入鹼，反轉為「藍綠色／鹼性」',
+        desc: '在酸性混合液中，不斷加入「肥皂水」或「小蘇打水」，直到中和並轉變為鹼性！',
+        targetType: 'base',
+        check: (pH, recipe) => pH > 7.6
+      },
+      {
+        id: 3,
+        title: '任務 3：【黃金中和點】精準調配出「中性（pH 6.6 ~ 7.4）」',
+        desc: '小心微調加入酸或鹼，讓溶液恰好達到酸鹼中和（呈現中性藍紫色或翠綠色）！',
+        targetType: 'neutral',
+        check: (pH, recipe) => (pH >= 6.6 && pH <= 7.4 && getTotalDrops() >= 4)
+      },
+      {
+        id: 4,
+        title: '任務 4：【中性稀釋法】加入「食鹽水或糖水」稀釋溶液',
+        desc: '加入 4 滴以上的「食鹽水」或「糖水」，觀察總體積增加且酸鹼度朝 pH 7.0 靠攏！',
+        targetType: 'dilute',
+        check: (pH, recipe) => (recipe['salt_water'] >= 4 || recipe['sugar_water'] >= 4)
+      }
+    ];
+
+    /* 翰林版「考考你」精選 10 題（酸鹼混合生活情境） */
+    const QUIZ_QUESTIONS = [
+      {
+        question: '酸性的「白醋」與鹼性的「肥皂水」混合時，溶液的酸性會有什麼改變？',
+        options: [
+          '酸性會越來越強',
+          '酸性會逐漸被中和而減弱',
+          '完全沒有任何改變'
+        ],
+        answer: 1,
+        explanation: '白醋中的酸與肥皂水中的鹼會發生「酸鹼中和」，使原本的酸性逐漸降低減弱！'
+      },
+      {
+        question: '小明胃酸過多胃痛，醫生建議服用胃藥。胃藥通常含有弱鹼性成分，這是利用什麼原理？',
+        options: [
+          '酸鹼中和原理',
+          '蒸發濃縮原理',
+          '過濾分離原理'
+        ],
+        answer: 0,
+        explanation: '胃藥中的弱鹼性成分（如小蘇打或氫氧化鋁）能中和過多的胃酸，達到減緩胃痛的效果！'
+      },
+      {
+        question: '戶外被蜜蜂或紅火蟻叮咬（注入酸性毒液）時，塗抹下列哪種水溶液有助於中和舒緩？',
+        options: [
+          '稀釋檸檬汁',
+          '稀釋小蘇打水',
+          '濃白醋'
+        ],
+        answer: 1,
+        explanation: '蜜蜂與螞蟻毒液多為酸性，塗抹弱鹼性的小蘇打水能進行酸鹼中和，減輕紅腫刺痛！'
+      },
+      {
+        question: '如果將「檸檬汁（酸性）」與「糖水（中性）」混合在一起，混合後的水溶液是什麼性質？',
+        options: [
+          '依然是酸性水溶液（只是被稀釋）',
+          '變成中性水溶液',
+          '變成鹼性水溶液'
+        ],
+        answer: 0,
+        explanation: '糖水是中性，加入檸檬汁中只會將檸檬酸稀釋，使酸性變淡，但整體依然屬於酸性水溶液！'
+      },
+      {
+        question: '在紫色高麗菜汁中加入白醋變成桃紅色，若想讓它變回中性的藍紫色，應該慢慢加入什麼？',
+        options: [
+          '汽水',
+          '小蘇打水',
+          '檸檬汁'
+        ],
+        answer: 1,
+        explanation: '桃紅色代表酸性，要使它變回中性藍紫色，需要加入鹼性的小蘇打水來相互中和！'
+      },
+      {
+        question: '農夫發現農田土壤因酸雨而酸化，不利作物生長，通常會在田裡撒熟石灰（鹼性），這是為了：',
+        options: [
+          '中和土壤過多的酸性',
+          '讓土壤變成強酸性',
+          '讓土壤加速乾燥'
+        ],
+        answer: 0,
+        explanation: '熟石灰呈鹼性，撒入酸性土壤中可以達到酸鹼中和，改善土壤環境促進作物生長！'
+      },
+      {
+        question: '將「汽水（酸性）」與「檸檬汁（酸性）」兩杯混合在一起，混合後的性質是：',
+        options: [
+          '依然是酸性水溶液',
+          '變成中性水溶液',
+          '變成鹼性水溶液'
+        ],
+        answer: 0,
+        explanation: '酸性水溶液加上酸性水溶液，兩者都是酸，混合後依然是酸性水溶液，不會被中和！'
+      },
+      {
+        question: '關於生活中的「酸鹼中和」現象，下列敘述哪一項是正確的？',
+        options: [
+          '酸性與鹼性水溶液混合，能互相降低彼此的酸鹼強度',
+          '酸性與鹼性混合一定會產生有毒劇毒氣體',
+          '中和後的液體絕對無法用指示劑檢驗'
+        ],
+        answer: 0,
+        explanation: '酸鹼中和是指酸與鹼反應生成水和鹽，能互相抵消減弱彼此的酸性與鹼性！'
+      },
+      {
+        question: '使用「廣用指示劑」檢驗混合水溶液時，若呈現「綠色」，代表其 pH 值大約是多少？',
+        options: [
+          'pH 2（強酸）',
+          'pH 7（中性）',
+          'pH 11（強鹼）'
+        ],
+        answer: 1,
+        explanation: '廣用指示劑在 pH 7 附近呈現標準鮮綠色，代表這杯水溶液達到中性狀態！'
+      },
+      {
+        question: '小華調配了一杯液體，滴在紅色石蕊試紙不變色，滴在藍色石蕊試紙也不變色，代表這杯液體是：',
+        options: [
+          '中性水溶液',
+          '強酸性水溶液',
+          '強鹼性水溶液'
+        ],
+        answer: 0,
+        explanation: '兩張石蕊試紙皆不變色，正是「中性水溶液」的重要科學特徵！'
+      }
+    ];
+
+    /* ========================================================================
+       二、 全域狀態管理
+       ======================================================================== */
+    const state = {
+      selectedId: null,
+      dropBatch: 1,
+      showPH: false,
+      soundEnabled: true,
+      indicator: 'cabbage',
+      stirrerActive: true,
+
+      recipe: {},
+      currentPH: 7.0,
+
+      currentTaskId: 1,
+      completedTasks: {},
+
+      quiz: {
+        index: 0,
+        score: 0,
+        answeredMap: {}
+      }
+    };
+
+    /* ========================================================================
+       三、 Web Audio API 合成音效
+       ======================================================================== */
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioClass) audioCtx = new AudioClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSound(type) {
+      if (!state.soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        if (type === 'drop') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(560, now);
+          osc.frequency.exponentialRampToValueAtTime(1080, now + 0.12);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.14);
+        } else if (type === 'success') {
+          const notes = [523.25, 659.25, 783.99, 1046.5];
+          notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            const start = now + idx * 0.08;
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.2, start);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.28);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + 0.28);
+          });
+        } else if (type === 'wrong') {
+          const notes = [330, 261.63];
+          notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            const start = now + idx * 0.14;
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.15, start);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.22);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + 0.22);
+          });
+        } else if (type === 'click') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, now);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        }
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      state.soundEnabled = !state.soundEnabled;
+      const icon = document.getElementById('sound-icon');
+      const label = document.getElementById('sound-label');
+      if (state.soundEnabled) {
+        icon.textContent = '🔊';
+        label.textContent = '音效開';
+        playSound('click');
+      } else {
+        icon.textContent = '🔇';
+        label.textContent = '音效關';
+      }
+    }
+
+    /* ========================================================================
+       四、 SVG 燒杯圖標
+       ======================================================================== */
+    function getItemBadgeSVG(iconType) {
+      switch (iconType) {
+        case 'lemon':
+          return `<svg viewBox="0 0 32 32" class="w-5 h-5 shrink-0"><ellipse cx="16" cy="17" rx="11" ry="8" fill="#facc15" stroke="#ca8a04" stroke-width="2"/><circle cx="27" cy="17" r="2" fill="#facc15"/><circle cx="5" cy="17" r="2" fill="#facc15"/><path d="M16 9 C18 5, 23 5, 24 8 C20 10, 17 10, 16 9 Z" fill="#22c55e"/></svg>`;
+        case 'baking_soda':
+          return `<svg viewBox="0 0 32 32" class="w-5 h-5 shrink-0"><rect x="7" y="5" width="18" height="23" rx="3" fill="#38bdf8" stroke="#0284c7" stroke-width="2"/><rect x="10" y="10" width="12" height="9" rx="1.5" fill="#ffffff"/></svg>`;
+        case 'salt':
+          return `<svg viewBox="0 0 32 32" class="w-5 h-5 shrink-0"><path d="M10 11 L22 11 L24 27 L8 27 Z" fill="#f8fafc" stroke="#64748b" stroke-width="2"/><circle cx="14" cy="19" r="1.2" fill="#94a3b8"/></svg>`;
+        case 'vinegar':
+          return `<svg viewBox="0 0 32 32" class="w-5 h-5 shrink-0"><rect x="13" y="4" width="6" height="5" rx="1" fill="#dc2626"/><path d="M13 9 L19 9 L22 15 L22 27 L10 27 L10 15 Z" fill="#fde68a" stroke="#d97706" stroke-width="2"/></svg>`;
+        case 'soap':
+          return `<svg viewBox="0 0 32 32" class="w-5 h-5 shrink-0"><rect x="6" y="13" width="18" height="12" rx="5" fill="#f472b6" stroke="#db2777" stroke-width="2"/><circle cx="23" cy="9" r="3.5" fill="#bae6fd"/></svg>`;
+        case 'sugar':
+          return `<svg viewBox="0 0 32 32" class="w-5 h-5 shrink-0"><rect x="7" y="14" width="10" height="10" rx="2" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/><rect x="15" y="10" width="10" height="10" rx="2" fill="#f8fafc" stroke="#64748b" stroke-width="2"/></svg>`;
+        case 'soda':
+          return `<svg viewBox="0 0 32 32" class="w-5 h-5 shrink-0"><rect x="9" y="6" width="14" height="21" rx="3" fill="#ef4444" stroke="#b91c1c" stroke-width="2"/></svg>`;
+        default: return '';
+      }
+    }
+
+    function getMiniBeakerSVG(sol) {
+      return `
+        <svg viewBox="0 0 44 46" class="w-9 h-9 sm:w-10 sm:h-10 shrink-0">
+          <path d="M 10 20 L 34 20 L 34 37 C 34 40, 10 40, 10 37 Z" fill="${sol.liquidColor}" />
+          <ellipse cx="22" cy="20" rx="12" ry="2.2" fill="${sol.liquidStroke}" opacity="0.45" />
+          <path d="M 8 10 L 10 12 L 10 37 C 10 41, 34 41, 34 37 L 34 10" fill="none" stroke="#475569" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      `;
+    }
+
+    /* ========================================================================
+       五、 渲染水溶液選單
+       ======================================================================== */
+    function renderSolutionList() {
+      const container = document.getElementById('solution-list');
+      container.innerHTML = SOLUTIONS.map((sol) => {
+        const isSelected = state.selectedId === sol.id;
+        const currentDrops = state.recipe[sol.id] || 0;
+
+        let typeBadge = '';
+        if (sol.type === 'acid') {
+          typeBadge = '<span class="px-1.5 py-0.5 rounded-md text-[10px] font-black bg-rose-100 text-rose-800">酸性</span>';
+        } else if (sol.type === 'base') {
+          typeBadge = '<span class="px-1.5 py-0.5 rounded-md text-[10px] font-black bg-blue-100 text-blue-800">鹼性</span>';
+        } else {
+          typeBadge = '<span class="px-1.5 py-0.5 rounded-md text-[10px] font-black bg-emerald-100 text-emerald-800">中性</span>';
+        }
+
+        const cardStyle = isSelected
+          ? 'bg-emerald-50/95 border-emerald-500 ring-2 ring-emerald-300 shadow-md'
+          : 'bg-white border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/30';
+
+        return `
+          <div class="rounded-2xl border-2 p-2 sm:p-2.5 transition-all flex items-center justify-between gap-1.5 ${cardStyle}">
+            <div class="flex items-center gap-2 min-w-0">
+              ${getMiniBeakerSVG(sol)}
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5">
+                  ${getItemBadgeSVG(sol.iconType)}
+                  <span class="text-sm sm:text-base font-black text-slate-800 truncate">${sol.name}</span>
+                </div>
+                <div class="flex items-center gap-1 mt-0.5">
+                  ${typeBadge}
+                  <span class="text-[10px] font-bold text-slate-500">${sol.strengthLabel}</span>
+                  ${currentDrops > 0 ? `<span class="px-1.5 py-0.2 rounded-full text-[10px] font-black bg-amber-100 text-amber-900">已加 ${currentDrops} 滴</span>` : ''}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1 shrink-0">
+              <button
+                type="button"
+                onclick="addDrop('${sol.id}')"
+                class="px-2.5 py-1.5 rounded-xl font-black text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs cursor-pointer active:scale-95 transition-all"
+              >
+                +${state.dropBatch} 滴
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setDropBatch(batch) {
+      state.dropBatch = batch;
+      document.getElementById('btn-drop-1').className = batch === 1
+        ? 'px-2 py-0.5 rounded-lg text-xs font-black bg-white text-emerald-700 shadow-xs border border-emerald-200 cursor-pointer'
+        : 'px-2 py-0.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-white cursor-pointer';
+
+      document.getElementById('btn-drop-3').className = batch === 3
+        ? 'px-2 py-0.5 rounded-lg text-xs font-black bg-white text-emerald-700 shadow-xs border border-emerald-200 cursor-pointer'
+        : 'px-2 py-0.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-white cursor-pointer';
+
+      renderSolutionList();
+    }
+
+    /* ========================================================================
+       六、 嚴謹科學計算：水溶液混合與酸鹼中和引擎（嚴格遵守物理化學上下限定律）
+       ======================================================================== */
+    function getTotalDrops() {
+      return Object.values(state.recipe).reduce((a, b) => a + b, 0);
+    }
+
+    /**
+     * 計算混合後的真實 pH 值
+     * 科學定理：混合液的 pH 值絕對不可能低於所加入酸的最低 pH，
+     *           也絕對不可能高於所加入鹼的最高 pH！
+     */
+    function calculateMixturePH() {
+      const activeEntries = Object.entries(state.recipe).filter(([_, drops]) => drops > 0);
+      if (activeEntries.length === 0) return 7.0;
+
+      let netAcidEq = 0;
+      let netBaseEq = 0;
+      let totalDrops = 0;
+      let minAcidPH = 7.0;
+      let maxBasePH = 7.0;
+
+      activeEntries.forEach(([solId, drops]) => {
+        const sol = SOLUTIONS.find((s) => s.id === solId);
+        if (!sol) return;
+        totalDrops += drops;
+        if (sol.type === 'acid') {
+          netAcidEq += drops * sol.acidPower;
+          minAcidPH = Math.min(minAcidPH, sol.ph);
+        } else if (sol.type === 'base') {
+          netBaseEq += drops * sol.basePower;
+          maxBasePH = Math.max(maxBasePH, sol.ph);
+        }
+      });
+
+      const diff = netAcidEq - netBaseEq;
+
+      // 酸鹼當量在微小範圍內，判定為酸鹼完全中和（pH 7.0）
+      if (Math.abs(diff) < 0.2) {
+        return 7.0;
+      } else if (diff > 0) {
+        // 酸性過剩：下限嚴格由 minAcidPH 錨定
+        const maxDrop = 7.0 - minAcidPH;
+        const ratio = diff / (totalDrops + 3);
+        const factor = Math.min(1.0, (ratio * 1.4) / (1 + ratio * 0.45));
+        const ph = 7.0 - (maxDrop * factor);
+        return Number(Math.max(minAcidPH, Math.min(6.9, ph)).toFixed(1));
+      } else {
+        // 鹼性過剩：上限嚴格由 maxBasePH 錨定（若只加小蘇打水，上限永遠是 8.5！）
+        const excessBase = -diff;
+        const maxRise = maxBasePH - 7.0;
+        const ratio = excessBase / (totalDrops + 3);
+        const factor = Math.min(1.0, (ratio * 1.4) / (1 + ratio * 0.45));
+        const ph = 7.0 + (maxRise * factor);
+        return Number(Math.min(maxBasePH, Math.max(7.1, ph)).toFixed(1));
+      }
+    }
+
+    // 依目前 pH 與選擇的指示劑獲取顏色
+    function getLiquidColorForPH(ph, indicator) {
+      if (indicator === 'cabbage') {
+        // 紫色高麗菜汁變色色譜
+        if (ph < 3.2) return { liquid: '#be123c', meniscus: '#e11d48', name: '桃紅色 (強酸)' };
+        if (ph < 5.0) return { liquid: '#e11d48', meniscus: '#fb7185', name: '粉桃紅色 (酸性)' };
+        if (ph < 6.4) return { liquid: '#d946ef', meniscus: '#f472b6', name: '紫粉色 (弱酸)' };
+        if (ph <= 7.5) return { liquid: '#6d28d9', meniscus: '#8b5cf6', name: '藍紫色 (中性)' };
+        if (ph < 8.8) return { liquid: '#0d9488', meniscus: '#2dd4bf', name: '藍綠色 (弱鹼)' };
+        return { liquid: '#15803d', meniscus: '#22c55e', name: '翠綠色 (鹼性)' };
+      } else {
+        // 廣用指示劑變色色譜
+        if (ph < 3.0) return { liquid: '#dc2626', meniscus: '#ef4444', name: '紅色 (強酸)' };
+        if (ph < 5.0) return { liquid: '#f97316', meniscus: '#fb923c', name: '橙色 (酸性)' };
+        if (ph < 6.5) return { liquid: '#facc15', meniscus: '#fde047', name: '黃色 (弱酸)' };
+        if (ph <= 7.5) return { liquid: '#22c55e', meniscus: '#4ade80', name: '綠色 (中性)' };
+        if (ph < 9.0) return { liquid: '#0284c7', meniscus: '#38bdf8', name: '藍色 (鹼性)' };
+        return { liquid: '#6d28d9', meniscus: '#8b5cf6', name: '紫色 (強鹼)' };
+      }
+    }
+
+    /* 執行滴加液體到燒杯中 */
+    function addDrop(solId) {
+      state.selectedId = solId;
+      const sol = SOLUTIONS.find((s) => s.id === solId);
+      if (!sol) return;
+
+      const count = state.dropBatch;
+      state.recipe[solId] = (state.recipe[solId] || 0) + count;
+
+      playSound('drop');
+
+      const dropperLabel = document.getElementById('mixing-dropper-label');
+      dropperLabel.textContent = `正在滴入：【${sol.name}】+${count}滴`;
+      dropperLabel.className = 'mb-0.5 px-3 py-0.5 rounded-full text-xs font-black bg-emerald-600 text-white shadow-xs';
+
+      const dropperLiquid = document.getElementById('mix-dropper-liquid');
+      dropperLiquid.setAttribute('fill', sol.liquidStroke);
+      dropperLiquid.setAttribute('y', '56');
+      dropperLiquid.setAttribute('height', '49');
+
+      const bulb = document.getElementById('mix-rubber-bulb');
+      bulb.classList.remove('animate-squeeze');
+      void bulb.offsetWidth;
+      bulb.classList.add('animate-squeeze');
+
+      const dropletContainer = document.getElementById('mix-droplet-container');
+      dropletContainer.innerHTML = `
+        <path
+          d="M 50 105 C 50 105, 44 114, 44 118 C 44 121.5, 46.7 124, 50 124 C 53.3 124, 56 121.5, 56 118 C 56 114, 50 105, 50 105 Z"
+          fill="${sol.liquidStroke}"
+          class="falling-droplet-mixing"
+        />
+      `;
+
+      setTimeout(() => {
+        updateFlaskLiquidVisuals();
+        renderRecipeTags();
+        renderSolutionList();
+        checkTaskProgress();
+      }, 220);
+    }
+
+    function updateFlaskLiquidVisuals() {
+      state.currentPH = calculateMixturePH();
+      const colorCfg = getLiquidColorForPH(state.currentPH, state.indicator);
+      const totalDrops = getTotalDrops();
+
+      const baseHeight = 70;
+      const addedHeight = Math.min(60, totalDrops * 2.2);
+      const currentHeight = baseHeight + addedHeight;
+      const currentY = 200 - currentHeight;
+
+      const rect = document.getElementById('flask-liquid-rect');
+      const meniscus = document.getElementById('flask-liquid-meniscus');
+
+      rect.setAttribute('y', currentY);
+      rect.setAttribute('height', currentHeight);
+      rect.setAttribute('fill', colorCfg.liquid);
+
+      meniscus.setAttribute('cy', currentY);
+      meniscus.setAttribute('fill', colorCfg.meniscus);
+
+      const rippleGroup = document.getElementById('flask-ripple-group');
+      rippleGroup.innerHTML = `
+        <ellipse cx="100" cy="${currentY}" rx="40" ry="5" fill="none" stroke="#ffffff" stroke-width="2" class="liquid-ripple" />
+      `;
+
+      const phBadge = document.getElementById('ph-display-badge');
+      let statusText = '';
+      if (state.currentPH < 6.5) {
+        statusText = '酸性水溶液';
+      } else if (state.currentPH > 7.5) {
+        statusText = '鹼性水溶液';
+      } else {
+        statusText = '中性水溶液';
+      }
+
+      const phText = state.showPH ? ` (pH ${state.currentPH.toFixed(1)})` : '';
+      phBadge.textContent = `目前：${statusText}・${colorCfg.name}${phText}`;
+      
+      if (state.currentPH < 6.5) {
+        phBadge.className = 'px-3 py-0.5 rounded-full text-xs sm:text-sm font-black bg-rose-100 text-rose-900 border border-rose-300 shadow-xs';
+      } else if (state.currentPH > 7.5) {
+        phBadge.className = 'px-3 py-0.5 rounded-full text-xs sm:text-sm font-black bg-teal-100 text-teal-900 border border-teal-300 shadow-xs';
+      } else {
+        phBadge.className = 'px-3 py-0.5 rounded-full text-xs sm:text-sm font-black bg-purple-100 text-purple-900 border border-purple-300 shadow-xs';
+      }
+
+      document.getElementById('volume-badge').textContent = `總滴數：${totalDrops} 滴`;
+    }
+
+    function renderRecipeTags() {
+      const container = document.getElementById('recipe-tags-container');
+      const entries = Object.entries(state.recipe).filter(([_, drops]) => drops > 0);
+
+      if (entries.length === 0) {
+        container.innerHTML = `<span class="text-xs text-slate-400 font-medium">尚未加入任何水溶液（純指示劑原液）</span>`;
+        return;
+      }
+
+      container.innerHTML = entries.map(([solId, drops]) => {
+        const sol = SOLUTIONS.find((s) => s.id === solId);
+        return `
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 border border-slate-300 text-slate-700">
+            <span>${sol.name}</span>
+            <strong class="text-emerald-700">x${drops}滴</strong>
+          </span>
+        `;
+      }).join('');
+    }
+
+    function changeIndicator(val) {
+      state.indicator = val;
+      playSound('click');
+      updateFlaskLiquidVisuals();
+      showToast(`已切換指示劑為：${val === 'cabbage' ? '🟣 紫色高麗菜汁' : '🌈 廣用指示劑'}`);
+    }
+
+    function toggleStirrer() {
+      state.stirrerActive = !state.stirrerActive;
+      playSound('click');
+      const bar = document.getElementById('stirrer-bar');
+      const label = document.getElementById('stirrer-label');
+      if (state.stirrerActive) {
+        bar.classList.add('animate-stirrer');
+        label.textContent = '攪拌：開';
+      } else {
+        bar.classList.remove('animate-stirrer');
+        label.textContent = '攪拌：關';
+      }
+    }
+
+    /* ========================================================================
+       七、 放大版試紙採樣檢驗互動（紅石蕊、藍石蕊、黃廣用試紙三大聯動）
+       ======================================================================== */
+    function sampleAndTest() {
+      playSound('drop');
+      
+      const redSpot = document.getElementById('sample-red-spot');
+      const blueSpot = document.getElementById('sample-blue-spot');
+      const univSpot = document.getElementById('sample-univ-spot');
+
+      const redLabel = document.getElementById('sample-red-label');
+      const blueLabel = document.getElementById('sample-blue-label');
+      const univLabel = document.getElementById('sample-univ-label');
+
+      redLabel.classList.add('hidden');
+      blueLabel.classList.add('hidden');
+      univLabel.classList.add('hidden');
+
+      const ph = state.currentPH;
+      const resultCard = document.getElementById('sampling-result-card');
+
+      if (ph < 6.5) {
+        // 酸性水溶液：
+        // 紅石蕊：不變色（僅深粉紅水漬）
+        // 藍石蕊：變紅色（濃郁程度隨 pH 變化）
+        // 廣用試紙：變紅/橙色
+        const redSpotColor = ph < 3.0 ? '#b91c1c' : '#ef4444';
+        const univColor = ph < 3.0 ? '#dc2626' : ph < 4.5 ? '#f97316' : '#facc15';
+
+        redSpot.innerHTML = `
+          <div class="spot-anim w-9 h-9 rounded-full" style="background: radial-gradient(circle, rgba(159, 18, 57, 0.35) 0%, rgba(159, 18, 57, 0.18) 70%, transparent 100%); border: 1px dashed rgba(159, 18, 57, 0.3);"></div>
+        `;
+        blueSpot.innerHTML = `
+          <div class="spot-anim w-10 h-10 rounded-full" style="background: radial-gradient(circle, ${redSpotColor} 0%, #ef4444 65%, transparent 100%); box-shadow: 0 0 10px rgba(220, 38, 38, 0.45);"></div>
+        `;
+        univSpot.innerHTML = `
+          <div class="spot-anim w-10 h-10 rounded-full" style="background: radial-gradient(circle, ${univColor} 0%, ${univColor} 65%, transparent 100%); box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);"></div>
+        `;
+
+        resultCard.innerHTML = `
+          <span class="text-rose-900 font-extrabold">
+            🔬 採樣結果：藍色石蕊試紙變紅色、紅色試紙不變、廣用試紙呈紅橙色 $\to$ 證實為【酸性水溶液】！
+          </span>
+        `;
+        resultCard.className = 'text-center text-xs sm:text-sm font-bold bg-rose-50 border border-rose-300 rounded-xl py-1.5 px-3 min-h-[30px] flex items-center justify-center';
+        showToast('採樣結果：藍試紙變紅，紅色不變（酸性）');
+
+      } else if (ph > 7.5) {
+        // 鹼性水溶液：
+        // 紅石蕊：變藍色（濃郁度隨 pH 變化）
+        // 藍石蕊：不變色（僅深藍水漬）
+        // 廣用試紙：變藍/紫色
+        const blueSpotColor = ph > 9.0 ? '#1d4ed8' : '#3b82f6';
+        const univColor = ph > 9.0 ? '#4f46e5' : '#0284c7';
+
+        redSpot.innerHTML = `
+          <div class="spot-anim w-10 h-10 rounded-full" style="background: radial-gradient(circle, ${blueSpotColor} 0%, #2563eb 65%, transparent 100%); box-shadow: 0 0 10px rgba(37, 99, 235, 0.45);"></div>
+        `;
+        blueSpot.innerHTML = `
+          <div class="spot-anim w-9 h-9 rounded-full" style="background: radial-gradient(circle, rgba(30, 58, 138, 0.32) 0%, rgba(30, 58, 138, 0.16) 70%, transparent 100%); border: 1px dashed rgba(30, 58, 138, 0.3);"></div>
+        `;
+        univSpot.innerHTML = `
+          <div class="spot-anim w-10 h-10 rounded-full" style="background: radial-gradient(circle, ${univColor} 0%, ${univColor} 65%, transparent 100%); box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);"></div>
+        `;
+
+        resultCard.innerHTML = `
+          <span class="text-blue-900 font-extrabold">
+            🔬 採樣結果：紅色石蕊試紙變藍色、藍色試紙不變、廣用試紙呈藍紫色 $\to$ 證實為【鹼性水溶液】！
+          </span>
+        `;
+        resultCard.className = 'text-center text-xs sm:text-sm font-bold bg-blue-50 border border-blue-300 rounded-xl py-1.5 px-3 min-h-[30px] flex items-center justify-center';
+        showToast('採樣結果：紅試紙變藍，藍色不變（鹼性）');
+
+      } else {
+        // 中性水溶液（酸鹼中和狀態）：
+        // 紅石蕊：不變色（僅水漬）
+        // 藍石蕊：不變色（僅水漬）
+        // 廣用試紙：呈鮮綠色（pH 7）
+        redSpot.innerHTML = `
+          <div class="spot-anim w-9 h-9 rounded-full" style="background: radial-gradient(circle, rgba(159, 18, 57, 0.25) 0%, transparent 80%); border: 1px dashed rgba(159, 18, 57, 0.25);"></div>
+        `;
+        blueSpot.innerHTML = `
+          <div class="spot-anim w-9 h-9 rounded-full" style="background: radial-gradient(circle, rgba(30, 58, 138, 0.25) 0%, transparent 80%); border: 1px dashed rgba(30, 58, 138, 0.25);"></div>
+        `;
+        univSpot.innerHTML = `
+          <div class="spot-anim w-10 h-10 rounded-full" style="background: radial-gradient(circle, #22c55e 0%, #16a34a 65%, transparent 100%); box-shadow: 0 0 10px rgba(34, 197, 94, 0.45);"></div>
+        `;
+
+        resultCard.innerHTML = `
+          <span class="text-emerald-900 font-extrabold">
+            🔬 採樣結果：紅色與藍色石蕊試紙皆不變色、廣用試紙呈現鮮綠色 $\to$ 證實達成【酸鹼中和／中性】！
+          </span>
+        `;
+        resultCard.className = 'text-center text-xs sm:text-sm font-bold bg-emerald-50 border border-emerald-300 rounded-xl py-1.5 px-3 min-h-[30px] flex items-center justify-center';
+        showToast('採樣結果：兩張石蕊試紙皆不變色，廣用試紙呈綠色（中性）');
+      }
+    }
+
+    function clearSamplePapers() {
+      playSound('click');
+      document.getElementById('sample-red-spot').innerHTML = '';
+      document.getElementById('sample-blue-spot').innerHTML = '';
+      document.getElementById('sample-univ-spot').innerHTML = '';
+
+      document.getElementById('sample-red-label').classList.remove('hidden');
+      document.getElementById('sample-blue-label').classList.remove('hidden');
+      document.getElementById('sample-univ-label').classList.remove('hidden');
+
+      const resultCard = document.getElementById('sampling-result-card');
+      resultCard.innerHTML = '🧻 已換上全新乾燥試紙，點擊「抽取混合液・滴在試紙檢驗」即可重新測試！';
+      resultCard.className = 'text-center text-xs sm:text-sm font-bold text-slate-600 bg-slate-50 border border-slate-200 rounded-xl py-1.5 px-3 min-h-[30px] flex items-center justify-center';
+      showToast('已更換全新試紙');
+    }
+
+    /* ========================================================================
+       八、 4 大自主任務系統
+       ======================================================================== */
+    function renderTaskCard() {
+      const task = TASKS.find((t) => t.id === state.currentTaskId) || TASKS[0];
+      document.getElementById('current-task-pill').textContent = `進行中：任務 ${task.id} / 4`;
+      document.getElementById('task-title').textContent = task.title;
+      document.getElementById('task-desc').textContent = task.desc;
+
+      const completedCount = Object.keys(state.completedTasks).length;
+      document.getElementById('task-progress-count').textContent = `${completedCount} / 4`;
+      document.getElementById('task-progress-bar').style.width = `${(completedCount / 4) * 100}%`;
+
+      if (completedCount === 4) {
+        document.getElementById('mastery-banner').classList.remove('hidden');
+      } else {
+        document.getElementById('mastery-banner').classList.add('hidden');
+      }
+    }
+
+    function checkTaskProgress() {
+      const task = TASKS.find((t) => t.id === state.currentTaskId);
+      if (!task) return;
+
+      if (task.check(state.currentPH, state.recipe) && !state.completedTasks[task.id]) {
+        state.completedTasks[task.id] = true;
+        playSound('success');
+        showToast(`🎉 太棒了！成功完成【${task.title}】！`);
+
+        const feedbackBox = document.getElementById('task-feedback-box');
+        feedbackBox.className = 'mt-3 rounded-2xl p-2.5 bg-emerald-50 border-2 border-emerald-400 text-emerald-950 text-xs sm:text-sm font-bold min-h-[58px] flex items-center shadow-xs';
+        feedbackBox.innerHTML = `<span>🎉 <strong>恭喜通關！</strong>你已成功完成${task.title}！</span>`;
+
+        if (state.currentTaskId < 4) {
+          setTimeout(() => {
+            state.currentTaskId += 1;
+            renderTaskCard();
+          }, 1400);
+        } else {
+          renderTaskCard();
+        }
+      }
+    }
+
+    function submitGuess(chosenType) {
+      const feedbackBox = document.getElementById('task-feedback-box');
+      let actualType = 'neutral';
+      if (state.currentPH < 6.5) actualType = 'acid';
+      else if (state.currentPH > 7.5) actualType = 'base';
+
+      if (chosenType === actualType) {
+        playSound('success');
+        feedbackBox.className = 'mt-3 rounded-2xl p-2.5 bg-emerald-50 border-2 border-emerald-400 text-emerald-950 text-xs sm:text-sm font-bold min-h-[58px] flex items-center shadow-xs';
+        feedbackBox.innerHTML = `<span>🎉 <strong>答對了！</strong>你透過顏色精準推論出目前混合液是【${actualType === 'acid' ? '酸性' : actualType === 'base' ? '鹼性' : '中性'}】！</span>`;
+      } else {
+        playSound('wrong');
+        feedbackBox.className = 'mt-3 rounded-2xl p-2.5 bg-rose-50 border-2 border-rose-300 text-rose-950 text-xs sm:text-sm font-bold min-h-[58px] flex items-center';
+        feedbackBox.innerHTML = `<span>🤔 <strong>再仔細觀察喔！</strong>目前液體顏色與試紙採樣結果最接近${actualType === 'acid' ? '偏紅桃紅（酸性）' : actualType === 'base' ? '偏藍綠/綠色（鹼性）' : '藍紫色（中性）'}喔！</span>`;
+      }
+    }
+
+    /* ========================================================================
+       九、 翰林版「考考你」觀念挑戰（10 題）
+       ======================================================================== */
+    function renderQuizQuestion() {
+      const qIdx = state.quiz.index;
+      const qObj = QUIZ_QUESTIONS[qIdx];
+      const chosen = state.quiz.answeredMap[qIdx];
+
+      document.getElementById('quiz-progress-badge').textContent = `第 ${qIdx + 1} / 10 題`;
+      document.getElementById('quiz-score-badge').textContent = `答對：${state.quiz.score} 題`;
+      document.getElementById('quiz-question-text').textContent = `${qIdx + 1}. ${qObj.question}`;
+
+      const labels = ['A', 'B', 'C'];
+      const container = document.getElementById('quiz-options-container');
+      container.innerHTML = qObj.options.map((optText, idx) => {
+        let btnStyle = 'bg-white hover:bg-amber-50/70 border-slate-200 text-slate-800';
+        let badgeStyle = 'bg-slate-100 text-slate-700';
+
+        if (chosen !== undefined) {
+          if (idx === qObj.answer) {
+            btnStyle = 'bg-emerald-50 border-emerald-400 text-emerald-950 font-black';
+            badgeStyle = 'bg-emerald-600 text-white';
+          } else if (idx === chosen && chosen !== qObj.answer) {
+            btnStyle = 'bg-rose-50 border-rose-300 text-rose-900';
+            badgeStyle = 'bg-rose-500 text-white';
+          } else {
+            btnStyle = 'bg-slate-50 border-slate-200 text-slate-400';
+          }
+        }
+
+        return `
+          <button
+            type="button"
+            onclick="answerQuizOption(${idx})"
+            class="w-full text-left px-3 py-1.5 rounded-2xl border-2 transition-all flex items-center gap-2.5 text-xs sm:text-sm font-bold cursor-pointer ${btnStyle}"
+          >
+            <span class="w-5 h-5 rounded-md flex items-center justify-center text-xs font-black shrink-0 ${badgeStyle}">
+              ${labels[idx]}
+            </span>
+            <span class="leading-snug">${optText}</span>
+          </button>
+        `;
+      }).join('');
+
+      const feedbackEl = document.getElementById('quiz-feedback-text');
+      if (chosen === undefined) {
+        feedbackEl.className = 'text-xs sm:text-sm font-bold text-slate-600 flex-1';
+        feedbackEl.textContent = '👆 請點選上方答案！';
+      } else if (chosen === qObj.answer) {
+        feedbackEl.className = 'text-xs sm:text-sm font-bold text-emerald-800 flex-1';
+        feedbackEl.innerHTML = `🎉 <strong>答對了！</strong>${qObj.explanation}`;
+      } else {
+        feedbackEl.className = 'text-xs sm:text-sm font-bold text-rose-800 flex-1';
+        feedbackEl.innerHTML = `💡 <strong>鼓勵你：再想一想喔！</strong>${qObj.explanation}`;
+      }
+
+      const nextBtn = document.getElementById('quiz-next-btn');
+      nextBtn.innerHTML = qIdx === QUIZ_QUESTIONS.length - 1
+        ? '<span>重新挑戰</span><span>🔄</span>'
+        : '<span>下一題</span><span>➡️</span>';
+    }
+
+    function answerQuizOption(optionIdx) {
+      const qIdx = state.quiz.index;
+      const qObj = QUIZ_QUESTIONS[qIdx];
+      const alreadyAnswered = state.quiz.answeredMap[qIdx] !== undefined;
+
+      state.quiz.answeredMap[qIdx] = optionIdx;
+
+      if (optionIdx === qObj.answer) {
+        playSound('success');
+        if (!alreadyAnswered) state.quiz.score += 1;
+      } else {
+        playSound('wrong');
+      }
+
+      renderQuizQuestion();
+    }
+
+    function nextQuizQuestion() {
+      playSound('click');
+      if (state.quiz.index < QUIZ_QUESTIONS.length - 1) {
+        state.quiz.index += 1;
+      } else {
+        state.quiz.index = 0;
+        state.quiz.score = 0;
+        state.quiz.answeredMap = {};
+        showToast('已重新開始「考考你」題庫！');
+      }
+      renderQuizQuestion();
+    }
+
+    /* ========================================================================
+       十、 重設與 Modal 控制
+       ======================================================================== */
+    function toggleShowPH() {
+      state.showPH = !state.showPH;
+      playSound('click');
+      const btn = document.getElementById('toggle-ph-btn');
+      const icon = document.getElementById('ph-btn-icon');
+      const text = document.getElementById('ph-btn-text');
+
+      if (state.showPH) {
+        btn.className = 'px-3 py-2.5 rounded-2xl text-[14px] sm:text-base font-black bg-indigo-600 text-white border-2 border-indigo-700 transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer';
+        icon.textContent = '🙈';
+        text.textContent = '隱藏 pH 數值';
+        showToast('已顯示混合液精確 pH 數值');
+      } else {
+        btn.className = 'px-3 py-2.5 rounded-2xl text-[14px] sm:text-base font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border-2 border-indigo-200 transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer';
+        icon.textContent = '👁️';
+        text.textContent = '顯示 pH 數值';
+        showToast('已隱藏 pH 數值，試著從指示劑顏色推論吧！');
+      }
+      updateFlaskLiquidVisuals();
+    }
+
+    function resetFlask() {
+      playSound('click');
+      state.recipe = {};
+      state.currentPH = 7.0;
+      updateFlaskLiquidVisuals();
+      renderRecipeTags();
+      renderSolutionList();
+      clearSamplePapers();
+
+      const dropperLabel = document.getElementById('mixing-dropper-label');
+      dropperLabel.textContent = '準備吸取：請選擇左側燒杯';
+      dropperLabel.className = 'mb-0.5 px-3 py-0.5 rounded-full text-xs font-black bg-white border-2 border-slate-300 text-slate-600 shadow-xs';
+
+      const dropperLiquid = document.getElementById('mix-dropper-liquid');
+      dropperLiquid.setAttribute('height', '0');
+
+      showToast('已清空混合瓶，換上全新指示劑原液');
+    }
+
+    function openResetAllModal() {
+      playSound('click');
+      document.getElementById('reset-all-modal').classList.remove('hidden');
+    }
+
+    function closeResetAllModal() {
+      playSound('click');
+      document.getElementById('reset-all-modal').classList.add('hidden');
+    }
+
+    function confirmResetAll() {
+      playSound('click');
+      resetFlask();
+      state.currentTaskId = 1;
+      state.completedTasks = {};
+      state.quiz.index = 0;
+      state.quiz.score = 0;
+      state.quiz.answeredMap = {};
+
+      renderTaskCard();
+      renderQuizQuestion();
+      closeResetAllModal();
+      showToast('已重設全部實驗進度與題目');
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const toast = document.getElementById('toast-banner');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2200);
+    }
+
+    /* 初始化 */
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSolutionList();
+      updateFlaskLiquidVisuals();
+      renderRecipeTags();
+      renderTaskCard();
+      renderQuizQuestion();
+    });
+  </script>
+</body>
+</html>
