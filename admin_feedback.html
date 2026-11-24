@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>教師管理後台｜水溶液科學實驗室意見回饋總覽</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Noto Sans TC 字體 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary-amber: #f59e0b;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: 'Noto Sans TC', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+      background: linear-gradient(135deg, #fefce8 0%, #fff7ed 40%, #f1f5f9 100%);
+      color: #1e293b;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="p-3 sm:p-5 lg:p-8">
+
+  <!-- ======================================================================
+       密碼驗證鎖定介面（未通過密碼驗證時顯示）
+       ====================================================================== -->
+  <div id="auth-overlay" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border-2 border-amber-300 shadow-2xl max-w-md w-full p-6 sm:p-8 text-center animate-fade-in">
+      <div class="w-16 h-16 rounded-2xl bg-amber-100 text-amber-700 text-3xl flex items-center justify-center mx-auto mb-4 shadow-xs">
+        🔒
+      </div>
+      <h1 class="text-xl sm:text-2xl font-black text-slate-800 mb-1">
+        教師專屬管理後台
+      </h1>
+      <p class="text-xs sm:text-sm font-bold text-slate-500 mb-5 leading-relaxed">
+        本頁面存放學生意見與回饋紀錄，請輸入教師授權密碼以進行解鎖查看。
+      </p>
+
+      <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+        <div class="text-left">
+          <label for="admin-pwd-input" class="block text-xs font-black text-slate-700 mb-1">
+            🔑 請輸入管理密碼：
+          </label>
+          <div class="relative">
+            <input
+              type="password"
+              id="admin-pwd-input"
+              required
+              placeholder="請輸入密碼..."
+              class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-amber-500 focus:outline-none text-base font-bold text-slate-800 pr-11 transition-all"
+            />
+            <button
+              type="button"
+              onclick="togglePwdVisibility()"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-lg cursor-pointer"
+              title="切換顯示密碼"
+            >
+              👁️
+            </button>
+          </div>
+          <p id="pwd-error-msg" class="hidden text-xs font-bold text-rose-600 mt-1.5 flex items-center gap-1">
+            <span>❌</span>
+            <span>密碼錯誤，請重新輸入！</span>
+          </p>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-3.5 px-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-black text-base shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+        >
+          <span>解鎖進入後台</span>
+          <span>🚀</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       主後台內容區塊（登入後解鎖顯示）
+       ====================================================================== -->
+  <main id="admin-main-content" class="hidden max-w-6xl mx-auto space-y-4 sm:space-y-6">
+
+    <!-- 頂部資訊列 -->
+    <header class="bg-white/95 backdrop-blur border-2 border-amber-200 rounded-3xl shadow-sm p-4 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <span class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 text-2xl flex items-center justify-center font-black shadow-xs shrink-0">
+          📋
+        </span>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl sm:text-2xl font-black text-slate-800">
+              水溶液科學實驗室｜意見回饋管理後台
+            </h1>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-900 border border-amber-200">
+              教師專用
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
+            即時檢視學生於各實驗室提交之姓名、Email 與寶貴建議
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <!-- 回首頁 -->
+        <a
+          href="index.html"
+          class="px-3.5 py-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5 shadow-xs"
+        >
+          <span>🏠</span>
+          <span>返回實驗大廳</span>
+        </a>
+
+        <!-- 鎖定登出 -->
+        <button
+          type="button"
+          onclick="handleLogout()"
+          class="px-3.5 py-2 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
+        >
+          <span>🔒</span>
+          <span>鎖定後台</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 統計數據卡片列 -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+      <div class="bg-white rounded-2xl border-2 border-slate-200 p-3.5 sm:p-4 shadow-xs">
+        <span class="text-xs font-bold text-slate-500">總回饋筆數</span>
+        <div id="stat-total" class="text-2xl sm:text-3xl font-black text-amber-600 mt-1">0</div>
+      </div>
+      <div class="bg-white rounded-2xl border-2 border-slate-200 p-3.5 sm:p-4 shadow-xs">
+        <span class="text-xs font-bold text-slate-500">指示劑實驗室</span>
+        <div id="stat-acid-base" class="text-2xl sm:text-3xl font-black text-blue-600 mt-1">0</div>
+      </div>
+      <div class="bg-white rounded-2xl border-2 border-slate-200 p-3.5 sm:p-4 shadow-xs">
+        <span class="text-xs font-bold text-slate-500">混合中和實驗室</span>
+        <div id="stat-mixing" class="text-2xl sm:text-3xl font-black text-emerald-600 mt-1">0</div>
+      </div>
+      <div class="bg-white rounded-2xl border-2 border-slate-200 p-3.5 sm:p-4 shadow-xs">
+        <span class="text-xs font-bold text-slate-500">導電性實驗室</span>
+        <div id="stat-conductivity" class="text-2xl sm:text-3xl font-black text-amber-500 mt-1">0</div>
+      </div>
+    </div>
+
+    <!-- 表格控制與操作工具列 -->
+    <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
+      
+      <!-- 篩選與搜尋列 -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+        <!-- 搜尋輸入框 -->
+        <div class="relative flex-1 max-w-md">
+          <input
+            type="text"
+            id="search-input"
+            oninput="renderFeedbackTable()"
+            placeholder="搜尋姓名、Mail 或意見關鍵字..."
+            class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-300 focus:border-amber-500 focus:outline-none text-xs sm:text-sm font-bold text-slate-700 transition-all"
+          />
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔍</span>
+        </div>
+
+        <!-- 來源篩選下拉選單 -->
+        <div class="flex items-center gap-2">
+          <label for="filter-source" class="text-xs font-bold text-slate-500 shrink-0">來源頁面：</label>
+          <select
+            id="filter-source"
+            onchange="renderFeedbackTable()"
+            class="px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm font-bold text-slate-700 bg-white focus:outline-none focus:border-amber-500 cursor-pointer"
+          >
+            <option value="all">全部來源 (All)</option>
+            <option value="實驗大廳">實驗大廳首頁</option>
+            <option value="酸鹼指示劑實驗">酸鹼指示劑實驗</option>
+            <option value="水溶液混合實驗">水溶液混合實驗</option>
+            <option value="水溶液導電性實驗">水溶液導電性實驗</option>
+          </select>
+        </div>
+
+        <!-- 資料操作按鈕組 -->
+        <div class="flex items-center gap-2 shrink-0">
+          <!-- 匯出 CSV -->
+          <button
+            type="button"
+            onclick="exportToCSV()"
+            class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-xs transition-all flex items-center gap-1 cursor-pointer"
+            title="匯出為 Excel CSV 格式"
+          >
+            <span>📥</span>
+            <span>匯出 Excel (CSV)</span>
+          </button>
+
+          <!-- 一鍵複製文字 -->
+          <button
+            type="button"
+            onclick="copyAllFeedbacks()"
+            class="px-3 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-300 font-bold text-xs sm:text-sm transition-all flex items-center gap-1 cursor-pointer"
+            title="複製全部紀錄為文字"
+          >
+            <span>📋</span>
+            <span>複製文字</span>
+          </button>
+
+          <!-- 清空紀錄 -->
+          <button
+            type="button"
+            onclick="openClearModal()"
+            class="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs sm:text-sm transition-all flex items-center gap-1 cursor-pointer"
+            title="清除所有回饋紀錄"
+          >
+            <span>🗑️</span>
+            <span>清空全部</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 回饋清單表格 -->
+      <div class="overflow-x-auto custom-scrollbar rounded-2xl border border-slate-200">
+        <table class="w-full text-left text-xs sm:text-sm border-collapse">
+          <thead>
+            <tr class="bg-amber-50/70 text-slate-800 border-b border-amber-200 font-black">
+              <th class="py-3 px-3.5 w-12 text-center">#</th>
+              <th class="py-3 px-3.5 w-36 whitespace-nowrap">提交時間</th>
+              <th class="py-3 px-3.5 w-36 whitespace-nowrap">來源頁面</th>
+              <th class="py-3 px-3.5 w-32 whitespace-nowrap">學生姓名</th>
+              <th class="py-3 px-3.5 w-44 whitespace-nowrap">電子信箱 (Mail)</th>
+              <th class="py-3 px-3.5 min-w-[260px]">回饋意見內容</th>
+              <th class="py-3 px-3.5 w-20 text-center">操作</th>
+            </tr>
+          </thead>
+          <tbody id="feedback-table-body" class="divide-y divide-slate-100 text-slate-700 font-medium">
+            <!-- 由 JS 動態生成 -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 無資料時的空狀態 -->
+      <div id="empty-state" class="hidden text-center py-10 px-4">
+        <span class="text-4xl">📭</span>
+        <h3 class="text-base font-bold text-slate-700 mt-2">目前尚無意見回饋紀錄</h3>
+        <p class="text-xs text-slate-400 mt-1">學生在各實驗室頁面底部送出回饋後，將會自動在此處即時彙整顯示。</p>
+        <button
+          type="button"
+          onclick="insertDemoData()"
+          class="mt-4 px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-bold text-xs transition-all cursor-pointer"
+        >
+          ＋ 產生 2 筆測試資料供預覽
+        </button>
+      </div>
+
+    </div>
+
+    <!-- 底部版權與備註 -->
+    <footer class="text-center text-xs text-slate-400 py-3">
+      國小自然科學實驗室 · 教師管理維護系統
+    </footer>
+  </main>
+
+  <!-- ======================================================================
+       清空確認自訂 Modal
+       ====================================================================== -->
+  <div id="clear-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border-2 border-rose-300 p-6 max-w-sm w-full text-center shadow-xl space-y-4">
+      <span class="text-4xl">⚠️</span>
+      <div>
+        <h3 class="text-lg font-black text-slate-800">確定要清空所有紀錄嗎？</h3>
+        <p class="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
+          此動作將會清除本地儲存的所有意見回饋，清空後將無法復原喔！
+        </p>
+      </div>
+      <div class="flex items-center justify-center gap-3 pt-2">
+        <button
+          type="button"
+          onclick="closeClearModal()"
+          class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm cursor-pointer"
+        >
+          取消
+        </button>
+        <button
+          type="button"
+          onclick="confirmClearAll()"
+          class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-sm shadow cursor-pointer"
+        >
+          確定清空
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 輕量 Toast 提示 -->
+  <div
+    id="toast-banner"
+    class="pointer-events-none fixed bottom-5 left-1/2 -translate-x-1/2 z-50 opacity-0 transition-all duration-300 bg-slate-900/90 text-white px-5 py-2 rounded-full text-xs sm:text-sm font-bold shadow-lg"
+  >
+    提示訊息
+  </div>
+
+  <script>
+    /* ========================================================================
+       密碼驗證設定（預設密碼：Aa_5201314）
+       ======================================================================== */
+    const ADMIN_PASSWORD = 'Aa_5201314';
+    const STORAGE_KEY = 'science_lab_feedbacks';
+    const SESSION_AUTH_KEY = 'science_lab_admin_authed';
+
+    function checkExistingAuth() {
+      if (sessionStorage.getItem(SESSION_AUTH_KEY) === 'true') {
+        unlockDashboard();
+      }
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('admin-pwd-input');
+      const errorMsg = document.getElementById('pwd-error-msg');
+
+      if (input.value === ADMIN_PASSWORD) {
+        sessionStorage.setItem(SESSION_AUTH_KEY, 'true');
+        errorMsg.classList.add('hidden');
+        unlockDashboard();
+        showToast('🔓 密碼驗證成功，歡迎進入教師管理後台！');
+      } else {
+        errorMsg.classList.remove('hidden');
+        input.classList.add('border-rose-400', 'bg-rose-50/50');
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    function unlockDashboard() {
+      document.getElementById('auth-overlay').classList.add('hidden');
+      document.getElementById('admin-main-content').classList.remove('hidden');
+      renderFeedbackTable();
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem(SESSION_AUTH_KEY);
+      document.getElementById('admin-main-content').classList.add('hidden');
+      document.getElementById('auth-overlay').classList.remove('hidden');
+      document.getElementById('admin-pwd-input').value = '';
+      showToast('🔒 已安全登出並鎖定後台');
+    }
+
+    function togglePwdVisibility() {
+      const input = document.getElementById('admin-pwd-input');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    /* ========================================================================
+       回饋資料讀取與表格渲染
+       ======================================================================== */
+    function getFeedbacks() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (err) {
+        console.error('Failed to parse feedback data', err);
+        return [];
+      }
+    }
+
+    function saveFeedbacks(list) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      } catch (err) {
+        console.error('Failed to save feedback data', err);
+      }
+    }
+
+    function renderFeedbackTable() {
+      const allFeedbacks = getFeedbacks();
+      updateStatistics(allFeedbacks);
+
+      const searchKey = (document.getElementById('search-input')?.value || '').trim().toLowerCase();
+      const sourceFilter = document.getElementById('filter-source')?.value || 'all';
+
+      // 篩選資料
+      const filtered = allFeedbacks.filter((item) => {
+        const matchesSource = sourceFilter === 'all' || item.source === sourceFilter;
+        const matchesSearch = !searchKey ||
+          (item.name && item.name.toLowerCase().includes(searchKey)) ||
+          (item.email && item.email.toLowerCase().includes(searchKey)) ||
+          (item.message && item.message.toLowerCase().includes(searchKey));
+        return matchesSource && matchesSearch;
+      });
+
+      const tbody = document.getElementById('feedback-table-body');
+      const emptyState = document.getElementById('empty-state');
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      tbody.innerHTML = filtered.map((item, index) => {
+        const dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString('zh-TW', { hour12: false }) : '未知時間';
+        return `
+          <tr class="hover:bg-amber-50/40 transition-colors">
+            <td class="py-3 px-3.5 text-center font-bold text-slate-400">${filtered.length - index}</td>
+            <td class="py-3 px-3.5 text-xs text-slate-500 font-mono whitespace-nowrap">${dateStr}</td>
+            <td class="py-3 px-3.5 whitespace-nowrap">
+              <span class="px-2 py-0.5 rounded-lg text-xs font-bold ${getSourceBadgeStyle(item.source)}">
+                ${escapeHtml(item.source || '未標註')}
+              </span>
+            </td>
+            <td class="py-3 px-3.5 font-bold text-slate-900 whitespace-nowrap">${escapeHtml(item.name || '無名氏')}</td>
+            <td class="py-3 px-3.5 font-mono text-xs text-blue-600">
+              <a href="mailto:${escapeHtml(item.email)}" class="hover:underline">${escapeHtml(item.email || '-')}</a>
+            </td>
+            <td class="py-3 px-3.5 text-slate-800 leading-relaxed whitespace-pre-wrap">${escapeHtml(item.message || '')}</td>
+            <td class="py-3 px-3.5 text-center">
+              <button
+                type="button"
+                onclick="deleteSingleFeedback('${item.id}')"
+                class="text-rose-500 hover:text-rose-700 text-xs font-bold p-1 rounded hover:bg-rose-50 transition-colors cursor-pointer"
+                title="刪除此筆"
+              >
+                🗑️
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function getSourceBadgeStyle(source) {
+      if (source?.includes('指示劑')) return 'bg-blue-100 text-blue-800 border border-blue-200';
+      if (source?.includes('混合')) return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+      if (source?.includes('導電')) return 'bg-amber-100 text-amber-900 border border-amber-200';
+      return 'bg-slate-100 text-slate-700';
+    }
+
+    function updateStatistics(list) {
+      document.getElementById('stat-total').textContent = list.length;
+      document.getElementById('stat-acid-base').textContent = list.filter((i) => i.source?.includes('指示劑')).length;
+      document.getElementById('stat-mixing').textContent = list.filter((i) => i.source?.includes('混合')).length;
+      document.getElementById('stat-conductivity').textContent = list.filter((i) => i.source?.includes('導電')).length;
+    }
+
+    function deleteSingleFeedback(id) {
+      const list = getFeedbacks().filter((i) => i.id !== id);
+      saveFeedbacks(list);
+      renderFeedbackTable();
+      showToast('🗑️ 已刪除該筆回饋紀錄');
+    }
+
+    /* ========================================================================
+       資料匯出與複製功能
+       ======================================================================== */
+    function exportToCSV() {
+      const list = getFeedbacks();
+      if (list.length === 0) {
+        showToast('⚠️ 目前沒有任何紀錄可供匯出');
+        return;
+      }
+
+      // 加入 UTF-8 BOM 避免 Excel 亂碼
+      let csvContent = '\uFEFF時間,來源頁面,姓名,電子郵件,意見內容\n';
+      list.forEach((item) => {
+        const time = item.timestamp ? new Date(item.timestamp).toLocaleString('zh-TW', { hour12: false }) : '';
+        const source = `"${(item.source || '').replace(/"/g, '""')}"`;
+        const name = `"${(item.name || '').replace(/"/g, '""')}"`;
+        const email = `"${(item.email || '').replace(/"/g, '""')}"`;
+        const msg = `"${(item.message || '').replace(/"/g, '""')}"`;
+        csvContent += `${time},${source},${name},${email},${msg}\n`;
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `科學實驗室意見回饋紀錄_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast('📥 已成功匯出 CSV 檔案！');
+    }
+
+    function copyAllFeedbacks() {
+      const list = getFeedbacks();
+      if (list.length === 0) {
+        showToast('⚠️ 目前沒有任何紀錄可複製');
+        return;
+      }
+
+      const text = list.map((item, idx) => {
+        const time = item.timestamp ? new Date(item.timestamp).toLocaleString('zh-TW') : '';
+        return `[#${idx + 1}] ${time} | ${item.source} | ${item.name} (${item.email})\n意見：${item.message}\n------------------------`;
+      }).join('\n');
+
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('📋 已複製全部回饋至剪貼簿！');
+      }).catch(() => {
+        showToast('❌ 複製失敗，請手動複製');
+      });
+    }
+
+    /* 清空功能 */
+    function openClearModal() {
+      document.getElementById('clear-modal').classList.remove('hidden');
+    }
+    function closeClearModal() {
+      document.getElementById('clear-modal').classList.add('hidden');
+    }
+    function confirmClearAll() {
+      saveFeedbacks([]);
+      renderFeedbackTable();
+      closeClearModal();
+      showToast('🗑️ 已清空所有回饋紀錄');
+    }
+
+    /* 測試用範例資料 */
+    function insertDemoData() {
+      const demo = [
+        {
+          id: 'demo-1',
+          timestamp: Date.now() - 3600000 * 2,
+          source: '水溶液導電性實驗',
+          name: '林小明',
+          email: 'ming@school.edu.tw',
+          message: '老師！導電實驗的水中離子光束動畫好酷喔，讓我一眼就看懂純水和自來水的差別了！'
+        },
+        {
+          id: 'demo-2',
+          timestamp: Date.now() - 3600000 * 5,
+          source: '水溶液混合實驗',
+          name: '陳小華',
+          email: 'hua123@gmail.com',
+          message: '滴管滴很多次小蘇打水之後，顏色變綠色很有成就感，考考你練習題很有趣！'
+        }
+      ];
+      saveFeedbacks(demo);
+      renderFeedbackTable();
+      showToast('✅ 已建立 2 筆範例資料！');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const toast = document.getElementById('toast-banner');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2500);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      checkExistingAuth();
+    });
+  </script>
+</body>
+</html>
